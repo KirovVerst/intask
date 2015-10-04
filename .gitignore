@@ -1,3 +1,7 @@
 /venv
 /.idea
 /db/my.cnf
+*.pyc
+/comments/migrations/
+/authentication/migrations/
+/event/migrations/
