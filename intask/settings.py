@@ -40,7 +40,8 @@ INSTALLED_APPS = (
     'rest_framework',
     'event',
     'authentication',
-    'users'
+    'users',
+    'comments'
 )
 
 MIDDLEWARE_CLASSES = (
