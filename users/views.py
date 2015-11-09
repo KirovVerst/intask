@@ -1,7 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth.models import User
-from rest_framework import generics
-from models import CustomUser
+from rest_framework import generics, permissions
 from serializers import UserSerializer
 
 
@@ -10,6 +9,11 @@ from serializers import UserSerializer
 class UserListAPIView(generics.ListCreateAPIView):
 	serializer_class = UserSerializer
 	queryset = User.objects.all()
+
+	def get_permissions(self):
+		if self.request.method in permissions.SAFE_METHODS:
+			return [permissions.IsAuthenticated(), ]
+		return [permissions.AllowAny(), ]
 
 
 class UserDetailAPIView(generics.RetrieveUpdateDestroyAPIView):

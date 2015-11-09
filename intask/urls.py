@@ -17,6 +17,6 @@ from django.conf.urls import include, url
 
 urlpatterns = [
     url(r'^api/auth/', include('authentication.urls')),
-    url(r'^api/event/', include('event.urls')),
+    url(r'^api/events/', include('events.urls')),
     url(r'^api/users/', include('users.urls'))
 ]

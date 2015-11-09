@@ -16,7 +16,7 @@ class Migration(migrations.Migration):
             name='CustomUser',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('field', models.CharField(max_length=50, null=True)),
+                ('phone_number', models.CharField(default=None, max_length=30)),
                 ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
             ],
         ),

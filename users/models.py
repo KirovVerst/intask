@@ -6,4 +6,4 @@ from django.contrib.auth.models import User
 
 class CustomUser(models.Model):
 	user = models.ForeignKey(User)
-	field = models.CharField(max_length=50, null=True)
+	phone_number = models.CharField(max_length=30, default=None, null=True)
