@@ -99,6 +99,10 @@ REST_FRAMEWORK = {
 	'UNICODE_JSON': True,
 }
 
+
+EXPIRATION_DELTA = datetime.timedelta(days=100)
+
+
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
 

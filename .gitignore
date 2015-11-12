@@ -2,6 +2,5 @@
 /.idea
 /db/*
 *.pyc
-/comments/migrations/
-/authentication/migrations/
-/event/migrations/
+/*/migrations/
+*.bash

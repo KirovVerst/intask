@@ -1,6 +1,7 @@
 from rest_framework import serializers, validators
 from django.contrib.auth.models import User
 from models import CustomUser
+from rest_framework.authtoken.models import Token
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -39,8 +40,10 @@ class UserSerializer(serializers.ModelSerializer):
 
 	def to_representation(self, instance):
 		custom_user = CustomUser.objects.get(user=instance)
+		token = Token.objects.get(user=instance)
 		return {
 			'id': instance.id,
+			'token': token.key,
 			'email': instance.email,
 			'first_name': instance.first_name,
 			'last_name': instance.last_name,

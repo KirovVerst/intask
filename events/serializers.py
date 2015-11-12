@@ -65,3 +65,20 @@ class TaskSerializer(serializers.ModelSerializer):
 			},
 			'users': users
 		}
+
+
+class SubtaskSerializer(serializers.ModelSerializer):
+	task = serializers.PrimaryKeyRelatedField(queryset=Task.objects.all())
+
+	class Meta:
+		model = Subtask
+		fields = ('id', 'title', 'is_completed', 'task')
+
+	def create(self, validated_data):
+		return Subtask.objects.create(**validated_data)
+
+	def update(self, instance, validated_data):
+		instance.title = validated_data.pop('title', instance.title)
+		instance.is_completed = validated_data.pop('is_completed', instance.is_completed)
+		instance.save()
+		return instance
