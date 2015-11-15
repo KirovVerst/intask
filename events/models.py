@@ -15,6 +15,16 @@ class Event(models.Model):
 	event_header = models.ForeignKey(User, related_name='event_header', default=None)
 	users = models.ManyToManyField(User)
 
+	COMPLETED = "COMPLETED"
+	DELAYED = "DELAYED"
+	IN_PROGESS = "IN_PROGRESS"
+	STATUS_CHOICES = (
+		(COMPLETED, "Completed"),
+		(DELAYED, "Delayed"),
+		(IN_PROGESS, "In progress")
+	)
+	status = models.CharField(max_length=11, choices=STATUS_CHOICES, default=IN_PROGESS)
+
 
 class Task(models.Model):
 	title = models.CharField(max_length=100, null=False)
@@ -25,6 +35,15 @@ class Task(models.Model):
 	is_public = models.BooleanField(default=False)
 	event = models.ForeignKey(Event)
 
+	COMPLETED = "COMPLETED"
+	DELAYED = "DELAYED"
+	IN_PROGESS = "IN_PROGRESS"
+	STATUS_CHOICES = (
+		(COMPLETED, "Completed"),
+		(DELAYED, "Delayed"),
+		(IN_PROGESS, "In progress")
+	)
+	status = models.CharField(max_length=11, choices=STATUS_CHOICES, default=IN_PROGESS)
 
 class Subtask(models.Model):
 	title = models.CharField(max_length=100, null=False)
