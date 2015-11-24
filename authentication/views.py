@@ -20,7 +20,7 @@ class ObtainAuthToken(APIView):
 	Return a user with his token.
 	"""
 	throttle_classes = ()
-	permission_classes = ()
+	permission_classes = [permissions.AllowAny, ]
 	parser_classes = (FormParser, MultiPartParser, JSONParser,)
 
 	renderer_classes = (JSONRenderer,)

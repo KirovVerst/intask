@@ -27,14 +27,14 @@ class EventSerializer(serializers.ModelSerializer):
 
 	def to_representation(self, instance):
 		tasks = [{'id': task.id, 'title': task.title} for task in Task.objects.filter(event=instance)]
-		users = [{'id': user.id, 'username': user.username} for user in instance.users.all()]
+		users = [{'id': user.id, 'email': user.email} for user in instance.users.all()]
 		return {
 			'id': instance.id,
 			'title': instance.title,
 			'description': instance.description,
 			'event_header': {
 				'id': instance.event_header.id,
-				'username': instance.event_header.username,
+				'email': instance.event_header.email,
 			},
 			'tasks': tasks,
 			'users': users,

@@ -1,0 +1,19 @@
+<div class="panel-heading">
+    <h3 class="panel-title">Задания <span>({{ vm.currentEvent.tasks.length }})</span></h3>
+</div>
+<table class="table table-hover">
+    <tr>
+        <th>#</th>
+        <th>Название</th>
+        <th>Руководитель</th>
+        <th>Дата выполнения</th>
+        <th>Статус</th>
+    </tr>
+    <tr ng-repeat="task in vm.currentEvent.tasks">
+        <td></td>
+        <td>{{ task.title }}</td>
+        <td>{{ task.task_header }}</td>
+        <td>{{ task.finish_time }}</td>
+        <td>{{ task.is_public }}</td>
+    </tr>
+</table>

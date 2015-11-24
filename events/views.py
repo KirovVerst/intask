@@ -1,11 +1,13 @@
 from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
-from rest_framework import generics, exceptions, permissions
+from rest_framework import generics, exceptions, permissions, response
 from serializers import EventSerializer, TaskSerializer, SubtaskSerializer, UserInEventSerializer, UserInTaskSerializer
 from models import Event, Task, Subtask
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from django.contrib.auth.models import User
+from notifications.models import Notification
+from notifications.serializers import NotificationSerializer
 
 
 # Create your views here.
@@ -19,6 +21,7 @@ class EventListCreateAPIView(generics.ListCreateAPIView):
 
 class EventDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 	serializer_class = EventSerializer
+	queryset = Event.objects.all()
 
 	def get_queryset(self):
 		return Event.objects.filter(users=self.request.user)
@@ -123,27 +126,40 @@ class UserInEventViewSet(ViewSet):
 
 			event.users.add(user)
 
-			return Response(data={'detail': 'User was added.'})
+			data = {
+				'text': 'The first notification',
+				'type': 'INVITATION_IN_EVENT',
+				'sender': self.request.user.id,
+				'recipient': user.email,
+				'event': event.id
+			}
 
-	def remove_or_detail(self, request, event_id, user_id):
-		try:
-			event = Event.objects.get(id=event_id)
-		except ObjectDoesNotExist:
-			raise exceptions.NotFound(detail="Event not found.")
-		try:
-			user = User.objects.get(id=user_id)
-		except ObjectDoesNotExist:
-			raise exceptions.NotFound(detail="User not found.")
+		notification_serializer = NotificationSerializer(data=data)
+		notification_serializer.is_valid(raise_exception=True)
+		notification = notification_serializer.save()
 
-		if request.method == "GET":
-			return Response(UserInEventSerializer.to_json(event=event, user=user))
-		else:
-			if event.event_header == user:
-				return Response(
-					{'message': 'User is the current event\'s owner. Change event_header before removal this user.'},
-					status=400)
-			event.users.remove(user)
-			return Response({'message': 'User was deleted.'})
+		return Response(data={'detail': 'User was added.'})
+
+
+def remove_or_detail(self, request, event_id, user_id):
+	try:
+		event = Event.objects.get(id=event_id)
+	except ObjectDoesNotExist:
+		raise exceptions.NotFound(detail="Event not found.")
+	try:
+		user = User.objects.get(id=user_id)
+	except ObjectDoesNotExist:
+		raise exceptions.NotFound(detail="User not found.")
+
+	if request.method == "GET":
+		return Response(UserInEventSerializer.to_json(event=event, user=user))
+	else:
+		if event.event_header == user:
+			return Response(
+				{'message': 'User is the current event\'s owner. Change event_header before removal this user.'},
+				status=400)
+		event.users.remove(user)
+		return Response({'message': 'User was deleted.'})
 
 
 class UserInTaskViewSet(ViewSet):
