@@ -1,21 +1,47 @@
-from rest_framework import serializers
+from rest_framework import serializers, exceptions
 from models import Notification, NotificationBody
 from django.contrib.auth.models import User
 from events.models import Event
+from django.core.mail import send_mail
 
 
 class NotificationSerializer(serializers.ModelSerializer):
+	sender = serializers.PrimaryKeyRelatedField(source='notificationbody.sender', queryset=User.objects.all(),
+												required=True)
+	event = serializers.PrimaryKeyRelatedField(source='notificationbody.event', queryset=Event.objects.all(),
+											   required=True)
+	text = serializers.CharField(source='notificationbody.text')
+	type = serializers.ChoiceField(source='notificationbody.type', choices=NotificationBody().types)
+
 	recipient = serializers.EmailField(required=True)
-	text = serializers.CharField(max_length=1000, required=False)
-	type = serializers.ChoiceField(choices=NotificationBody.types, required=False)
-	sender = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), required=True)
-	event = serializers.PrimaryKeyRelatedField(queryset=Event.objects.all(), required=False)
 
 	class Meta:
 		model = Notification
-		fields = ('recipient', 'text', 'type', 'sender', 'event')
+		fields = ('text', 'type', 'sender', 'event', 'recipient')
 
 	def create(self, validated_data):
-		recipient = validated_data.pop('recipient')
-		body = NotificationBody.objects.create(**validated_data)
-		return Notification.objects.create(body=body, recipient=recipient)
+		body_data = validated_data.pop('notificationbody')
+		body = NotificationBody.objects.create(**body_data)
+		return Notification.objects.create(body=body, recipient=validated_data.pop('recipient'))
+
+	def to_representation(self, instance):
+		body = instance.body
+
+		return {
+			'id': instance.id,
+			'type': body.type,
+			'sender': {
+				'id': body.sender.id,
+				'email': body.sender.email,
+				'first_name': body.sender.first_name,
+				'last_name': body.sender.last_name
+			},
+			'text': body.text,
+			'event': {
+				'id': body.event.id,
+				'title': body.event.title
+			},
+			'recipient': {
+				'email': instance.recipient
+			}
+		}

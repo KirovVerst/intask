@@ -1,4 +1,4 @@
-from comments.models import Comment, CommentsTable
+from models import Comment, CommentsTable
 from django.contrib.auth.models import User
 from rest_framework import serializers
 

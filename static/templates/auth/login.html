@@ -1,13 +1,15 @@
-<div class="container">
-    <div ng-include="'static/templates/static/auth_brand.html'"></div>
-    <form class="form-auth" role="form" ng-submit="vm.login()">
-        <h2 class="form-auth-heading">Sign in</h2>
-        <input type="email" class="form-control" placeholder="Email address" required autofocus ng-model="vm.email">
-        <input type="password" class="form-control" placeholder="Password" required ng-model="vm.password">
-        <label class="checkbox">
-            <input type="checkbox" value="remember-me"> Remember me
-        </label>
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-    </form>
-    <a href="register" class="center-block text-center">Sign up</a>
+<div class="container row">
+    <div class="col-sm-5 col-sm-offset-2">
+        <div ng-include="'static/templates/static/auth_brand.html'"></div>
+        <form class="form-auth" role="form" ng-submit="vm.login()">
+            <h2 class="form-auth-heading">Sign in</h2>
+            <input type="email" class="form-control" placeholder="Email address" required autofocus ng-model="vm.email">
+            <input type="password" class="form-control" placeholder="Password" required ng-model="vm.password">
+            <label class="checkbox">
+                <input type="checkbox" value="remember-me"> Remember me
+            </label>
+            <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+        </form>
+        <a href="register" class="center-block text-center">Sign up</a>
+    </div>
 </div>

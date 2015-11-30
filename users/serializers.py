@@ -1,7 +1,9 @@
-from rest_framework import serializers, validators
+from rest_framework import serializers, validators, exceptions
 from django.contrib.auth.models import User
 from models import CustomUser
 from rest_framework.authtoken.models import Token
+from notifications.models import Notification
+from notifications.serializers import NotificationSerializer
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -10,6 +12,7 @@ class UserSerializer(serializers.ModelSerializer):
 								   required=True)
 
 	first_name = serializers.CharField(max_length=50,
+									   allow_blank=True,
 									   required=False)
 	last_name = serializers.CharField(max_length=50,
 									  required=False)
@@ -49,7 +52,7 @@ class UserSerializer(serializers.ModelSerializer):
 			'email': instance.email,
 			'first_name': instance.first_name,
 			'last_name': instance.last_name,
-			'phone_number': custom_user.phone_number
+			'phone_number': custom_user.phone_number,
 		}
 
 	def update(self, instance, validated_data):

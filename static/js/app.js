@@ -10,7 +10,8 @@
 		'application.auth',
 		'application.events',
 		'application.users',
-		'application.tasks'
+		'application.tasks',
+		'application.static'
 	]);
 
 	angular.module('application.config', []);

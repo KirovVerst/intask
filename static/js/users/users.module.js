@@ -11,6 +11,6 @@
         .module('application.users.controllers', []);
 
     angular
-        .module('application.users.services', []);
+        .module('application.users.services', ['ngResource']);
 
 })();

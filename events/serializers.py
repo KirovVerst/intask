@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from models import Event, Subtask, Task
 from django.contrib.auth.models import User
+from django.shortcuts import get_object_or_404
 from users.models import CustomUser
 
 
@@ -38,7 +39,8 @@ class EventSerializer(serializers.ModelSerializer):
 			},
 			'tasks': tasks,
 			'users': users,
-			'status': instance.status
+			'status': instance.status,
+			'invited_users': instance.invited_users.split(",")
 		}
 
 
@@ -61,6 +63,7 @@ class TaskSerializer(serializers.ModelSerializer):
 		instance.task_header = validated_data.get('task_header', instance.task_header)
 		instance.status = validated_data.get('status', instance.status)
 		instance.save()
+		return instance
 
 	def to_representation(self, instance):
 		users = [{'id': user.id, 'username': user.username} for user in instance.users.all()]
@@ -97,36 +100,63 @@ class SubtaskSerializer(serializers.ModelSerializer):
 
 
 class UserInEventSerializer(serializers.Serializer):
-	@staticmethod
-	def to_json(event, user):
-		custom_user = CustomUser.objects.get(user=user)
-		data = {
-			'id': user.id,
-			'email': user.email,
-			'phone_number': custom_user.phone_number,
-			'first_name': user.first_name,
-			'last_name': user.last_name,
-			'is_event_header': event.event_header == user
-		}
+	event = serializers.PrimaryKeyRelatedField(queryset=Event.objects.all())
+	user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
 
-		header_tasks = event.task_set.filter(task_header=user)
+	class Meta:
+		fields = ('event', 'user')
+
+	def to_representation(self, instance):
+		custom_user = CustomUser.objects.get(user=instance.user)
+		data = {
+			'id': instance.user.id,
+			'email': instance.user.email,
+			'phone_number': custom_user.phone_number,
+			'first_name': instance.user.first_name,
+			'last_name': instance.user.last_name,
+			'is_event_header': instance.event.event_header == instance.user
+		}
+		header_tasks = instance.event.task_set.filter(task_header=instance.user)
 		data['header_tasks'] = [{'id': task.id, 'title': task.title} for task in header_tasks]
 
-		user_tasks = event.task_set.filter(users=user)
+		user_tasks = instance.event.task_set.filter(users=instance.user)
 		data['user_tasks'] = [{'id': task.id, 'title': task.title} for task in user_tasks]
 		return data
 
+	def create(self, validated_data):
+		pass
+
+	def update(self, instance, validated_data):
+		pass
+
+	def to_internal_value(self, data):
+		pass
+
 
 class UserInTaskSerializer(serializers.Serializer):
-	@staticmethod
-	def to_json(task, user):
-		custom_user = CustomUser.objects.get(user=user)
+	task = serializers.PrimaryKeyRelatedField(queryset=Task.objects.all())
+	user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+
+	class Meta:
+		fields = ('task', 'user',)
+
+	def to_representation(self, instance):
+		custom_user = CustomUser.objects.get(user=instance.user)
 		data = {
-			'id': user.id,
-			'email': user.email,
+			'id': instance.user.id,
+			'email': instance.user.email,
 			'phone_number': custom_user.phone_number,
-			'first_name': user.first_name,
-			'last_name': user.last_name,
-			'is_task_header': task.task_header == user
+			'first_name': instance.user.first_name,
+			'last_name': instance.user.last_name,
+			'is_task_header': instance.task.task_header == instance.user
 		}
 		return data
+
+	def create(self, validated_data):
+		pass
+
+	def update(self, instance, validated_data):
+		pass
+
+	def to_internal_value(self, data):
+		pass

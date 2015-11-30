@@ -60,7 +60,7 @@ ROOT_URLCONF = 'intask.urls'
 TEMPLATES = [
 	{
 		'BACKEND': 'django.template.backends.django.DjangoTemplates',
-		'DIRS': [os.path.join(BASE_DIR, 'templates'),],
+		'DIRS': [os.path.join(BASE_DIR, 'templates'), ],
 		'APP_DIRS': True,
 		'OPTIONS': {
 			'context_processors': [
@@ -94,6 +94,7 @@ DATABASES = {
 		},
 	}
 }
+
 # django rest framework
 # http://www.django-rest-framework.org
 REST_FRAMEWORK = {
@@ -131,5 +132,18 @@ STATICFILES_DIRS = (
 	os.path.join(BASE_DIR, 'static'),
 )
 
-
 STATIC_URL = '/static/'
+
+
+
+
+# EMAIL
+
+EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'tmp/app-messages') # change this to a proper location
+
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'intask.project@gmail.com'
+EMAIL_HOST_PASSWORD = 'TLu-SU8-rDL-8Zy'
