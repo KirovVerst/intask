@@ -12,7 +12,7 @@
     <tr ng-repeat="task in vm.currentEvent.tasks">
         <td></td>
         <td>{{ task.title }}</td>
-        <td>{{ task.task_header }}</td>
+        <td>{{ task.task_header.email }}</td>
         <td>{{ task.finish_time }}</td>
         <td>{{ task.is_public }}</td>
     </tr>

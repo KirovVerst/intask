@@ -1,6 +1,6 @@
 from django.conf.urls import include, url
 from rest_framework.routers import DefaultRouter
-from views import *
+from .views import *
 
 users_in_event = DefaultRouter()
 users_in_event.register(r'^/(?P<event_id>[0-9]+)/users/', UserInEventViewSet, 'UserInEvent')
@@ -17,7 +17,7 @@ url_users_in_event = [
 ]
 
 url_task = [
-	url(r'^/(?P<pk>[0-9]+)/tasks/$', TaskListCreateAPIView.as_view(),
+	url(r'^/(?P<pk>[0-9]+)/tasks/?$', TaskListCreateAPIView.as_view(),
 		name="get the list of tasks or create a new task"),
 
 	url(r'^/(?P<event_id>[0-9]+)/tasks/(?P<pk>[0-9]+)/$', TaskDetailAPIView.as_view(),

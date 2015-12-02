@@ -1,6 +1,6 @@
 from rest_framework import serializers, validators, exceptions
 from django.contrib.auth.models import User
-from models import CustomUser
+from .models import CustomUser
 from rest_framework.authtoken.models import Token
 from notifications.models import Notification
 from notifications.serializers import NotificationSerializer

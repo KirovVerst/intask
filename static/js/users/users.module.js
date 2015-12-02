@@ -1,11 +1,12 @@
 (function () {
-  'use strict';
+    'use strict';
 
-  angular
-    .module('application.users', [
-      'application.users.controllers',
-      'application.users.services'
-    ]);
+    angular
+        .module('application.users', [
+            'application.users.services',
+            'application.users.controllers'
+
+        ]);
 
     angular
         .module('application.users.controllers', []);

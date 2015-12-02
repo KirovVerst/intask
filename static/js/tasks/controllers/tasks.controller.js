@@ -5,24 +5,16 @@
 	'use strict';
 
 	angular.module('application.tasks.controllers')
-		.controller('TasksController', function (Auth) {
+		.controller('TasksController', function (Tasks, Events, $routeParams, $window) {
 			var vm = this;
+			vm.event = Events.get({id: $routeParams.eventId});
 
-			vm.isLoggedIn = !!Auth.getToken();
+			vm.new = {};
 
-			vm.login = function () {
-				Auth.login(vm.email, vm.password);
-			};
-
-			vm.register = function () {
-				Auth.register(vm.email, vm.password);
-			};
-
-			vm.logout = function () {
-				Auth.logout();
-			};
-
-			vm.email = Auth.getEmail();
+			vm.create = function () {
+				Tasks.save({eventId: vm.event.id}, vm.new);
+				$window.location = '/events/' + vm.event.id ;
+			}
 
 		})
 })();

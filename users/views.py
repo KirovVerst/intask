@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth.models import User
 from rest_framework import generics, permissions
-from serializers import UserSerializer
+from .serializers import UserSerializer
 
 
 # Create your views here.

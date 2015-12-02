@@ -1,18 +1,14 @@
 # coding=utf-8
 from django.db.models import Q
-from django.shortcuts import get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import generics, exceptions, permissions, response, status, serializers, validators
-from serializers import EventSerializer, TaskSerializer, SubtaskSerializer, UserInEventSerializer, UserInTaskSerializer
+from .serializers import EventSerializer, TaskSerializer, SubtaskSerializer, UserInEventSerializer, UserInTaskSerializer
 from rest_framework.viewsets import ViewSet, ModelViewSet
 from rest_framework.response import Response
-from django.contrib.auth.models import User
-from models import Event, Task, Subtask
-from permissions import *
+from .permissions import *
 from notifications.models import Notification, NotificationBody
-from notifications.serializers import NotificationSerializer
 from datetime import datetime
-from invitations import invite_user_to_event
+from .invitations import invite_user_to_event
 
 
 # Create your views here.
@@ -54,7 +50,8 @@ class TaskListCreateAPIView(generics.ListCreateAPIView):
 
 	def post(self, request, *args, **kwargs):
 		data = request.data.copy()
-		data['task_header'] = request.user.id
+		if 'task_header' not in data:
+			data['task_header'] = request.user.id
 		data['event'] = kwargs['pk']
 		serializer = TaskSerializer(data=data)
 		if serializer.is_valid():

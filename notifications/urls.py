@@ -1,6 +1,6 @@
 from django.conf.urls import include, url
-from views import NotificationCreateListAPIView
+from notifications.views import NotificationCreateListAPIView
 
 urlpatterns = [
-	url(r'$', NotificationCreateListAPIView.as_view())
+    url(r'$', NotificationCreateListAPIView.as_view())
 ]

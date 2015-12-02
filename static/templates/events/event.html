@@ -18,7 +18,7 @@
     <!-- Tasks list block -->
     <div class="panel panel-default" ng-include="'/static/templates/events/tasks/table.html'"></div>
     <div class="pull-right">
-        <button class="btn btn-primary">Добавить задание</button>
+        <a class="btn btn-primary" href="events/{{ vm.currentEvent.id }}/tasks/new/">Добавить задание</a>
     </div>
     <div class="clearfix"></div>
     <br>
@@ -26,7 +26,7 @@
     <!-- Users list block BEGIN-->
     <div class="panel panel-default" ng-include="'/static/templates/events/users/table.html'"></div>
     <div class="pull-right">
-        <button class="btn btn-primary">Добавить участника</button>
+        <a class="btn btn-primary" href="events/{{ vm.currentEvent.id }}/users/new/">Добавить участника</a>
     </div>
     <div class="clearfix"></div>
     <br>

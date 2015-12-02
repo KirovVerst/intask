@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework import generics
-from serializers import NotificationSerializer
-from models import Notification
+from notifications.serializers import NotificationSerializer
+from notifications.models import Notification
 
 
 # Create your views here.

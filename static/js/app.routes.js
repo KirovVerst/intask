@@ -24,9 +24,13 @@
 				controllerAs: 'vm',
 				templateUrl: '/static/templates/events/event.html'
 			}).when('/profile/', {
-				controller: 'UsersController',
+				controller: 'ProfileController',
 				controllerAs: 'vm',
 				templateUrl: '/static/templates/users/profile.html'
+			}).when('/events/:eventId/tasks/new/', {
+				controller: 'TasksController',
+				controllerAs: 'vm',
+				templateUrl: '/static/templates/tasks/new.html'
 			}).otherwise({
 				redirectTo: '/'
 			});
