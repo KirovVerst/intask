@@ -13,13 +13,13 @@
             <a class="dropdown-toggle"
                data-toggle="dropdown"
                href="#">
-                {{ vm.email }}
+                {{ AuthCtrl.email }}
                 <b class="caret"></b>
             </a>
             <ul class="dropdown-menu">
                 <li><a href="profile">Профиль</a></li>
                 <li class="divider"></li>
-                <li><a href="/" ng-click="vm.logout()">Выйти</a></li>
+                <li><a href="/" ng-click="AuthCtrl.logout()">Выйти</a></li>
             </ul>
         </li>
     </ul>

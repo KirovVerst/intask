@@ -1,43 +1,59 @@
-<h1 class="page-header text-center">Создание нового задания в событии {{ vm.event.title }}</h1>
+<h1 class="text-center">Создание нового задания</h1>
 
-<form class="form-horizontal" role="form" ng-submit="vm.create()">
+<form class="form-horizontal" role="form" ng-submit="TasksCtrl.createTask()">
     <div class="form-group">
-        <label for="title" class="col-sm-3 control-label">Название задание</label>
+        <label for="title" class="col-sm-3 control-label">Название задания</label>
 
-        <div class="col-sm-6">
+        <div class="col-sm-8">
             <input type="text" class="form-control" id="title"
-                   ng-model="vm.new.title" required maxlength="100" placeholder="Не более 100 символов"/>
+                   ng-model="TasksCtrl.newTask.title" required maxlength="100" placeholder="Не более 100 символов"/>
         </div>
     </div>
     <div class="form-group">
         <label for="description" class="col-sm-3 control-label">Описание</label>
 
-        <div class="col-sm-6">
-                        <textarea required rows="6" cols="20" class="form-control"
-                                  id="description" ng-model="vm.new.description"></textarea>
-        </div>
-    </div>
-    <div class="form-group">
-        <label for="is_public" class="col-sm-3 control-label">Публичное задание</label>
-
-        <div class="col-sm-1">
-            <input type="checkbox" class="form-control" id="is_public" ng-model="vm.new.is_public"/>
+        <div class="col-sm-8">
+            <textarea required rows="6" cols="20" class="form-control"
+                      id="description" ng-model="TasksCtrl.newTask.description"></textarea>
         </div>
     </div>
     <div class="form-group">
         <label for="task_header" class="col-sm-3 control-label">Руководитель</label>
 
-        <div class="col-sm-3">
-            <select id="task_header" ng-model="vm.new.task_header" class="form-control">
-                <option ng-repeat="user in vm.event.users" value="user.id" selected>
-                    {{ user.email }}
-                </option>
+        <div class="col-sm-8">
+            <select id="task_header" ng-model="TasksCtrl.newTask.task_header"
+                    ng-options="user.id as user.first_name + ' ' + user.last_name for user in vm.users">
             </select>
         </div>
     </div>
     <div class="form-group">
-        <div class="col-sm-offset-3 col-sm-3">
-            <button type="submit" class="btn btn-default">Создать</button>
+        <label for="finish_time" class="col-sm-3 control-label">Срок завершения</label>
+
+        <div class="col-sm-8">
+            <input type="date" name="finish_time" class="form-control" id="finish_time"
+                   ng-model="TasksCtrl.newTask.finish_time"
+                   min="{{ vm.today | date:'yyyy-MM-dd' }}"
+                   max="{{ vm.currentEvent.finish_time | date:'yyyy-MM-dd' }}" required/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="is_public" class="col-sm-3 control-label">Публичное задание</label>
+
+        <div class="col-sm-8">
+            <input type="checkbox" name="is_public" class="form-control" id="is_public"
+                   ng-model="TasksCtrl.newTask.is_public"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-offset-1 col-sm-3">
+            <button type="submit" class="btn btn-lg btn-primary btn-block">Создать</button>
+        </div>
+        <div class="col-sm-3">
+            <button type="button" class="btn btn-lg btn-danger btn-block" ng-click="vm.popNewTask()">Отменить
+            </button>
+        </div>
+        <div class="col-sm-3" ng-show="TasksCtrl.isTaskCreated">
+            <b class="alert-success">Задание создано</b>
         </div>
     </div>
 </form>

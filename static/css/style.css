@@ -1,0 +1,14 @@
+.nav-route .breadcrumb{
+    background: transparent;
+    padding-top: 20px;
+    font-size: large;
+}
+
+.new-element {
+    background-color: lightgray;
+    box-shadow: 5px 5px white;
+    z-index: 1000;
+    position: fixed;
+    top: 25%;
+    left: 0;
+}

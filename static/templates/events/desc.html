@@ -1,0 +1,29 @@
+<div class="row">
+    <div class="col-sm-8">
+        <h2>Описание</h2>
+        {{ vm.currentEvent.description }}
+    </div>
+    <div class="col-sm-4">
+        <h2>Управление</h2>
+        <button ng-show="vm.isEventHeader" class="btn btn-primary btn-block"
+                ng-click="vm.setEditFormEvent()">Редактировать
+        </button>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-4">
+        <h2>Руководитель</h2>
+        {{ vm.currentEvent.event_header.first_name }} {{ vm.currentEvent.event_header.last_name }}
+    </div>
+    <div class="col-sm-4">
+        <h2>Срок завершения</h2>
+        {{ vm.currentEvent.finish_time | date:'yyyy-MM-dd' }}
+    </div>
+    <div class="col-sm-4">
+        <h2>Статус</h2>
+        {{ vm.currentEvent.status }}
+    </div>
+</div>
+<hr>
+
+

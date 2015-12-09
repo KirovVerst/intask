@@ -1,1 +1,12 @@
-<h1 class="page-header">Dashboard</h1>
+<div class="col-sm-12">
+    <div class="nav-route">
+        <ol class="breadcrumb">
+            <li class="active"><a href="/">События</a></li>
+        </ol>
+    </div>
+
+    <div ng-include="'/static/templates/events/table.html'"></div>
+
+    <div class="col-sm-8 col-sm-offset-2 new-element" ng-show="vm.newEvent"
+         ng-include="'/static/templates/events/new.html'"></div>
+</div>

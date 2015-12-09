@@ -1,0 +1,75 @@
+<h1>Мои события</h1>
+<div class="panel panel-default">
+    <table class="table table-hover">
+        <tr>
+            <th ng-click="vm.orderMyEvent('title', vm.myEvents)">Название
+            <span ng-show="vm.predicateMyEvent === 'title'"
+                  class="{{ vm.classMyEvent }}"></span>
+            </th>
+            <th ng-click="vm.orderMyEvent('description', vm.myEvents)">Описание
+            <span ng-show="vm.predicateMyEvent === 'description'"
+                  class="{{ vm.classMyEvent }}"></span>
+            </th>
+            <th ng-click="vm.orderMyEvent('finish_time', vm.myEvents)">Срок завершения
+            <span ng-show="vm.predicateMyEvent === 'finish_time'"
+                  class="{{ vm.classMyEvent }}"></span>
+            </th>
+            <th ng-click="vm.orderMyEvent('status', vm.myEvents)">Статус
+            <span ng-show="vm.predicateMyEvent === 'status'"
+                  class="{{ vm.classMyEvent }}"></span>
+            </th>
+            <th></th>
+        </tr>
+        <tr ng-repeat="event in vm.myEvents track by $index">
+            <td><a href="/events/{{ event.id }}/">{{ event.title }}</a></td>
+            <td>{{ event.description }}</td>
+            <td>{{ event.finish_time }}</td>
+            <td>{{ event.status }}</td>
+            <td>
+                <button ng-click="vm.deleteEvent($index)">
+                    <span class="glyphicon glyphicon-remove-sign"></span>
+                </button>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<button class="btn btn-primary pull-right" ng-click="vm.setNewEvent()">Создать событие</button>
+<div class="clearfix"></div>
+
+
+<h1>Другие события</h1>
+<div class="panel panel-default">
+    <table class="table table-hover">
+        <tr>
+            <th ng-click="vm.orderOtherEvent('title', vm.OtherEvents)">Название
+            <span ng-show="vm.predicateOtherEvent === 'title'"
+                  class="{{ vm.classOtherEvent }}"></span>
+            </th>
+            <th ng-click="vm.orderOtherEvent('description', vm.OtherEvents)">Описание
+            <span ng-show="vm.predicateOtherEvent === 'description'"
+                  class="{{ vm.classOtherEvent }}"></span>
+            </th>
+            <th ng-click="vm.orderOtherEvent('event_header', vm.OtherEvents)">Описание
+            <span ng-show="vm.predicateOtherEvent === 'event_header'"
+                  class="{{ vm.classOtherEvent }}"></span>
+            </th>
+            <th ng-click="vm.orderOtherEvent('finish_time', vm.OtherEvents)">Срок завершения
+            <span ng-show="vm.predicateOtherEvent === 'finish_time'"
+                  class="{{ vm.classOtherEvent }}"></span>
+            </th>
+            <th ng-click="vm.orderOtherEvent('status', vm.OtherEvents)">Статус
+            <span ng-show="vm.predicateOtherEvent === 'status'"
+                  class="{{ vm.classOtherEvent }}"></span>
+            </th>
+            <th></th>
+        </tr>
+        <tr ng-repeat="event in vm.otherEvents">
+            <td><a href="/events/{{ event.id }}/">{{ event.title }}</a></td>
+            <td>{{ event.description }}</td>
+            <td>{{ event.event_header.first_name }} {{ event.event_header.last_name }}</td>
+            <td>{{ event.finish_time }}</td>
+            <td>{{ event.status }}</td>
+        </tr>
+    </table>
+</div>

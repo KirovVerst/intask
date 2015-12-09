@@ -1,19 +1,74 @@
-<div class="panel-heading">
-    <h3 class="panel-title">Задания <span>({{ vm.currentEvent.tasks.length }})</span></h3>
+<h3>Мои события</h3>
+<div class="panel panel-default">
+    <table class="table table-hover">
+        <tr>
+            <th ng-click="TasksCtrl.orderMyTask('title', TasksCtrl.myTasks)">Название
+            <span ng-show="TasksCtrl.predicateMyTask === 'title'"
+                  class="{{ TasksCtrl.classMyTask }}"></span>
+            </th>
+            <th ng-click="TasksCtrl.orderMyTask('description', TasksCtrl.myTasks)">Описание
+            <span ng-show="TasksCtrl.predicateMyTask === 'description'"
+                  class="{{ TasksCtrl.classMyTask }}"></span>
+            </th>
+            <th ng-click="TasksCtrl.orderMyTask('finish_time', TasksCtrl.myTasks)">Срок завершения
+            <span ng-show="TasksCtrl.predicateMyTask === 'finish_time'"
+                  class="{{ TasksCtrl.classMyTask }}"></span>
+            </th>
+            <th ng-click="TasksCtrl.orderMyTask('status', TasksCtrl.myTasks)">Статус
+            <span ng-show="TasksCtrl.predicateMyTask === 'status'"
+                  class="{{ TasksCtrl.classMyTask }}"></span>
+            </th>
+            <th></th>
+        </tr>
+        <tr ng-repeat="task in TasksCtrl.myTasks track by $index">
+            <td><a href="/tasks/{{ task.id }}/">{{ task.title }}</a></td>
+            <td>{{ task.description }}</td>
+            <td>{{ task.finish_time }}</td>
+            <td>{{ task.status }}</td>
+            <td>
+                <button ng-show="vm.isEventHeader" ng-click="TasksCtrl.removeTask($index, TasksCtrl.myTasks)"
+                        class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></button>
+            </td>
+        </tr>
+    </table>
 </div>
-<table class="table table-hover">
-    <tr>
-        <th>#</th>
-        <th>Название</th>
-        <th>Руководитель</th>
-        <th>Дата выполнения</th>
-        <th>Статус</th>
-    </tr>
-    <tr ng-repeat="task in vm.currentEvent.tasks">
-        <td></td>
-        <td>{{ task.title }}</td>
-        <td>{{ task.task_header.email }}</td>
-        <td>{{ task.finish_time }}</td>
-        <td>{{ task.is_public }}</td>
-    </tr>
-</table>
+
+<h3>Другие события</h3>
+<div class="panel panel-default">
+    <table class="table table-hover">
+        <tr>
+            <th ng-click="TasksCtrl.orderOtherTask('title', TasksCtrl.OtherTasks)">Название
+            <span ng-show="TasksCtrl.predicateOtherTask === 'title'"
+                  class="{{ TasksCtrl.classOtherTask }}"></span>
+            </th>
+            <th ng-click="TasksCtrl.orderOtherTask('description', TasksCtrl.OtherTasks)">Описание
+            <span ng-show="TasksCtrl.predicateOtherTask === 'description'"
+                  class="{{ TasksCtrl.classOtherTask }}"></span>
+            </th>
+            <th ng-click="TasksCtrl.orderOtherTask('task_header', TasksCtrl.OtherTasks)">Руководитель
+            <span ng-show="TasksCtrl.predicateOtherTask === 'task_header'"
+                  class="{{ TasksCtrl.classOtherTask }}"></span>
+            </th>
+            <th ng-click="TasksCtrl.orderOtherTask('finish_time', TasksCtrl.OtherTasks)">Срок завершения
+            <span ng-show="TasksCtrl.predicateOtherTask === 'finish_time'"
+                  class="{{ TasksCtrl.classOtherTask }}"></span>
+            </th>
+            <th ng-click="TasksCtrl.orderOtherTask('status', TasksCtrl.OtherTasks)">Статус
+            <span ng-show="TasksCtrl.predicateOtherTask === 'status'"
+                  class="{{ TasksCtrl.classOtherTask }}"></span>
+            </th>
+            <th></th>
+        </tr>
+        <tr ng-repeat="task in TasksCtrl.otherTasks">
+            <td><a href="/tasks/{{ task.id }}/">{{ task.title }}</a></td>
+            <td>{{ task.description }}</td>
+            <td>{{ task.task_header.first_name }} {{ task.task_header.last_name }}</td>
+            <td>{{ task.finish_time }}</td>
+            <td>{{ task.status }}</td>
+            <td>
+                <button ng-show="vm.isEventHeader" ng-click="TasksCtrl.removeTask($index, TasksCtrl.otherTasks)"
+                        class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></button>
+            </td>
+        </tr>
+    </table>
+</div>

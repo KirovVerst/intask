@@ -10,7 +10,7 @@ class EventSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Event
-        fields = ('title', 'description', 'event_header', 'finish_time', 'status', 'finish_time')
+        fields = ('title', 'description', 'event_header', 'finish_time', 'status')
 
     def create(self, validated_data):
         event = Event.objects.create(**validated_data)
@@ -21,6 +21,7 @@ class EventSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         tasks = TaskSerializer(Task.objects.filter(event=instance), many=True).data
         users = [{'id': user.id, 'email': user.email} for user in instance.users.all()]
+        invited_users = instance.invited_users.split(",")
         return {
             'id': instance.id,
             'title': instance.title,
@@ -28,11 +29,13 @@ class EventSerializer(serializers.ModelSerializer):
             'event_header': {
                 'id': instance.event_header.id,
                 'email': instance.event_header.email,
+                'first_name': instance.event_header.first_name,
+                'last_name': instance.event_header.last_name
             },
             'tasks': tasks,
             'users': users,
             'status': instance.status,
-            'invited_users': instance.invited_users.split(","),
+            'invited_users': invited_users if invited_users[0] != "" else [],
             'finish_time': instance.finish_time
         }
 
@@ -60,10 +63,13 @@ class TaskSerializer(serializers.ModelSerializer):
             'event': instance.event.id,
             'task_header': {
                 'id': instance.task_header.id,
-                'email': instance.task_header.email
+                'email': instance.task_header.email,
+                'first_name': instance.task_header.first_name,
+                'last_name': instance.task_header.last_name
             },
             'users': users,
-            'status': instance.status
+            'status': instance.status,
+            'finish_time': instance.finish_time
         }
 
 
