@@ -1,4 +1,4 @@
-<h3>Мои события</h3>
+<h3>Мои задания</h3>
 <div class="panel panel-default">
     <table class="table table-hover">
         <tr>
@@ -18,13 +18,18 @@
             <span ng-show="TasksCtrl.predicateMyTask === 'status'"
                   class="{{ TasksCtrl.classMyTask }}"></span>
             </th>
+            <th ng-click="TasksCtrl.orderMyTask('is_private', TasksCtrl.myTasks)">Публичность
+            <span ng-show="TasksCtrl.predicateMyTask === 'is_private'"
+                  class="{{ TasksCtrl.classMyTask }}"></span>
+            </th>
             <th></th>
         </tr>
         <tr ng-repeat="task in TasksCtrl.myTasks track by $index">
-            <td><a href="/tasks/{{ task.id }}/">{{ task.title }}</a></td>
+            <td><a href="/events/{{ TasksCtrl.event.id }}/tasks/{{ task.id }}/">{{ task.title }}</a></td>
             <td>{{ task.description }}</td>
             <td>{{ task.finish_time }}</td>
             <td>{{ task.status }}</td>
+            <td>{{ task.is_public }}</td>
             <td>
                 <button ng-show="vm.isEventHeader" ng-click="TasksCtrl.removeTask($index, TasksCtrl.myTasks)"
                         class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></button>
@@ -33,7 +38,7 @@
     </table>
 </div>
 
-<h3>Другие события</h3>
+<h3>Другие задания</h3>
 <div class="panel panel-default">
     <table class="table table-hover">
         <tr>
@@ -60,7 +65,7 @@
             <th></th>
         </tr>
         <tr ng-repeat="task in TasksCtrl.otherTasks">
-            <td><a href="/tasks/{{ task.id }}/">{{ task.title }}</a></td>
+            <td><a href="/events/{{ TasksCtrl.event.id }}/tasks/{{ task.id }}/">{{ task.title }}</a></td>
             <td>{{ task.description }}</td>
             <td>{{ task.task_header.first_name }} {{ task.task_header.last_name }}</td>
             <td>{{ task.finish_time }}</td>

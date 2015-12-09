@@ -3,7 +3,7 @@
 
     angular
         .module('application.events.controllers')
-        .controller('CurrentEventController', function (Events, Tasks, $http, $scope, Auth, $window, $routeParams, UsersInEvent) {
+        .controller('CurrentEventController', function (Events, $http, $scope, Auth, $window, $routeParams, UsersInEvent) {
             var vm = this;
             vm.today = new Date();
             vm.isLoggedIn = !!Auth.getToken();
@@ -75,14 +75,17 @@
                     return;
                 }
                 UsersInEvent.delete({eventId: $routeParams.eventId, userId: user.id});
-                if (!vm.isEventHeader){
+                if (!vm.isEventHeader) {
                     $window.location = "/";
                 }
                 vm.users.splice(index, 1);
             };
 
             vm.removeInvitedUser = function (index) {
-                return;
+                var email = vm.currentEvent.invited_users[index];
+                $http.post('api/events/' + vm.currentEvent.id + '/invited_users/', {email: email}).success(function (data) {
+                    vm.currentEvent.invited_users.splice(index, 1);
+                })
             }
 
 

@@ -11,6 +11,7 @@ url_event = [
 ]
 
 url_users_in_event = [
+    url('^/(?P<event_id>[0-9]+)/invited_users/?$', InvitedUserInTaskViewSet.as_view({'post': 'destroy'})),
     url(r'^/(?P<event_id>[0-9]+)/users/?$', UserInEventViewSet.as_view({'get': 'list', 'post': 'create'})),
     url(r'^/(?P<event_id>[0-9]+)/users/(?P<pk>[0-9]+)/?$',
         UserInEventViewSet.as_view({'delete': 'destroy', 'get': 'retrieve'})),
