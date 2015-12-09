@@ -37,6 +37,8 @@
                     .success(function (response, status, headers, config) {
                         if (accept) {
                             $window.location = "/events/" + invitation.event.id + "/";
+                        } else {
+                            vm.profile.invitations.splice(index, 1);
                         }
                     })
             }

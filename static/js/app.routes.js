@@ -21,6 +21,10 @@
                 controller: 'CurrentEventController',
                 controllerAs: 'vm',
                 templateUrl: '/static/templates/events/event.html'
+            }).when('/events/:eventId/tasks/:taskId/', {
+                controller: 'CurrentTaskController',
+                controllerAs: 'vm',
+                templateUrl: '/static/templates/tasks/index.html'
             }).when('/profile/', {
                 controller: 'UsersController',
                 controllerAs: 'vm',

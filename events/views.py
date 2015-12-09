@@ -188,9 +188,28 @@ class UserInEventViewSet(ModelViewSet):
         user = get_object_or_404(User, id=kwargs['pk'])
         if user in event.users.all():
             event.users.remove(user)
+            for task in event.task_set.all():
+                task.users.remove(user)
+                task.task_header = event.event_header
+                task.save()
             return Response(status=status.HTTP_204_NO_CONTENT)
         else:
             return Response(status=status.HTTP_200_OK)
+
+
+class InvitedUserInTaskViewSet(ModelViewSet):
+    permission_classes = [IsEventHeader, ]
+    serializer_class = UserInTaskSerializer
+
+    def destroy(self, request, *args, **kwargs):
+        email = request.data['email']
+        event = get_object_or_404(Event, id=kwargs['event_id'])
+        invited_users = event.invited_users.split(',')
+        if email in invited_users:
+            event.remove_email_from_list(email)
+            Invitation.objects.get(event=event, recipient=email).delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(status=status.HTTP_200_OK)
 
 
 class UserInTaskViewSet(ModelViewSet):

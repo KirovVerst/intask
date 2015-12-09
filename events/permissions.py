@@ -34,7 +34,8 @@ class CanUpdateTask(permissions.BasePermission):
 
 class CanRetrieveTask(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
-        return request.user in obj.users.all() or obj.is_public
+        is_event_header = obj.event.event_header
+        return request.user in obj.users.all() or obj.is_public or is_event_header
 
 
 class CanRetrieveSubtask(permissions.BasePermission):
