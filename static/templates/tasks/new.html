@@ -1,4 +1,6 @@
-<div class="col-sm-12">
+<div class="col-sm-12 height-100">
+    <span class="glyphicon glyphicon-remove pull-right" ng-click="CurrEventCtrl.popNewTask()"></span>
+
     <h3 class="text-center">Новое задание</h3>
 
     <form role="form" ng-submit="TasksCtrl.createTask()">
@@ -14,8 +16,8 @@
         </div>
         <div class="form-group">
             <label for="task_header" class="control-label">Руководитель</label>
-            <select id="task_header" ng-model="TasksCtrl.newTask.task_header"
-                    ng-options="user.id as user.first_name + ' ' + user.last_name for user in vm.users">
+            <select id="task_header" class="form-control" ng-model="TasksCtrl.newTask.task_header"
+                    ng-options="user.id as user.first_name + ' ' + user.last_name for user in CurrEventCtrl.users">
             </select>
         </div>
         <div class="form-group">
@@ -31,19 +33,20 @@
                 <input type="checkbox" name="is_public" id="is_public"
                        ng-model="TasksCtrl.newTask.is_public"/>
             </label>
-
-
         </div>
         <div class="form-group">
-            <div class="col-sm-offset-1 col-sm-3">
+            <label for="users" class="control-label">Участники</label>
+            <select id="users" class="form-control" ng-model="TasksCtrl.newTask.users" multiple>
+                <option ng-repeat="user in CurrEventCtrl.users"
+                        ng-value="user.id"
+                ng-hide="user.id == TasksCtrl.newTask.task_header">{{ user.first_name }} {{ user.last_name }}</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-6">
                 <button type="submit" class="btn btn-lg btn-primary btn-block">Создать</button>
             </div>
-            <div class="col-sm-3">
-                <button type="button" class="btn btn-lg btn-danger btn-block" ng-click="CurrEventCtrl.popNewTask()">
-                    Отменить
-                </button>
-            </div>
-            <div class="col-sm-3" ng-show="TasksCtrl.isTaskCreated">
+            <div class="col-sm-6" ng-show="TasksCtrl.isTaskCreated">
                 <b class="alert-success">Задание создано</b>
             </div>
         </div>

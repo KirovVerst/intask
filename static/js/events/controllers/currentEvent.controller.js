@@ -9,20 +9,29 @@
             vm.isLoggedIn = !!Auth.getToken();
 
             vm.init = function (eventId) {
-                $location.search({eventId: eventId});
+                if (eventId) {
+                    $location.search({eventId: eventId});
 
-                Events.get({id: eventId}, function (data) {
-                    vm.event = JSON.parse(angular.toJson(data));
-                    vm.event.finish_time = new Date(vm.event.finish_time);
-                    vm.isEventHeader = Auth.getUserId() == data.event_header.id;
-                });
+                    Events.get({id: eventId}, function (data) {
+                        vm.event = JSON.parse(angular.toJson(data));
+                        vm.event.finish_time = new Date(vm.event.finish_time);
+                        vm.isEventHeader = Auth.getUserId() == data.event_header.id;
+                    });
+
+                    vm.users = UsersInEvent.query({eventId: $routeParams.eventId});
+                }
+
                 vm.task = false;
                 vm.newTask = false;
-                vm.class = "col-sm-11";
+                vm.eventClass = "col-sm-12";
+                vm.tasksClass = "col-sm-10"
             };
 
+            var changeClasses = function () {
+                vm.eventClass = (vm.eventClass == "col-sm-12") ? "col-sm-8" : "col-sm-12";
+                vm.tasksClass = (vm.tasksClass == "col-sm-10") ? "col-sm-11" : "col-sm-10";
+            };
 
-            vm.users = UsersInEvent.query({eventId: $routeParams.eventId});
 
             vm.isThisUser = function (id) {
                 return Auth.getUserId() == id;
@@ -30,11 +39,11 @@
 
             vm.setNewTask = function () {
                 vm.newTask = true;
-                vm.class = "col-sm-8";
+                changeClasses();
             };
             vm.popNewTask = function () {
                 vm.newTask = null;
-                vm.class = "col-sm-11";
+                changeClasses();
             };
 
 

@@ -3,7 +3,7 @@
     <div class="scrollable my-events" ng-show="vm.showMyEvents">
         <ul class="list-group">
             <li ng-repeat="event in vm.myEvents" class="list-group-item">
-                <a ng-click="CurrEventCtrl.init(event.id)">{{ event.title }}</a>
+                <a ng-click="CurrEventCtrl.init(event.id); TasksCtrl.init()">{{ event.title }}</a>
             </li>
         </ul>
     </div>

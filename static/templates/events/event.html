@@ -1,33 +1,25 @@
 <div class="row">
-    <div class="col-sm-8">
+    <div ng-class="CurrEventCtrl.eventClass"
+         ng-init="TasksCtrl.init()">
         <div class="row">
             <div class="col-sm-12" ng-include="'/static/templates/events/desc.html'"></div>
         </div>
         <div class="row">
-            <div class="col-sm-7">
+            <div ng-class="CurrEventCtrl.tasksClass">
                 <h2>Задания
                     <button ng-show="CurrEventCtrl.isEventHeader"
-                            class="btn btn-primary pull-right" ng-click="CurrEventCtrl.setNewTask()">Создать задание
+                            class="btn btn-primary pull-right" ng-hide="CurrEventCtrl.newTask" ng-click="CurrEventCtrl.setNewTask()">Создать задание
                     </button>
                 </h2>
                 <div ng-include="'/static/templates/events/tasks/table.html'"></div>
-            </div>
-            <div class="col-sm-4 col-sm-offset-1">
-                <h3 ng-show="CurrEventCtrl.isEventHeader">Приглашенные участники
-                    ({{ CurrEventCtrl.event.invited_users.length }})</h3>
-
-                <div ng-show="CurrEventCtrl.isEventHeader"
-                     ng-include="'/static/templates/events/users/invited_users_table.html'">
-                </div>
             </div>
             <div class="col-sm-6 col-sm-offset-3 new-element" ng-include="'/static/templates/events/form.html'"
                  ng-show="CurrEventCtrl.editFormEvent"></div>
         </div>
     </div>
-    <div class="col-sm-3 col-sm-offset-6 task-page">
-        <div ng-controller="TasksController as TasksCtrl"
-             ng-include="'/static/templates/tasks/new.html'">
-        </div>
+    <div class="col-sm-3 col-sm-offset-6 task-page"
+         ng-show="CurrEventCtrl.newTask">
+        <div ng-include="'/static/templates/tasks/new.html'"></div>
     </div>
 
 </div>
