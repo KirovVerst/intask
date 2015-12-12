@@ -1,6 +1,6 @@
 <div ng-controller="CurrentEventController as CurrEventCtrl">
     <div class="col-sm-3 sidebar" ng-include="'/static/templates/events/table.html'"></div>
-    <div class="col-sm-offset-3 col-sm-9"
+    <div class="col-sm-offset-3 col-sm-9 event-page"
          ng-init="CurrEventCtrl.init(vm.event)"
          ng-include="'/static/templates/events/event.html'"></div>
 

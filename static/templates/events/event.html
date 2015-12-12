@@ -1,5 +1,5 @@
-<div class="event-page">
-    <div ng-class="CurrEventCtrl.class">
+<div class="row">
+    <div class="col-sm-8">
         <div class="row">
             <div class="col-sm-12" ng-include="'/static/templates/events/desc.html'"></div>
         </div>
@@ -24,8 +24,12 @@
                  ng-show="CurrEventCtrl.editFormEvent"></div>
         </div>
     </div>
-    <div class="col-sm-3" ng-show="CurrEventCtrl.newTask"
-         ng-controller="TasksController as TasksCtrl"
-         ng-include="'/static/templates/tasks/new.html'"></div>
+    <div class="col-sm-3 col-sm-offset-6 task-page">
+        <div ng-controller="TasksController as TasksCtrl"
+             ng-include="'/static/templates/tasks/new.html'">
+        </div>
+    </div>
+
 </div>
+
 

@@ -62,8 +62,9 @@ body {
     position: fixed;
 }
 
-.event-page, .task-page {
+.event-page {
     position: fixed;
+    padding: 0 0 0 30px;
     top: 50px;
     overflow-x: hidden;
     height: 100%;
@@ -72,6 +73,11 @@ body {
 
 .task-page {
     background: cornsilk;
+    position: fixed;
+    top: 50px;
+    overflow-x: hidden;
+    height: 100%;
+    padding: 0;
 }
 
 

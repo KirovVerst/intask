@@ -1,49 +1,38 @@
-<div class="container task-page">
-    <h3 class="text-center">Создание нового задания</h3>
+<div class="col-sm-12">
+    <h3 class="text-center">Новое задание</h3>
 
-    <form class="form-horizontal" role="form" ng-submit="TasksCtrl.createTask()">
+    <form role="form" ng-submit="TasksCtrl.createTask()">
         <div class="form-group">
-            <label for="title" class="col-sm-3 control-label">Название задания</label>
-
-            <div class="col-sm-8">
-                <input type="text" class="form-control" id="title"
-                       ng-model="TasksCtrl.newTask.title" required maxlength="100" placeholder="Не более 100 символов"/>
-            </div>
+            <label for="title" class="control-label">Название задания</label>
+            <input type="text" class="form-control" id="title" name="title"
+                   ng-model="TasksCtrl.newTask.title" required maxlength="100" placeholder="Не более 100 символов"/>
         </div>
         <div class="form-group">
-            <label for="description" class="col-sm-3 control-label">Описание</label>
-
-            <div class="col-sm-8">
+            <label for="description" class="control-label">Описание</label>
             <textarea required rows="6" cols="20" class="form-control"
                       id="description" ng-model="TasksCtrl.newTask.description"></textarea>
-            </div>
         </div>
         <div class="form-group">
-            <label for="task_header" class="col-sm-3 control-label">Руководитель</label>
-
-            <div class="col-sm-8">
-                <select id="task_header" ng-model="TasksCtrl.newTask.task_header"
-                        ng-options="user.id as user.first_name + ' ' + user.last_name for user in vm.users">
-                </select>
-            </div>
+            <label for="task_header" class="control-label">Руководитель</label>
+            <select id="task_header" ng-model="TasksCtrl.newTask.task_header"
+                    ng-options="user.id as user.first_name + ' ' + user.last_name for user in vm.users">
+            </select>
         </div>
         <div class="form-group">
-            <label for="finish_time" class="col-sm-3 control-label">Срок завершения</label>
+            <label for="finish_time" class="control-label">Срок завершения</label>
 
-            <div class="col-sm-8">
-                <input type="date" name="finish_time" class="form-control" id="finish_time"
-                       ng-model="TasksCtrl.newTask.finish_time"
-                       min="{{ vm.today | date:'yyyy-MM-dd' }}"
-                       max="{{ vm.event.finish_time | date:'yyyy-MM-dd' }}" required/>
-            </div>
+            <input type="date" name="finish_time" class="form-control" id="finish_time"
+                   ng-model="TasksCtrl.newTask.finish_time"
+                   min="{{ vm.today | date:'yyyy-MM-dd' }}"
+                   max="{{ vm.event.finish_time | date:'yyyy-MM-dd' }}" required/>
         </div>
         <div class="form-group">
-            <label for="is_public" class="col-sm-3 control-label">Публичное задание</label>
-
-            <div class="col-sm-8">
-                <input type="checkbox" name="is_public" class="form-control" id="is_public"
+            <label for="is_public" class="control-label">Публичное задание
+                <input type="checkbox" name="is_public" id="is_public"
                        ng-model="TasksCtrl.newTask.is_public"/>
-            </div>
+            </label>
+
+
         </div>
         <div class="form-group">
             <div class="col-sm-offset-1 col-sm-3">
@@ -60,6 +49,7 @@
         </div>
     </form>
 </div>
+
 
 
 
