@@ -19,35 +19,59 @@
                     '-' + ('0' + date.getDate()).slice(-2);
             };
 
-            vm.newTask = {};
+            vm.newSubtask = {};
 
             vm.createSubtask = function () {
-                vm.newTask.finish_time = dateFormat(new Date(vm.newTask.finish_time));
-                Tasks.save({eventId: vm.event.id}, vm.newTask);
-                $window.location = '/events/' + vm.event.id;
+                vm.newSubtask.finish_time = dateFormat(new Date(vm.newSubtask.finish_time));
+                Tasks.save({eventId: vm.event.id}, vm.newSubtask);
+                $window.location = '/events/' + vm.currentEvent.id + '/tasks/' + vm.currentTask.id;
             };
 
-            vm.removeTask = function (index, tasks) {
-                Tasks.delete({eventId: $routeParams.eventId, taskId: tasks[index].id});
-                tasks.splice(index, 1);
-            };
-
-
-            vm.orderMyTask = function (predicate) {
-                vm.reverseMyTask = (vm.predicateMyTask === predicate) ? !vm.reverseMyTask : false;
-                vm.classMyTask = vm.reverseMyTask ? "glyphicon glyphicon-chevron-up" : "glyphicon glyphicon-chevron-down";
-                vm.predicateMyTask = predicate;
-                vm.myTasks = orderBy(vm.myTasks, predicate, vm.reverseMyTask);
+            vm.removeSubtask = function (index) {
+                Subtasks.delete({
+                    eventId: $routeParams.eventId,
+                    taskId: $routeParams.taskId,
+                    subtaskId: vm.subtasks[index].id
+                });
+                vm.subtasks.splice(index, 1);
             };
 
 
-            vm.orderOtherTask = function (predicate) {
-                vm.reverseOtherTask = (vm.predicateOtherTask === predicate) ? !vm.reverseOtherTask : false;
-                vm.predicateOtherTask = predicate;
-                vm.classOtherTask = vm.reverseOtherTask ? "glyphicon glyphicon-chevron-up" : "glyphicon glyphicon-chevron-down";
-
-                vm.otherTasks = orderBy(vm.otherTasks, predicate, vm.reverseOtherTask);
+            vm.orderSubtask = function (predicate) {
+                vm.reverse = (vm.predicate === predicate) ? !vm.reverse : false;
+                vm.class = vm.reverse ? "glyphicon glyphicon-chevron-up" : "glyphicon glyphicon-chevron-down";
+                vm.predicate = predicate;
+                vm.subtasks = orderBy(vm.subtasks, predicate, vm.reverse);
             };
+
+            vm.currentSubtask = false;
+
+            vm.setEditFormSubtask = function (index) {
+                vm.currentSubtask = vm.subtasks[index];
+            };
+            vm.popEditFormSubtask = function () {
+                vm.currentSubtask = false;
+            };
+
+            vm.updateSubtask = function () {
+                vm.currentSubtask = dateFormat(new Date(vm.currentSubtask));
+                Subtasks.update({
+                    eventId: $routeParams.eventId,
+                    taskId: $routeParams.taskId,
+                    subtaskId: vm.currentSubtask.id
+                }, vm.currentSubtask).$promise.then(function (response) {
+                    if (response.$status == 200) {
+                        vm.message = "Обновлено";
+                        vm.class = "alert-success";
+                        vm.errors = null;
+                    } else {
+                        vm.message = "Ошибка : " + response.$status;
+                        vm.class = "alert-danger";
+                        vm.errors = null;
+                    }
+                });
+            }
+
 
         })
 })();

@@ -6,10 +6,6 @@
             <span ng-show="TasksCtrl.predicateMyTask === 'title'"
                   class="{{ TasksCtrl.classMyTask }}"></span>
             </th>
-            <th ng-click="TasksCtrl.orderMyTask('description', TasksCtrl.myTasks)">Описание
-            <span ng-show="TasksCtrl.predicateMyTask === 'description'"
-                  class="{{ TasksCtrl.classMyTask }}"></span>
-            </th>
             <th ng-click="TasksCtrl.orderMyTask('finish_time', TasksCtrl.myTasks)">Срок завершения
             <span ng-show="TasksCtrl.predicateMyTask === 'finish_time'"
                   class="{{ TasksCtrl.classMyTask }}"></span>
@@ -25,8 +21,7 @@
             <th></th>
         </tr>
         <tr ng-repeat="task in TasksCtrl.myTasks track by $index">
-            <td><a href="/events/{{ TasksCtrl.event.id }}/tasks/{{ task.id }}/">{{ task.title }}</a></td>
-            <td>{{ task.description }}</td>
+            <td><a ng-click="TasksCtrl.setTask(task)">{{ task.title }}</a></td>
             <td>{{ task.finish_time }}</td>
             <td>{{ task.status }}</td>
             <td>{{ task.is_public }}</td>
@@ -46,10 +41,6 @@
             <span ng-show="TasksCtrl.predicateOtherTask === 'title'"
                   class="{{ TasksCtrl.classOtherTask }}"></span>
             </th>
-            <th ng-click="TasksCtrl.orderOtherTask('description', TasksCtrl.OtherTasks)">Описание
-            <span ng-show="TasksCtrl.predicateOtherTask === 'description'"
-                  class="{{ TasksCtrl.classOtherTask }}"></span>
-            </th>
             <th ng-click="TasksCtrl.orderOtherTask('task_header', TasksCtrl.OtherTasks)">Руководитель
             <span ng-show="TasksCtrl.predicateOtherTask === 'task_header'"
                   class="{{ TasksCtrl.classOtherTask }}"></span>
@@ -65,8 +56,7 @@
             <th></th>
         </tr>
         <tr ng-repeat="task in TasksCtrl.otherTasks">
-            <td><a href="/events/{{ TasksCtrl.event.id }}/tasks/{{ task.id }}/">{{ task.title }}</a></td>
-            <td>{{ task.description }}</td>
+            <td><a ng-click="TasksCtrl.task = task">{{ task.title }}</a></td>
             <td>{{ task.task_header.first_name }} {{ task.task_header.last_name }}</td>
             <td>{{ task.finish_time }}</td>
             <td>{{ task.status }}</td>

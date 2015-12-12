@@ -7,8 +7,8 @@
             var vm = this;
             vm.today = new Date();
             vm.isLoggedIn = !!Auth.getToken();
-            Events.get({id: $routeParams.eventId}).$promise.then(function (data) {
-                vm.currentEvent = data;
+            Events.get({id: $routeParams.eventId}, function (data) {
+                vm.currentEvent = JSON.parse(angular.toJson(data));
                 vm.currentEvent.finish_time = new Date(vm.currentEvent.finish_time);
                 vm.isEventHeader = Auth.getUserId() == data.event_header.id;
             });
@@ -35,8 +35,7 @@
             };
             vm.inviteUser = function () {
                 UsersInEvent.save({eventId: $routeParams.eventId}, vm.newUser);
-                vm.isUserInvited = true;
-                $window.location = '/events/' + vm.currentEvent.id + '/';
+                vm.currentEvent.invited_users.push(vm.newUser.email);
             };
             vm.popNewUser = function () {
                 vm.newUser = null;
@@ -84,7 +83,7 @@
             vm.removeInvitedUser = function (index) {
                 var email = vm.currentEvent.invited_users[index];
                 $http.post('api/events/' + vm.currentEvent.id + '/invited_users/', {email: email}).success(function (data) {
-                    vm.currentEvent.invited_users.splice(index, 1);
+                    vm.currentEvent.invited_users.splice(index, 2);
                 })
             }
 

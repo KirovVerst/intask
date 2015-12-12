@@ -5,26 +5,41 @@
     'use strict';
 
     angular.module('application.tasks.controllers')
-        .controller('TasksController', function (Tasks, Events, $routeParams, $window, Auth, $filter) {
+        .controller('TasksController', function (Tasks, Events, $routeParams, $window, Auth, $filter, $location, $route) {
 
             var orderBy = $filter('orderBy');
             var vm = this;
-            vm.event = Events.get({id: $routeParams.eventId});
 
-            vm.newTask = {};
-
-            Tasks.query({eventId: $routeParams.eventId}).$promise.then(function (data) {
-                var userId = Auth.getUserId();
+            vm.init = function (event) {
+                if ($routeParams.taskId) {
+                    vm.task = Tasks.get({
+                        eventId: $routeParams.eventId,
+                        taskId: $routeParams.taskId
+                    }, function (response) {
+                        if (response.detail) {
+                            $location.path('/events/' + $routeParams.eventId, false);
+                        }
+                    });
+                }
+                vm.event = event;
+                vm.newTask = {};
                 vm.myTasks = [];
                 vm.otherTasks = [];
-                for (var index = 0; index < data.length; ++index) {
-                    if (data[index].task_header.id == userId) {
-                        vm.myTasks.push(data[index]);
-                    }
-                    else {
-                        vm.otherTasks.push(data[index]);
-                    }
-                }
+            };
+
+            vm.setTask = function (task) {
+                vm.task = task;
+            };
+
+            vm.popTask = function () {
+                vm.task = null;
+            };
+
+
+            Tasks.query({eventId: $routeParams.eventId}, function (response) {
+                angular.forEach(response, function (item) {
+                    item.task_header.id == Auth.getUserId() ? vm.myTasks.push(item) : vm.otherTasks.push(item);
+                });
             });
 
             var dateFormat = function (date) {
@@ -34,15 +49,20 @@
 
             vm.createTask = function () {
                 vm.newTask.finish_time = dateFormat(new Date(vm.newTask.finish_time));
-                Tasks.save({eventId: vm.event.id}, vm.newTask);
-                $window.location = '/events/' + vm.event.id;
+                Tasks.save({eventId: $routeParams.eventId}, vm.newTask, function (response) {
+                    var task = JSON.parse(angular.toJson(response));
+                    if (task.task_header.id == Auth.getUserId()) {
+                        vm.myTasks.push(angular.copy(task));
+                    } else {
+                        vm.otherTasks.push(angular.copy(task));
+                    }
+                });
             };
 
             vm.removeTask = function (index, tasks) {
                 Tasks.delete({eventId: $routeParams.eventId, taskId: tasks[index].id});
                 tasks.splice(index, 1);
             };
-
 
             vm.orderMyTask = function (predicate) {
                 vm.reverseMyTask = (vm.predicateMyTask === predicate) ? !vm.reverseMyTask : false;
