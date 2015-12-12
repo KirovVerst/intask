@@ -8,7 +8,8 @@
             $routeProvider.when('/', {
                 templateUrl: '/static/templates/index.html',
                 controller: 'EventsController',
-                controllerAs: 'vm'
+                controllerAs: 'vm',
+                reloadOnSearch: false
             }).when('/login', {
                 controller: 'AuthController',
                 controllerAs: 'vm',
@@ -18,9 +19,9 @@
                 controllerAs: 'vm',
                 templateUrl: '/static/templates/auth/register.html'
             }).when('/events/:eventId/', {
-                controller: 'CurrentEventController',
-                controllerAs: 'vm',
-                templateUrl: '/static/templates/events/event.html'
+                templateUrl: '/static/templates/index.html',
+                controller: 'EventsController',
+                controllerAs: 'vm'
             }).when('/events/:eventId/tasks/:taskId', {
                 controller: 'CurrentEventController',
                 controllerAs: 'vm',

@@ -4,7 +4,6 @@
     <title>In Task</title>
     <base href="/"/>
     <link rel="stylesheet" href="/static/bower_components/bootstrap/dist/css/bootstrap.css"/>
-    <link rel="stylesheet" href="/static/css/dashboard.css"/>
     <link rel="stylesheet" href="/static/css/auth.css"/>
     <link rel="stylesheet" href="/static/css/style.css"/>
 
@@ -56,14 +55,10 @@
 <script type="text/javascript" src="/static/js/static/controllers/sidebar.controller.js"></script>
 
 
-<div class="container-fluid">
-    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation" ng-controller="AuthController as AuthCtrl"
-         ng-show="AuthCtrl.isLoggedIn" ng-include="'/static/templates/static/headerbar.html'">
-    </div>
-    <div class="container">
-        <div class="row ng-view"></div>
-    </div>
+<div class="navbar navbar-inverse navbar-fixed-top" role="navigation" ng-controller="AuthController as AuthCtrl"
+     ng-show="AuthCtrl.isLoggedIn" ng-include="'/static/templates/static/headerbar.html'">
 </div>
+<div class="row ng-view"></div>
 
 
 </body>

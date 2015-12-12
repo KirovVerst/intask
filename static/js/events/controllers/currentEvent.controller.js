@@ -3,15 +3,23 @@
 
     angular
         .module('application.events.controllers')
-        .controller('CurrentEventController', function (Events, $http, $scope, Auth, $window, $routeParams, UsersInEvent) {
+        .controller('CurrentEventController', function (Events, $http, $scope, Auth, $window, $routeParams, UsersInEvent, $location) {
             var vm = this;
             vm.today = new Date();
             vm.isLoggedIn = !!Auth.getToken();
-            Events.get({id: $routeParams.eventId}, function (data) {
-                vm.currentEvent = JSON.parse(angular.toJson(data));
-                vm.currentEvent.finish_time = new Date(vm.currentEvent.finish_time);
-                vm.isEventHeader = Auth.getUserId() == data.event_header.id;
-            });
+
+            vm.init = function (eventId) {
+                $location.search({eventId: eventId});
+
+                Events.get({id: eventId}, function (data) {
+                    vm.event = JSON.parse(angular.toJson(data));
+                    vm.event.finish_time = new Date(vm.event.finish_time);
+                    vm.isEventHeader = Auth.getUserId() == data.event_header.id;
+                });
+                vm.task = false;
+                vm.newTask = false;
+                vm.class = "col-sm-11";
+            };
 
 
             vm.users = UsersInEvent.query({eventId: $routeParams.eventId});
@@ -20,12 +28,13 @@
                 return Auth.getUserId() == id;
             };
 
-            vm.newTask = false;
             vm.setNewTask = function () {
                 vm.newTask = true;
+                vm.class = "col-sm-8";
             };
             vm.popNewTask = function () {
                 vm.newTask = null;
+                vm.class = "col-sm-11";
             };
 
 
@@ -35,7 +44,7 @@
             };
             vm.inviteUser = function () {
                 UsersInEvent.save({eventId: $routeParams.eventId}, vm.newUser);
-                vm.currentEvent.invited_users.push(vm.newUser.email);
+                vm.event.invited_users.push(vm.newUser.email);
             };
             vm.popNewUser = function () {
                 vm.newUser = null;
@@ -53,12 +62,12 @@
                     '-' + ('0' + date.getDate()).slice(-2);
             };
             vm.updateEvent = function () {
-                Events.update({id: vm.currentEvent.id}, {
-                    title: vm.currentEvent.title,
-                    description: vm.currentEvent.description,
-                    finish_time: dateFormat(new Date(vm.currentEvent.finish_time)),
-                    event_header: parseInt(vm.currentEvent.event_header.id),
-                    status: vm.currentEvent.status
+                Events.update({id: vm.event.id}, {
+                    title: vm.event.title,
+                    description: vm.event.description,
+                    finish_time: dateFormat(new Date(vm.event.finish_time)),
+                    event_header: parseInt(vm.event.event_header.id),
+                    status: vm.event.status
                 }).$promise.then(function (data) {
                     vm.isEventUpdated = true;
                     vm.result_message = "Изменения сохранены.";
@@ -69,7 +78,7 @@
 
             vm.removeUser = function (index) {
                 var user = vm.users[index];
-                if (user.id == vm.currentEvent.event_header.id) {
+                if (user.id == vm.event.event_header.id) {
                     alert("Нельзя удалить руководителя из события");
                     return;
                 }
@@ -81,9 +90,9 @@
             };
 
             vm.removeInvitedUser = function (index) {
-                var email = vm.currentEvent.invited_users[index];
-                $http.post('api/events/' + vm.currentEvent.id + '/invited_users/', {email: email}).success(function (data) {
-                    vm.currentEvent.invited_users.splice(index, 1);
+                var email = vm.event.invited_users[index];
+                $http.post('api/events/' + vm.event.id + '/invited_users/', {email: email}).success(function (data) {
+                    vm.event.invited_users.splice(index, 1);
                 })
             }
 

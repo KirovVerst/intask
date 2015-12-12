@@ -1,36 +1,31 @@
-<div class="col-sm-12" ng-controller="TasksController as TasksCtrl" ng-init="TasksCtrl.init(vm.currentEvent)">
-    <div class="nav-route">
-        <ol class="breadcrumb">
-            <li><a href="/">События</a></li>
-            <li class="active">{{ vm.currentEvent.title }}</li>
-        </ol>
-    </div>
-    <div class="col-sm-12" ng-include="'/static/templates/events/desc.html'"></div>
-    <div class="col-sm-7">
-        <h2>Задания
-            <button ng-show="vm.isEventHeader"
-                    class="btn btn-primary pull-right" ng-click="vm.setNewTask()">Создать задание
-            </button>
-        </h2>
-        <div ng-include="'/static/templates/events/tasks/table.html'"
-        ></div>
-    </div>
-    <div class="col-sm-4 col-sm-offset-1">
-        <h2>Участники</h2>
+<div class="event-page">
+    <div ng-class="CurrEventCtrl.class">
+        <div class="row">
+            <div class="col-sm-12" ng-include="'/static/templates/events/desc.html'"></div>
+        </div>
+        <div class="row">
+            <div class="col-sm-7">
+                <h2>Задания
+                    <button ng-show="CurrEventCtrl.isEventHeader"
+                            class="btn btn-primary pull-right" ng-click="CurrEventCtrl.setNewTask()">Создать задание
+                    </button>
+                </h2>
+                <div ng-include="'/static/templates/events/tasks/table.html'"></div>
+            </div>
+            <div class="col-sm-4 col-sm-offset-1">
+                <h3 ng-show="CurrEventCtrl.isEventHeader">Приглашенные участники
+                    ({{ CurrEventCtrl.event.invited_users.length }})</h3>
 
-        <div ng-include="'/static/templates/events/users/new.html'"></div>
-
-        <div ng-include="'/static/templates/events/users/table.html'"></div>
-
-        <h3 ng-show="vm.isEventHeader">Приглашенные участники ({{ vm.currentEvent.invited_users.length }})</h3>
-
-        <div ng-show="vm.isEventHeader" ng-include="'/static/templates/events/users/invited_users_table.html'">
+                <div ng-show="CurrEventCtrl.isEventHeader"
+                     ng-include="'/static/templates/events/users/invited_users_table.html'">
+                </div>
+            </div>
+            <div class="col-sm-6 col-sm-offset-3 new-element" ng-include="'/static/templates/events/form.html'"
+                 ng-show="CurrEventCtrl.editFormEvent"></div>
         </div>
     </div>
-    <div class="col-sm-6 col-sm-offset-3 new-element" ng-include="'/static/templates/events/form.html'"
-         ng-show="vm.editFormEvent"></div>
-    <div class="col-sm-6 col-sm-offset-3 new-element" ng-include="'/static/templates/tasks/new.html'"
-         ng-show="vm.newTask"></div>
-    <div class="col-sm-4 col-sm-offset-8 detail-element" ng-include="'/static/templates/tasks/index.html'"
-         ng-show="TasksCtrl.task"></div>
+    <div class="col-sm-3" ng-show="CurrEventCtrl.newTask"
+         ng-controller="TasksController as TasksCtrl"
+         ng-include="'/static/templates/tasks/new.html'"></div>
 </div>
+

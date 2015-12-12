@@ -5,27 +5,25 @@
     'use strict';
 
     angular.module('application.tasks.controllers')
-        .controller('TasksController', function (Tasks, Events, $routeParams, $window, Auth, $filter, $location, $route) {
+        .controller('TasksController', function (Tasks, Events, $routeParams, $window, Auth, $filter, $location) {
 
             var orderBy = $filter('orderBy');
             var vm = this;
 
-            vm.init = function (event) {
-                if ($routeParams.taskId) {
-                    vm.task = Tasks.get({
-                        eventId: $routeParams.eventId,
-                        taskId: $routeParams.taskId
-                    }, function (response) {
-                        if (response.detail) {
-                            $location.path('/events/' + $routeParams.eventId, false);
-                        }
-                    });
-                }
-                vm.event = event;
-                vm.newTask = {};
-                vm.myTasks = [];
-                vm.otherTasks = [];
-            };
+            if ($routeParams.taskId) {
+                vm.task = Tasks.get({
+                    eventId: $routeParams.eventId,
+                    taskId: $routeParams.taskId
+                }, function (response) {
+                    if (response.detail) {
+                        $location.path('/events/' + $routeParams.eventId, false);
+                    }
+                });
+            }
+            vm.event = event;
+            vm.newTask = {};
+            vm.myTasks = [];
+            vm.otherTasks = [];
 
             vm.setTask = function (task) {
                 vm.task = task;

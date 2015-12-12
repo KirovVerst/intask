@@ -1,7 +1,20 @@
+body, html, .row .content {
+    height: 100%;
+}
+
+body {
+    padding-bottom: 0;
+}
+
 .nav-route .breadcrumb {
     background: transparent;
     padding-top: 20px;
     font-size: large;
+}
+
+.navbar {
+    margin-bottom: 0;
+    border-radius: 0;
 }
 
 .new-element {
@@ -20,4 +33,54 @@
     position: fixed;
     top: 10%;
     right: 1%;
+}
+
+.scrollable {
+    height: auto;
+    overflow-x: hidden;
+}
+
+.sidebar {
+    position: fixed;
+    overflow-x: hidden;
+    padding: 0;
+    top: 50px;
+    left: 0;
+    bottom: 0;
+    z-index: 1000;
+    display: block;
+    background-color: #CCCCCC;
+}
+
+.fixed-bottom {
+    position: fixed;
+    width: inherit;
+    bottom: 0;
+}
+
+.fixed {
+    position: fixed;
+}
+
+.event-page, .task-page {
+    position: fixed;
+    top: 50px;
+    overflow-x: hidden;
+    height: 100%;
+    width: inherit;
+}
+
+.task-page {
+    background: cornsilk;
+}
+
+
+.sidebar .panel,
+.sidebar .panel .list-group {
+    margin: 0;
+    border: 0;
+}
+
+.last-item {
+    margin-bottom: 34px;
 }

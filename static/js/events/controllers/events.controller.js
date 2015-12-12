@@ -4,7 +4,7 @@
 
     angular
         .module('application.events.controllers')
-        .controller('EventsController', function (Events, $http, $scope, Auth, $window, $routeParams, $filter) {
+        .controller('EventsController', function (Events, $http, $scope, Auth, $window, $routeParams, $filter, $location) {
 
             var orderBy = $filter('orderBy');
 
@@ -12,6 +12,14 @@
             vm.today = new Date();
             vm.isLoggedIn = !!Auth.getToken();
             vm.newEvent = null;
+            vm.showMyEvents = true;
+            vm.showOtherEvents = true;
+
+            vm.toggleEvents = function (isMyEvents) {
+                isMyEvents ? vm.showMyEvents = !vm.showMyEvents : vm.showOtherEvents = !vm.showOtherEvents;
+            };
+
+            vm.event = $location.search().eventId;
 
             vm.setNewEvent = function () {
                 vm.newEvent = {
