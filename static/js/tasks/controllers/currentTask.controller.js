@@ -3,21 +3,22 @@
 
     angular
         .module('application.tasks.controllers')
-        .controller('CurrentTaskController', function (Events, Tasks, Subtasks, $http, $scope, Auth, $window, $routeParams, UsersInTask) {
+        .controller('CurrentTaskController', function (Events, Tasks, $http, $scope, Auth, $window, $routeParams, UsersInTask) {
             var vm = this;
             vm.today = new Date();
             vm.isLoggedIn = !!Auth.getToken();
-            Tasks.get({eventId: $routeParams.eventId, taskId: $routeParams.taskId}).$promise.then(function (data) {
-                vm.currentTask = data;
-                vm.currentTask.finish_time = new Date(vm.currentTask.finish_time);
-                vm.isTaskHeader = Auth.getUserId() == data.task_header.id;
-            });
-            Events.get({id: $routeParams.eventId}).$promise.then(function (data) {
-                vm.currentEvent = data;
-                vm.currentEvent.finish_time = new Date(vm.currentEvent.finish_time);
-                vm.isEventHeader = Auth.getUserId() == data.event_header.id;
-            });
-
+            vm.init = function (taskId) {
+                Tasks.get({eventId: $routeParams.eventId, taskId: taskId}).$promise.then(function (data) {
+                    vm.currentTask = data;
+                    vm.currentTask.finish_time = new Date(vm.currentTask.finish_time);
+                    vm.isTaskHeader = Auth.getUserId() == data.task_header.id;
+                });
+                Events.get({id: $routeParams.eventId}).$promise.then(function (data) {
+                    vm.currentEvent = data;
+                    vm.currentEvent.finish_time = new Date(vm.currentEvent.finish_time);
+                    vm.isEventHeader = Auth.getUserId() == data.event_header.id;
+                });
+            };
 
             vm.users = UsersInTask.query({
                 eventId: $routeParams.eventId,
@@ -100,6 +101,5 @@
                 Subtasks.delete({eventId: $routeParams.eventId, taskId: $routeParams.taskId, subtaskId: subtask.id});
                 vm.subtasks.splice(index, 1);
             }
-
         });
 })();

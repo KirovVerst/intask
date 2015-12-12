@@ -1,4 +1,4 @@
-<div class="col-sm-12">
+<div class="col-sm-12" ng-controller="TasksController as TasksCtrl" ng-init="TasksCtrl.init(vm.currentEvent)">
     <div class="nav-route">
         <ol class="breadcrumb">
             <li><a href="/">События</a></li>
@@ -13,14 +13,13 @@
             </button>
         </h2>
         <div ng-include="'/static/templates/events/tasks/table.html'"
-             ng-controller="TasksController as TasksCtrl"></div>
+        ></div>
     </div>
     <div class="col-sm-4 col-sm-offset-1">
-        <h2>Участники
-            <button ng-show="vm.isEventHeader" class="btn btn-primary pull-right"
-                    ng-click="vm.setNewUser()">Пригласить участника
-            </button>
-        </h2>
+        <h2>Участники</h2>
+
+        <div ng-include="'/static/templates/events/users/new.html'"></div>
+
         <div ng-include="'/static/templates/events/users/table.html'"></div>
 
         <h3 ng-show="vm.isEventHeader">Приглашенные участники ({{ vm.currentEvent.invited_users.length }})</h3>
@@ -28,11 +27,10 @@
         <div ng-show="vm.isEventHeader" ng-include="'/static/templates/events/users/invited_users_table.html'">
         </div>
     </div>
-    <div class="col-sm-6 col-sm-offset-3 new-element" ng-include="'/static/templates/tasks/new.html'"
-         ng-controller="TasksController as TasksCtrl"
-         ng-show="vm.newTask"></div>
-    <div class="col-sm-6 col-sm-offset-3 new-element" ng-include="'/static/templates/users/new.html'"
-         ng-show="vm.newUser"></div>
     <div class="col-sm-6 col-sm-offset-3 new-element" ng-include="'/static/templates/events/form.html'"
          ng-show="vm.editFormEvent"></div>
+    <div class="col-sm-6 col-sm-offset-3 new-element" ng-include="'/static/templates/tasks/new.html'"
+         ng-show="vm.newTask"></div>
+    <div class="col-sm-4 col-sm-offset-8 detail-element" ng-include="'/static/templates/tasks/index.html'"
+         ng-show="TasksCtrl.task"></div>
 </div>
