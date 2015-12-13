@@ -1,65 +1,42 @@
-<h1 class="text-center">Редактирование</h1>
-
-<form class="form-horizontal" role="form" ng-submit="vm.updateTask()">
+<form role="form" ng-submit="CurrTaskCtrl.updateTask()">
     <div class="form-group">
-        <label for="title" class="col-sm-3 control-label">Название события</label>
-
-        <div class="col-sm-8">
-            <input type="text" class="form-control" id="title"
-                   ng-model="vm.currentTask.title" required maxlength="100" placeholder="Не более 100 символов"/>
-        </div>
+        <label for="title" class="control-label">Название задания</label>
+        <input type="text" class="form-control" id="title" name="title"
+               ng-model="CurrTaskCtrl.copyTask.title" required maxlength="100" placeholder="Не более 100 символов"/>
     </div>
     <div class="form-group">
-        <label for="description" class="col-sm-3 control-label">Описание</label>
-
-        <div class="col-sm-8">
+        <label for="description" class="control-label">Описание</label>
             <textarea required rows="6" cols="20" class="form-control"
-                      id="description" ng-model="vm.currentTask.description"></textarea>
-        </div>
+                      id="description" ng-model="CurrTaskCtrl.copyTask.description"></textarea>
     </div>
     <div class="form-group">
-        <label for="task_header" class="col-sm-3 control-label">Руководитель</label>
+        <label for="copyTask_header" class="control-label">Руководитель</label>
+        <select id="copyTask_header" class="form-control" ng-model="CurrTaskCtrl.copyTask.copyTask_header">
+            <option ng-repeat="user in CurrTaskCtrl.users"
+                    ng-value="user.id"
+                    ng-selected="user.id == CurrTaskCtrl.copyTask.task_header.id">{{ user.first_name }} {{ user.last_name }}</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="finish_time" class="control-label">Срок завершения</label>
 
-        <div class="col-sm-8">
-            <select id="task_header" ng-model="vm.currentTask.task_header.id"
-                    ng-options="user.id as user.first_name + ' ' + user.last_name for user in vm.users">
-            </select>
-        </div>
+        <input type="date" name="finish_time" class="form-control" id="finish_time"
+               ng-model="CurrTaskCtrl.copyTask.finish_time"
+               min="{{ vm.today | date:'yyyy-MM-dd' }}"
+               max="{{ vm.event.finish_time | date:'yyyy-MM-dd' }}" required/>
     </div>
     <div class="form-group">
-        <label for="status" class="col-sm-3 control-label">Статус</label>
-
-        <div class="col-sm-8">
-            <select id="status" ng-model="vm.currentTask.status"
-                    ng-options="status for status in vm.statuses">
-            </select>
-        </div>
+        <label for="is_public" class="control-label">Публичное задание
+            <input type="checkbox" name="is_public" id="is_public"
+                   ng-model="CurrTaskCtrl.copyTask.is_public"/>
+        </label>
     </div>
     <div class="form-group">
-        <label for="is_public" class="col-sm-3 control-label">Публичность</label>
-
-        <div class="col-sm-8">
-            <input type="checkbox" id="is_public" ng-model="vm.currentTask.is_public">
+        <div class="col-sm-6">
+            <button type="submit" class="btn btn-lg btn-primary btn-block">Сохранить</button>
         </div>
-    </div>
-    <div class="form-group">
-        <label for="finish_time" class="col-sm-3 control-label">Срок завершения</label>
-
-        <div class="col-sm-8">
-            <input type="date" name="finish_time" class="form-control" id="finish_time"
-                   ng-model="vm.currentTask.finish_time" min="{{ vm.today | date:'yyyy-MM-dd' }}" required/>
-        </div>
-    </div>
-    <div class="form-group">
-        <div class="col-sm-offset-1 col-sm-3">
-            <button type="submit" class="btn btn-lg btn-primary btn-block">Обновить</button>
-        </div>
-        <div class="col-sm-3">
-            <button type="button" class="btn btn-lg btn-danger btn-block" ng-click="vm.popEditFormTask()">Закрыть
-            </button>
-        </div>
-        <div class="col-sm-2" ng-show="vm.isTaskUpdated">
-            <b class="alert-success">{{ vm.result_message }}</b>
+        <div class="col-sm-6" ng-show="CurrTaskCtrl.updateClass">
+            <b ng-class="CurrTaskCtrl.updateClass">{{ CurrTaskCtrl.resultMessage }}</b>
         </div>
     </div>
 </form>

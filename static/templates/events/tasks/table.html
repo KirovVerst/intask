@@ -21,7 +21,10 @@
             <th></th>
         </tr>
         <tr ng-repeat="task in TasksCtrl.myTasks track by $index">
-            <td><a ng-click="TasksCtrl.setTask(task)">{{ task.title }}</a></td>
+            <td>
+                <a ng-click="CurrEventCtrl.setTask();TasksCtrl.setTask(task.id);
+                CurrTaskCtrl.init(); SubtasksCtrl.init();">{{ task.title }}</a>
+            </td>
             <td>{{ task.finish_time }}</td>
             <td>{{ task.status }}</td>
             <td>{{ task.is_public }}</td>
@@ -56,7 +59,10 @@
             <th></th>
         </tr>
         <tr ng-repeat="task in TasksCtrl.otherTasks">
-            <td><a ng-click="TasksCtrl.task = task">{{ task.title }}</a></td>
+            <td>
+                <a ng-click="CurrEventCtrl.setTask();TasksCtrl.setTask(task.id);
+                CurrTaskCtrl.init();SubtasksCtrl.init();">{{ task.title }}</a>
+            </td>
             <td>{{ task.task_header.first_name }} {{ task.task_header.last_name }}</td>
             <td>{{ task.finish_time }}</td>
             <td>{{ task.status }}</td>

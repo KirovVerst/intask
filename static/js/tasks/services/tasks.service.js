@@ -18,4 +18,6 @@
                 stripTrailingSlashes: false
             });
         });
+
+
 })();

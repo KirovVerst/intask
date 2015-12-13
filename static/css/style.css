@@ -1,4 +1,4 @@
-body, html, .row .content {
+body, html, .content {
     height: 100%;
 }
 
@@ -68,7 +68,11 @@ body {
     top: 50px;
     overflow-x: hidden;
     height: 100%;
-    width: inherit;
+}
+
+.event-descripiton textarea {
+    resize: vertical;
+    height: auto;
 }
 
 .task-page {
@@ -84,7 +88,6 @@ body {
     height: 100%;
 }
 
-
 .sidebar .panel,
 .sidebar .panel .list-group {
     margin: 0;
@@ -94,3 +97,12 @@ body {
 .last-item {
     margin-bottom: 34px;
 }
+
+.subtasks-list {
+    margin-bottom: 10px;
+}
+
+.subtasks-list .completed-subtask {
+    text-decoration: line-through;
+}
+

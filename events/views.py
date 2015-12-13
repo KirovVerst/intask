@@ -85,13 +85,22 @@ class SubtaskListCreateAPIView(generics.ListCreateAPIView):
 
     def get_permissions(self):
         if self.request.method in permissions.SAFE_METHODS:
-            return [CanRetrieveSubtask, ]
+            return [CanRetrieveSubtask(), ]
         else:
-            return [CanCreateUpdateDeleteSubtask]
+            return [CanCreateUpdateDeleteSubtask()]
 
     def get_queryset(self):
         task = get_object_or_404(Task, id=self.kwargs['task_id'])
         return task.subtask_set.all()
+
+    def post(self, request, *args, **kwargs):
+        data = request.data.copy()
+        data['task'] = kwargs['task_id']
+        serializer = SubtaskSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class SubtaskDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
@@ -99,9 +108,9 @@ class SubtaskDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 
     def get_permissions(self):
         if self.request.method in permissions.SAFE_METHODS:
-            return [CanRetrieveSubtask, ]
+            return [CanRetrieveSubtask(), ]
         else:
-            return [CanCreateUpdateDeleteSubtask]
+            return [CanCreateUpdateDeleteSubtask()]
 
     def get_queryset(self):
         task = get_object_or_404(Task, id=self.kwargs['task_id'])

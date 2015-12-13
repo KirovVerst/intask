@@ -48,8 +48,8 @@ class CanRetrieveSubtask(permissions.BasePermission):
 
 class CanCreateUpdateDeleteSubtask(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
-        is_event_header = obj.task.event.event_header
-        is_task_header = obj.task.task_header
+        is_event_header = obj.task.event.event_header == request.user
+        is_task_header = obj.task.task_header == request.user
         return is_event_header | is_task_header
 
 

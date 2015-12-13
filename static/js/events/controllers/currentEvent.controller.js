@@ -8,23 +8,54 @@
             vm.today = new Date();
             vm.isLoggedIn = !!Auth.getToken();
 
-            vm.init = function (eventId) {
+            vm.init = function () {
+                var eventId = $location.search().eventId;
                 if (eventId) {
-                    $location.search({eventId: eventId});
-
                     Events.get({id: eventId}, function (data) {
                         vm.event = JSON.parse(angular.toJson(data));
                         vm.event.finish_time = new Date(vm.event.finish_time);
                         vm.isEventHeader = Auth.getUserId() == data.event_header.id;
+                        vm.edit = {
+                            description: {
+                                value: angular.copy(vm.event.description),
+                                status: false,
+                                changeStatus: function () {
+                                    vm.edit.description.status = !vm.edit.description.status;
+                                    vm.edit.description.value = angular.copy(vm.event.description);
+                                },
+                                update: function () {
+                                    vm.event.description = vm.edit.description.value;
+                                    Events.update({id: vm.event.id}, {
+                                        description: vm.event.description
+                                    }, function (response) {
+                                        vm.edit.description.status = false;
+                                    })
+                                }
+                            }
+                        };
                     });
 
                     vm.users = UsersInEvent.query({eventId: $routeParams.eventId});
                 }
+                var taskId = $location.search().taskId;
+                if (taskId) {
+                    vm.task = true;
+                    vm.eventClass = "col-sm-8";
+                    vm.tasksClass = "col-sm-11";
+                } else {
+                    vm.task = false;
+                    vm.newTask = false;
+                    vm.eventClass = "col-sm-12";
+                    vm.tasksClass = "col-sm-10";
+                }
 
-                vm.task = false;
-                vm.newTask = false;
-                vm.eventClass = "col-sm-12";
-                vm.tasksClass = "col-sm-10"
+
+            };
+
+
+            vm.editDescription = function () {
+                console.log("vndfkvfd");
+                vm.editDescriptionValue = !editDescriptionValue;
             };
 
             var changeClasses = function () {
@@ -32,17 +63,34 @@
                 vm.tasksClass = (vm.tasksClass == "col-sm-10") ? "col-sm-11" : "col-sm-10";
             };
 
-
             vm.isThisUser = function (id) {
                 return Auth.getUserId() == id;
             };
 
             vm.setNewTask = function () {
+                if (!vm.task && !vm.newTask) {
+                    changeClasses();
+                }
                 vm.newTask = true;
-                changeClasses();
+                vm.task = false;
             };
             vm.popNewTask = function () {
                 vm.newTask = null;
+                changeClasses();
+            };
+
+            vm.setTask = function () {
+                if (!vm.task && !vm.newTask) {
+                    changeClasses();
+                }
+                vm.task = true;
+                vm.newTask = false;
+
+            };
+
+            vm.popTask = function () {
+                vm.task = false;
+                $location.search({eventId: vm.event.id})
                 changeClasses();
             };
 

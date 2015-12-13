@@ -73,6 +73,5 @@ class Task(models.Model):
 
 class Subtask(models.Model):
     title = models.CharField(max_length=100, null=False)
-    finish_time = models.DateTimeField(null=True, blank=True)
     is_completed = models.BooleanField(default=False)
     task = models.ForeignKey(Task)

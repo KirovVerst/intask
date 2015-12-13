@@ -25,8 +25,9 @@
             };
 
 
-            vm.setTask = function (task) {
-                vm.task = task;
+            vm.setTask = function (taskId) {
+                $location.search({eventId: vm.eventId, taskId: taskId});
+                vm.task = taskId;
             };
 
             vm.popTask = function () {

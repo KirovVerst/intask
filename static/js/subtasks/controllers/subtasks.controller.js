@@ -5,35 +5,69 @@
     'use strict';
 
     angular.module('application.tasks.controllers')
-        .controller('SubtasksController', function (Tasks, Events, Subtasks, $routeParams, $window, Auth, $filter) {
+        .controller('SubtasksController', function (Tasks, Events, Subtasks, $routeParams, $window, Auth, $filter, $location) {
 
             var orderBy = $filter('orderBy');
             var vm = this;
-            vm.currentEvent = Events.get({id: $routeParams.eventId});
-            vm.currentTask = Tasks.get({eventId: $routeParams.eventId, taskId: $routeParams.taskId});
 
-            vm.subtasks = Subtasks.query({eventId: $routeParams.eventId});
+            vm.init = function () {
+                vm.params = $location.search();
+                if (vm.params.eventId && vm.params.taskId) {
+                    vm.activeSubtasks = [];
+                    vm.completedSubtasks = [];
+                    vm.newSubtask = {};
+                    Subtasks.query({eventId: vm.params.eventId, taskId: vm.params.taskId}, function (response) {
+                        angular.forEach(response, function (item) {
+                            item.is_completed ? vm.completedSubtasks.push(item) : vm.activeSubtasks.push(item);
+                        });
+                    });
+                }
+            };
 
             var dateFormat = function (date) {
                 return date.getFullYear() + '-' + ('0' + (date.getMonth() + 1)).slice(-2) +
                     '-' + ('0' + date.getDate()).slice(-2);
             };
 
-            vm.newSubtask = {};
-
             vm.createSubtask = function () {
-                vm.newSubtask.finish_time = dateFormat(new Date(vm.newSubtask.finish_time));
-                Tasks.save({eventId: vm.event.id}, vm.newSubtask);
-                $window.location = '/events/' + vm.currentEvent.id + '/tasks/' + vm.currentTask.id;
+                Subtasks.save({
+                    eventId: vm.params.eventId,
+                    taskId: vm.params.taskId
+                }, vm.newSubtask, function (response) {
+                    vm.activeSubtasks.push(JSON.parse(angular.toJson(response)));
+                    vm.newSubtask = {};
+                });
             };
 
-            vm.removeSubtask = function (index) {
-                Subtasks.delete({
-                    eventId: $routeParams.eventId,
-                    taskId: $routeParams.taskId,
-                    subtaskId: vm.subtasks[index].id
-                });
-                vm.subtasks.splice(index, 1);
+            vm.changeSubtaskStatus = function (index, value) {
+                var subtask = {};
+                if (value) {
+                    subtask = angular.copy(vm.activeSubtasks[index]);
+                    subtask.is_completed = value;
+                    vm.activeSubtasks.splice(index, 1);
+                    vm.completedSubtasks.push(subtask);
+                } else {
+                    subtask = angular.copy(vm.completedSubtasks[index]);
+                    subtask.is_completed = value;
+                    vm.completedSubtasks.splice(index, 1);
+                    vm.activeSubtasks.push(subtask);
+                }
+                Subtasks.update({eventId: vm.params.eventId, taskId: vm.params.taskId, subtaskId: subtask.id}, {
+                    is_completed: value
+                }, function (response) {
+                })
+            };
+
+            vm.removeSubtask = function (index, is_active) {
+                var subtask = {};
+                if (is_active) {
+                    subtask = vm.activeSubtasks[index];
+                    vm.activeSubtasks.splice(index, 1);
+                } else {
+                    subtask = vm.completedSubtasks[index];
+                    vm.completedSubtasks.splice(index, 1);
+                }
+                Subtasks.delete({eventId: vm.params.eventId, taskId: vm.params.taskId, subtaskId: subtask.id});
             };
 
 

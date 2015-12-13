@@ -19,7 +19,14 @@
                 isMyEvents ? vm.showMyEvents = !vm.showMyEvents : vm.showOtherEvents = !vm.showOtherEvents;
             };
 
-            vm.event = $location.search().eventId;
+            vm.init = function () {
+                vm.event = $location.search().eventId;
+            };
+
+            vm.setEvent = function (eventId) {
+                vm.event = eventId;
+                $location.search({eventId: eventId});
+            };
 
             vm.setNewEvent = function () {
                 vm.newEvent = {

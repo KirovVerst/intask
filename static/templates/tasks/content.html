@@ -1,0 +1,49 @@
+<div class="panel panel-default">
+    <div class="panel-body">
+        {{ CurrTaskCtrl.task.description }}
+    </div>
+</div>
+<div">
+    <div class="panel panel-info subtasks-list">
+        <div class="panel-heading">Активные задачи</div>
+        <ul class="list-group">
+            <li class="list-group-item"
+                ng-repeat="subtask in SubtasksCtrl.activeSubtasks track by $index">{{ subtask.title }}
+                <div class="btn-group-sm pull-right">
+                    <button type="button" class="btn btn-default btn-sm"
+                            ng-click="SubtasksCtrl.changeSubtaskStatus($index, true)">
+                        <span class="glyphicon">&nbsp;</span>
+                    </button>
+                    <button type="button" class="btn btn-default btn-sm">
+                        <span class="glyphicon glyphicon-trash"
+                              ng-click="SubtasksCtrl.removeSubtask($index, true)"></span></button>
+                </div>
+                <div class="clearfix"></div>
+            </li>
+        </ul>
+    </div>
+    <div class="panel panel-default subtasks-list">
+        <div class="panel-heading">Завершенные задачи</div>
+        <ul class="list-group">
+            <li class="list-group-item completed-subtask"
+                ng-repeat="subtask in SubtasksCtrl.completedSubtasks track by $index">{{ subtask.title }}
+                <div class="btn-group-sm pull-right">
+                    <button type="button" class="btn btn-default btn-sm"
+                            ng-click="SubtasksCtrl.changeSubtaskStatus($index, false)">
+                        <span class="glyphicon glyphicon glyphicon-ok"></span></button>
+                    <button type="button" class="btn btn-default btn-sm">
+                        <span class="glyphicon glyphicon-trash"
+                              ng-click="SubtasksCtrl.removeSubtask($index, false)"></span></button>
+                </div>
+                <div class="clearfix"></div>
+            </li>
+        </ul>
+    </div>
+    <div class="input-group">
+        <input type="text" class="form-control" ng-model="SubtasksCtrl.newSubtask.title">
+      <span class="input-group-btn">
+        <button class="btn btn-default" type="button" ng-click="SubtasksCtrl.createSubtask()"><span
+                class="glyphicon glyphicon-plus"></span></button>
+      </span>
+    </div>
+</div>
