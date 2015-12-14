@@ -99,10 +99,35 @@ body {
 }
 
 .subtasks-list {
-    margin-bottom: 10px;
+    margin-bottom: 0;
+    border: 0;
 }
 
 .subtasks-list .completed-subtask {
     text-decoration: line-through;
 }
 
+.tasks-panel {
+    margin-bottom: 0;
+    border: 0;
+}
+
+.event-page .table th,
+.event-page .table td {
+    text-align: center;
+}
+
+.custom-panel-body {
+    padding-bottom: 0;
+    padding-top: 0;
+    padding-right: 0;
+}
+
+.custom-header {
+    margin: 0;
+    padding: 0;
+}
+
+.tasks-users {
+    margin-top: 15px;
+}

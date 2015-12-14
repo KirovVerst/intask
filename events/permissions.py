@@ -114,4 +114,7 @@ class CanDeleteUserInTask(permissions.BasePermission):
         task = get_object_or_404(Task, id=view.kwargs['task_id'])
         is_task_header = request.user == task.task_header
 
-        return is_event_header | is_task_header
+        user = get_object_or_404(User, id=view.kwargs['pk'])
+        is_this_user = request.user == user
+
+        return is_event_header | is_task_header | is_this_user

@@ -31,12 +31,47 @@
                                         vm.edit.description.status = false;
                                     })
                                 }
+                            },
+                            finish_time: {
+                                value: angular.copy(vm.event.finish_time),
+                                status: false,
+                                changeStatus: function () {
+                                    vm.edit.finish_time.status = !vm.edit.finish_time.status;
+                                    vm.edit.finish_time.value = angular.copy(vm.event.finish_time);
+                                },
+                                update: function () {
+                                    console.log(dateFormat(new Date(vm.edit.finish_time.value)));
+                                    vm.event.finish_time = dateFormat(new Date(vm.edit.finish_time.value));
+                                    Events.update({
+                                        id: $location.search().eventId
+                                    }, {
+                                        finish_time: dateFormat(new Date(vm.edit.finish_time.value))
+                                    }, function (response) {
+                                        vm.edit.finish_time.status = false;
+                                    })
+                                }
+                            },
+                            users: {
+                                items: [],
+                                status: false,
+                                changeStatus: function () {
+                                    vm.edit.users.status = !vm.edit.users.status;
+                                    vm.edit.users.items = [];
+                                },
+                                update: function () {
+
+                                }
                             }
                         };
                     });
-
-                    vm.users = UsersInEvent.query({eventId: $routeParams.eventId});
+                    vm.users = [];
+                    UsersInEvent.query({eventId: eventId}, function (response) {
+                        angular.forEach(response, function (item) {
+                            vm.users.push(item);
+                        })
+                    });
                 }
+                vm.newUser = {};
                 var taskId = $location.search().taskId;
                 if (taskId) {
                     vm.task = true;
@@ -90,18 +125,15 @@
 
             vm.popTask = function () {
                 vm.task = false;
-                $location.search({eventId: vm.event.id})
+                $location.search({eventId: vm.event.id});
                 changeClasses();
             };
 
-
-            vm.newUser = null;
-            vm.setNewUser = function () {
-                vm.newUser = {};
-            };
             vm.inviteUser = function () {
-                UsersInEvent.save({eventId: $routeParams.eventId}, vm.newUser);
-                vm.event.invited_users.push(vm.newUser.email);
+                UsersInEvent.save({eventId: $routeParams.eventId}, vm.newUser, function (response) {
+                    vm.event.invited_users.push(vm.newUser.email);
+                    vm.newUser = {};
+                });
             };
             vm.popNewUser = function () {
                 vm.newUser = null;

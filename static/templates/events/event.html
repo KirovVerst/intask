@@ -3,18 +3,11 @@
     <div ng-controller="SubtasksController as SubtasksCtrl">
         <div ng-class="CurrEventCtrl.eventClass">
             <div class="col-sm-12" ng-include="'/static/templates/events/desc.html'"></div>
-            <div ng-class="CurrEventCtrl.tasksClass">
-                <h2>Задания
-                    <button ng-show="CurrEventCtrl.isEventHeader"
-                            class="btn btn-primary pull-right" ng-hide="CurrEventCtrl.newTask"
-                            ng-click="CurrEventCtrl.setNewTask()">Создать задание
-                    </button>
-                </h2>
-                <div ng-include="'/static/templates/events/tasks/table.html'"></div>
-            </div>
-            <div class="col-sm-6 col-sm-offset-3 new-element" ng-include="'/static/templates/events/form.html'"
-                 ng-show="CurrEventCtrl.editFormEvent"></div>
+            <div class="col-sm-12" ng-include="'/static/templates/events/tasks/table.html'"></div>
+            <div class="col-sm-12" ng-include="'/static/templates/events/users/table.html'"></div>
         </div>
+
+
         <div class="col-sm-3 col-sm-offset-6 task-page"
              ng-show="CurrEventCtrl.newTask">
             <div ng-include="'/static/templates/tasks/new.html'"></div>

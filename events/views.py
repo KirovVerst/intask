@@ -46,7 +46,7 @@ class TaskListCreateAPIView(generics.ListCreateAPIView):
         if self.request.user == event.event_header:
             return event.task_set.all()
 
-        return event.task_set.filter(Q(users=self.request.user) | Q(is_public=True))
+        return event.task_set.filter(Q(users=self.request.user) | Q(is_public=True)).distinct()
 
     def post(self, request, *args, **kwargs):
         data = request.data.copy()
@@ -77,7 +77,7 @@ class TaskDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
         if self.request.user == event.event_header:
             return event.task_set.all()
 
-        return event.task_set.filter(Q(users=self.request.user) | Q(is_public=True))
+        return event.task_set.filter(Q(users=self.request.user) | Q(is_public=True)).distinct()
 
 
 class SubtaskListCreateAPIView(generics.ListCreateAPIView):

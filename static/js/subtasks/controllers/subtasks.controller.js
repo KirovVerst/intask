@@ -60,6 +60,8 @@
 
             vm.removeSubtask = function (index, is_active) {
                 var subtask = {};
+                console.log(index);
+                console.log(is_active);
                 if (is_active) {
                     subtask = vm.activeSubtasks[index];
                     vm.activeSubtasks.splice(index, 1);

@@ -3,8 +3,7 @@
     <div class="panel panel-info event-descripiton">
         <div class="panel-heading">
             Описание
-
-            <div class="btn-group-sm pull-right">
+            <div class="btn-group-sm pull-right" ng-show="CurrEventCtrl.isEventHeader">
                 <button type="button" class="btn btn-default btn-sm"
                         ng-hide="CurrEventCtrl.edit.description.status"
                         ng-click="CurrEventCtrl.edit.description.changeStatus()">
@@ -13,7 +12,7 @@
                 <button type="button" class="btn btn-default btn-sm"
                         ng-show="CurrEventCtrl.edit.description.status"
                         ng-click="CurrEventCtrl.edit.description.update()">
-                    <span class="glyphicon glyphicon glyphicon-ok"></span>
+                    <span class="glyphicon glyphicon-floppy-disk"></span>
                 </button>
                 <button type="button" class="btn btn-default btn-sm"
                         ng-show="CurrEventCtrl.edit.description.status"

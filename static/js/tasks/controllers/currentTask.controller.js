@@ -6,106 +6,127 @@
         .controller('CurrentTaskController', function (Events, Tasks, $http, $scope, $location, Auth, $window,
                                                        $routeParams, UsersInTask, Subtasks, $timeout) {
             var vm = this;
-            vm.today = new Date();
             vm.isLoggedIn = !!Auth.getToken();
 
             vm.init = function () {
+                vm.today = new Date();
                 if ($location.search().taskId) {
                     Tasks.get({
                         eventId: $location.search().eventId,
                         taskId: $location.search().taskId
-                    }, function (response) {
-                        vm.task = JSON.parse(angular.toJson(response));
-                        vm.title = vm.task.title;
+                    }, function (data) {
+                        vm.task = JSON.parse(angular.toJson(data));
                         vm.task.finish_time = new Date(vm.task.finish_time);
-                        vm.isTaskHeader = Auth.getUserId() == vm.task.task_header.id;
+                        vm.isTaskHeader = Auth.getUserId() == data.task_header.id;
+                        vm.edit = {
+                            description: {
+                                value: angular.copy(vm.task.description),
+                                status: false,
+                                changeStatus: function () {
+                                    vm.edit.description.status = !vm.edit.description.status;
+                                    vm.edit.description.value = angular.copy(vm.task.description);
+                                },
+                                update: function () {
+                                    vm.task.description = vm.edit.description.value;
+                                    Tasks.update({
+                                        eventId: $location.search().eventId,
+                                        taskId: $location.search().taskId
+                                    }, {
+                                        description: vm.task.description
+                                    }, function (response) {
+                                        vm.edit.description.status = false;
+                                    })
+                                }
+                            },
+                            finish_time: {
+                                value: angular.copy(vm.task.finish_time),
+                                status: false,
+                                changeStatus: function () {
+                                    vm.edit.finish_time.status = !vm.edit.finish_time.status;
+                                    vm.edit.finish_time.value = angular.copy(vm.task.finish_time);
+                                    console.log(vm.today);
+                                },
+                                update: function () {
+                                    console.log(dateFormat(new Date(vm.edit.finish_time.value)));
+                                    vm.task.finish_time = dateFormat(new Date(vm.edit.finish_time.value));
+                                    Tasks.update({
+                                        eventId: $location.search().eventId,
+                                        taskId: $location.search().taskId
+                                    }, {
+                                        finish_time: dateFormat(new Date(vm.edit.finish_time.value))
+                                    }, function (response) {
+                                        vm.edit.finish_time.status = false;
+                                    })
+                                }
+                            },
+                            users: {
+                                items: [],
+                                status: false,
+                                changeStatus: function () {
+                                    vm.edit.users.status = !vm.edit.users.status;
+                                    vm.edit.users.items = [];
+                                },
+                                update: function () {
+
+                                }
+                            }
+                        };
                     });
                     UsersInTask.query({
                         eventId: $location.search().eventId,
                         taskId: $location.search().taskId
                     }, function (response) {
                         vm.users = JSON.parse(angular.toJson(response));
+                        vm.isParticipant = false;
+                        var id = Auth.getUserId();
+                        for (var i = 0, len = vm.users.length; i < len; i++) {
+                            if (vm.users[i].id == id) {
+                                vm.isParticipant = true;
+                                break;
+                            }
+                        }
+                        if (!vm.isParticipant) {
+                            vm.isParticipant = false;
+                        }
                     });
-
-                    Subtasks.query({
-                        eventId: $location.search().eventId,
-                        taskId: $location.search().taskId
-                    }, function (response) {
-                        vm.subtasks = JSON.parse(angular.toJson(response));
-                    });
-                    vm.edit = false;
                 }
             };
 
-            vm.editMode = function () {
-                vm.edit = !vm.edit;
-                vm.copyTask = angular.copy(vm.task);
-                vm.title = vm.edit ? "Редактирование" : vm.task.title;
-                vm.resultMessage = "";
+
+            vm.isUserInTask = function (id) {
+                if (vm.users) {
+                    for (var i = 0, len = vm.users.length; i < len; i++) {
+                        if (vm.users[i].id == id) {
+                            return true;
+                        }
+                    }
+                    return false;
+                }
             };
 
-            vm.popTask = function () {
-                vm.task = null;
+            vm.isUserTaskHeader = function (id) {
+                return vm.task.task_header == id;
             };
 
             vm.isThisUser = function (id) {
                 return Auth.getUserId() == id;
             };
 
-            vm.newSubtask = false;
-            vm.setNewSubtask = function () {
-                vm.newSubtask = true;
-            };
-            vm.popNewSubtask = function () {
-                vm.newSubtask = false;
+
+            vm.addUser = function (id) {
+                UsersInTask.save({eventId: $location.search().eventId, taskId: $location.search().taskId}, {
+                    user: id
+                }, function (response) {
+                    var user = JSON.parse(angular.toJson(response));
+                    vm.users.push(user);
+                })
             };
 
-
-            vm.newUser = null;
-            vm.setNewUser = function () {
-                vm.newUser = {};
-            };
-            vm.addUser = function () {
-
-            };
-
-            vm.popNewUser = function () {
-                vm.newUser = false;
-            };
-
-            vm.editFormTask = false;
-            vm.setEditFormTask = function () {
-                vm.editFormTask = true;
-            };
-            vm.popEditFormTask = function () {
-                vm.editFormTask = false;
-            };
             var dateFormat = function (date) {
                 return date.getFullYear() + '-' + ('0' + (date.getMonth() + 1)).slice(-2) +
                     '-' + ('0' + date.getDate()).slice(-2);
             };
-            vm.updateTask = function () {
-                Tasks.update({eventId: $location.search().eventId, taskId: vm.copyTask.id}, {
-                    title: vm.copyTask.title,
-                    description: vm.copyTask.description,
-                    finish_time: dateFormat(new Date(vm.copyTask.finish_time)),
-                    task_header: parseInt(vm.copyTask.task_header.id),
-                    status: vm.copyTask.status,
-                    is_public: vm.copyTask.is_public
-                }, function (response) {
-                    if (response.$status == 200) {
-                        vm.task = JSON.parse(angular.toJson(response));
-                        vm.resultMessage = "Изменения сохранены.";
-                        $timeout(function () {
-                            vm.resultMessage = "";
-                        }, 3000);
-                        vm.updateClass = "alert-success";
-                    } else {
-                        vm.updateClass = "alert-danger";
-                        vm.resultMessage = "Ошибка " + response.$status;
-                    }
-                })
-            };
+
 
             vm.statuses = ['COMPLETED', 'DELAYED', 'IN_PROGRESS'];
 
@@ -116,21 +137,15 @@
                     return;
                 }
                 UsersInTask.delete({
-                    eventId: $routeParams.eventId,
-                    taskId: $routeParams.taskId,
+                    eventId: $location.search().eventId,
+                    taskId: $location.search().taskId,
                     userId: user.id
                 });
-                if (!(vm.isEventHeader || vm.isTaskHeader)) {
-                    $window.location = "/";
-                }
                 vm.users.splice(index, 1);
+                if (vm.isThisUser(user.id)) {
+                    vm.init();
+                }
             };
 
-
-            vm.removeSubtask = function (index) {
-                var subtask = vm.subtasks[index];
-                Subtasks.delete({eventId: $routeParams.eventId, taskId: $routeParams.taskId, subtaskId: subtask.id});
-                vm.subtasks.splice(index, 1);
-            }
         });
 })();

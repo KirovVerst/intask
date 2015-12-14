@@ -3,7 +3,9 @@
     <div class="scrollable my-events" ng-show="vm.showMyEvents">
         <ul class="list-group">
             <li ng-repeat="event in vm.myEvents" class="list-group-item">
-                <a ng-click="vm.setEvent(event.id);CurrEventCtrl.init(); TasksCtrl.init()">{{ event.title }}</a>
+                <a ng-click="vm.setEvent(event.id);CurrEventCtrl.init(); TasksCtrl.init()">
+                    <span class="glyphicon glyphicon-list"></span> {{ event.title }}
+                </a>
             </li>
         </ul>
     </div>
@@ -13,8 +15,9 @@
     <div class="scrollable other-events last-item" ng-show="vm.showOtherEvents">
         <!-- List group -->
         <ul class="list-group" ng-show="vm.showOtherEvents">
-            <li ng-repeat="event in vm.otherEvents" class="list-group-item"><a
-                    ng-click="vm.setEvent(event.id);CurrEventCtrl.init(); TasksCtrl.init()">{{ event.title }}</a></li>
+            <li ng-repeat="event in vm.otherEvents" class="list-group-item">
+                <a ng-click="vm.setEvent(event.id);CurrEventCtrl.init(); TasksCtrl.init()">
+                    <span class="glyphicon glyphicon-list"></span>{{ event.title }}</a></li>
         </ul>
     </div>
 </div>

@@ -1,31 +1,32 @@
-<div class="row">
-    <div class="col-sm-8">
-        <h2>Описание</h2>
-        {{ vm.currentTask.description }}
+<div class="panel panel-info event-descripiton">
+    <div class="panel-heading">
+        Описание
+        <div class="btn-group-sm pull-right" ng-show="CurrTaskCtrl.isTaskHeader || CurrEventCtrl.isEventHeader">
+            <button type="button" class="btn btn-default btn-sm"
+                    ng-hide="CurrTaskCtrl.edit.description.status"
+                    ng-click="CurrTaskCtrl.edit.description.changeStatus()">
+                <span class="glyphicon glyphicon-pencil"></span>
+            </button>
+            <button type="button" class="btn btn-default btn-sm"
+                    ng-show="CurrTaskCtrl.edit.description.status"
+                    ng-click="CurrTaskCtrl.edit.description.update()">
+                <span class="glyphicon glyphicon-floppy-disk"></span>
+            </button>
+            <button type="button" class="btn btn-default btn-sm"
+                    ng-show="CurrTaskCtrl.edit.description.status"
+                    ng-click="CurrTaskCtrl.edit.description.changeStatus()">
+                <span class="glyphicon glyphicon glyphicon-remove"></span>
+            </button>
+        </div>
+
+        <div class="clearfix"></div>
     </div>
-    <div class="col-sm-4">
-        <h2>Управление</h2>
-        <button ng-show="vm.isEventHeader || vm.isTaskHeader" class="btn btn-primary btn-block"
-                ng-click="vm.setEditFormTask()">Редактировать
-        </button>
+    <div ng-hide="CurrTaskCtrl.edit.description.status" class="panel-body">
+        {{ CurrTaskCtrl.task.description }}
+    </div>
+    <div ng-show="CurrTaskCtrl.edit.description.status">
+        <label class="sr-only" for="description">Описание</label>
+            <textarea rows="5" class="form-control" id="description" name="description"
+                      ng-model="CurrTaskCtrl.edit.description.value">
     </div>
 </div>
-<div class="row">
-    <div class="col-sm-3">
-        <h2>Руководитель</h2>
-        {{ vm.currentTask.task_header.first_name }} {{ vm.currentTask.task_header.last_name }}
-    </div>
-    <div class="col-sm-3">
-        <h2>Срок завершения</h2>
-        {{ vm.currentTask.finish_time | date:'yyyy-MM-dd' }}
-    </div>
-    <div class="col-sm-2">
-        <h2>Статус</h2>
-        {{ vm.currentTask.status }}
-    </div>
-    <div class="col-sm-4">
-        <h2>Публичность</h2>
-        {{ vm.currentTask.is_public }}
-    </div>
-</div>
-<hr>

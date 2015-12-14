@@ -14,11 +14,81 @@
                 vm.eventId = $location.search().eventId;
                 if (vm.eventId) {
                     vm.newTask = {};
-                    vm.myTasks = [];
-                    vm.otherTasks = [];
+                    vm.myTasks = {
+                        active: {
+                            is_shown: false,
+                            toggle: function () {
+                                vm.myTasks.active.is_shown = !vm.myTasks.active.is_shown;
+                            },
+                            items: [],
+                            reversed: false,
+                            predicate: 'title',
+                            class: "",
+                            order: function (predicate) {
+                                vm.myTasks.active.reversed = (vm.myTasks.active.predicate === predicate) ? !vm.myTasks.active.reversed : false;
+                                vm.myTasks.active.class = vm.myTasks.active.reversed ? "glyphicon glyphicon-chevron-up" : "glyphicon glyphicon-chevron-down";
+                                vm.myTasks.active.predicate = predicate;
+                                vm.myTasks.active.items = orderBy(vm.myTasks.active.items, predicate, vm.myTasks.active.reversed);
+                            }
+                        },
+                        completed: {
+                            is_shown: false,
+                            toggle: function () {
+                                vm.myTasks.completed.is_shown = !vm.myTasks.completed.is_shown;
+                            },
+                            items: [],
+                            reversed: false,
+                            predicate: 'title',
+                            class: "",
+                            order: function (predicate) {
+                                vm.myTasks.completed.reversed = (vm.myTasks.completed.predicate === predicate) ? !vm.myTasks.completed.reversed : false;
+                                vm.myTasks.completed.class = vm.myTasks.completed.reversed ? "glyphicon glyphicon-chevron-up" : "glyphicon glyphicon-chevron-down";
+                                vm.myTasks.completed.predicate = predicate;
+                                vm.myTasks.completed.items = orderBy(vm.myTasks.completed.items, predicate, vm.myTasks.completed.reversed);
+                            }
+                        }
+                    };
+                    vm.otherTasks = {
+                        active: {
+                            is_shown: false,
+                            toggle: function () {
+                                vm.otherTasks.active.is_shown = !vm.otherTasks.active.is_shown;
+                            },
+                            items: [],
+                            reversed: false,
+                            predicate: 'title',
+                            class: "",
+                            order: function (predicate) {
+                                vm.otherTasks.active.reversed = (vm.otherTasks.active.predicate === predicate) ? !vm.otherTasks.active.reversed : false;
+                                vm.otherTasks.active.class = vm.otherTasks.active.reversed ? "glyphicon glyphicon-chevron-up" : "glyphicon glyphicon-chevron-down";
+                                vm.otherTasks.active.predicate = predicate;
+                                vm.otherTasks.active.items = orderBy(vm.otherTasks.active.items, predicate, vm.otherTasks.active.reversed);
+                            }
+                        },
+                        completed: {
+                            is_shown: false,
+                            toggle: function () {
+                                vm.otherTasks.completed.is_shown = !vm.otherTasks.completed.is_shown;
+                            },
+                            items: [],
+                            reversed: false,
+                            predicate: 'title',
+                            class: "",
+                            order: function (predicate) {
+                                vm.otherTasks.completed.reversed = (vm.otherTasks.completed.predicate === predicate) ? !vm.otherTasks.completed.reversed : false;
+                                vm.otherTasks.completed.class = vm.otherTasks.completed.reversed ? "glyphicon glyphicon-chevron-up" : "glyphicon glyphicon-chevron-down";
+                                vm.otherTasks.completed.predicate = predicate;
+                                vm.otherTasks.completed.items = orderBy(vm.otherTasks.completed.items, predicate, vm.otherTasks.completed.reversed);
+                            }
+                        }
+                    };
                     Tasks.query({eventId: vm.eventId}, function (response) {
                         angular.forEach(response, function (item) {
-                            item.task_header.id == Auth.getUserId() ? vm.myTasks.push(item) : vm.otherTasks.push(item);
+                            if (item.task_header.id == Auth.getUserId()) {
+                                (item.status == "COMPLETED") ? vm.myTasks.completed.items.push(item) : vm.myTasks.active.items.push(item)
+                            } else {
+                                (item.status == "COMPLETED") ? vm.otherTasks.completed.items.push(item) : vm.otherTasks.active.items.push(item)
+                            }
                         });
                     });
                 }
@@ -62,11 +132,15 @@
                 tasks.splice(index, 1);
             };
 
-            vm.orderMyTask = function (predicate) {
-                vm.reverseMyTask = (vm.predicateMyTask === predicate) ? !vm.reverseMyTask : false;
-                vm.classMyTask = vm.reverseMyTask ? "glyphicon glyphicon-chevron-up" : "glyphicon glyphicon-chevron-down";
-                vm.predicateMyTask = predicate;
-                vm.myTasks = orderBy(vm.myTasks, predicate, vm.reverseMyTask);
+            vm.reverse = false;
+            vm.predicate = 'title';
+
+            vm.orderTasks = function (predicate, tasks) {
+                console.log(predicate);
+                vm.reverse = (vm.predicate === predicate) ? !vm.reverse : false;
+                vm.class = vm.reverse ? "glyphicon glyphicon-chevron-up" : "glyphicon glyphicon-chevron-down";
+                vm.predicate = predicate;
+                tasks = orderBy(tasks, predicate, vm.reverse);
             };
 
 
