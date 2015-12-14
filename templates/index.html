@@ -4,27 +4,12 @@
     <title>In Task</title>
     <base href="/"/>
     <link rel="stylesheet" href="/static/bower_components/bootstrap/dist/css/bootstrap.css"/>
-    <link rel="stylesheet" href="/static/css/dashboard.css"/>
     <link rel="stylesheet" href="/static/css/auth.css"/>
+    <link rel="stylesheet" href="/static/css/style.css"/>
 
 </head>
 
 <body>
-<div class="container-fluid">
-    <div class="row">
-        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-            <div class="container-fluid" ng-include="'static/templates/static/headerbar.html'"
-                 ng-controller="AuthController as AuthCtrl"></div>
-        </div>
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-sm-3 col-md-2 sidebar" ng-include="'static/templates/static/sidebar.html'"
-                     ng-controller="EventsController as vm"></div>
-                <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main ng-view"></div>
-            </div>
-        </div>
-    </div>
-</div>
 
 <script type="text/javascript" src="/static/bower_components/jquery/dist/jquery.js"></script>
 <script type="text/javascript" src="/static/bower_components/bootstrap/dist/js/bootstrap.js"></script>
@@ -42,22 +27,39 @@
 <script type="text/javascript" src="/static/js/auth/interceptors/auth.interceptor.js"></script>
 <script type="text/javascript" src="/static/js/auth/services/auth.service.js"></script>
 
-<!--- Events --->
-<script type="text/javascript" src="/static/js/events/events.module.js"></script>
-<script type="text/javascript" src="/static/js/events/controllers/events.controller.js"></script>
-<script type="text/javascript" src="/static/js/events/services/events.service.js"></script>
-
 <!--- Users --->
 <script type="text/javascript" src="/static/js/users/users.module.js"></script>
 <script type="text/javascript" src="/static/js/users/controllers/users.controller.js"></script>
-<script type="text/javascript" src="/static/js/users/controllers/users_in_event.controller.js"></script>
-<script type="text/javascript" src="/static/js/users/controllers/users_in_task.controller.js"></script>
 <script type="text/javascript" src="/static/js/users/services/users.service.js"></script>
+
+<!--- Events --->
+<script type="text/javascript" src="/static/js/events/events.module.js"></script>
+<script type="text/javascript" src="/static/js/events/controllers/events.controller.js"></script>
+<script type="text/javascript" src="/static/js/events/controllers/currentEvent.controller.js"></script>
+<script type="text/javascript" src="/static/js/events/services/events.service.js"></script>
+
 
 <!--- Tasks --->
 <script type="text/javascript" src="/static/js/tasks/tasks.module.js"></script>
 <script type="text/javascript" src="/static/js/tasks/controllers/tasks.controller.js"></script>
+<script type="text/javascript" src="/static/js/tasks/controllers/currentTask.controller.js"></script>
 <script type="text/javascript" src="/static/js/tasks/services/tasks.service.js"></script>
+
+<!--- Subtasks --->
+<script type="text/javascript" src="/static/js/subtasks/subtasks.module.js"></script>
+<script type="text/javascript" src="/static/js/subtasks/controllers/subtasks.controller.js"></script>
+<script type="text/javascript" src="/static/js/subtasks/services/subtasks.service.js"></script>
+
+<!--- Static --->
+<script type="text/javascript" src="/static/js/static/static.module.js"></script>
+<script type="text/javascript" src="/static/js/static/controllers/sidebar.controller.js"></script>
+
+
+<div class="navbar navbar-inverse navbar-fixed-top" role="navigation" ng-controller="AuthController as AuthCtrl"
+     ng-show="AuthCtrl.isLoggedIn" ng-include="'/static/templates/static/headerbar.html'">
+</div>
+<div class="row ng-view"></div>
+
 
 </body>
 </html>

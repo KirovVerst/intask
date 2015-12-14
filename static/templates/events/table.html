@@ -1,0 +1,29 @@
+<div class="panel panel-default">
+    <div class="panel-heading"><a ng-click="vm.toggleEvents(true)">Мои события</a></div>
+    <div class="scrollable my-events" ng-show="vm.showMyEvents">
+        <ul class="list-group">
+            <li ng-repeat="event in vm.myEvents" class="list-group-item">
+                <a ng-click="vm.setEvent(event.id);CurrEventCtrl.init(); TasksCtrl.init()">
+                    <span class="glyphicon glyphicon-list"></span> {{ event.title }}
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+<div class="panel panel-default">
+    <div class="panel-heading">Другие события</div>
+    <div class="scrollable other-events last-item" ng-show="vm.showOtherEvents">
+        <!-- List group -->
+        <ul class="list-group" ng-show="vm.showOtherEvents">
+            <li ng-repeat="event in vm.otherEvents" class="list-group-item">
+                <a ng-click="vm.setEvent(event.id);CurrEventCtrl.init(); TasksCtrl.init()">
+                    <span class="glyphicon glyphicon-list"></span>{{ event.title }}</a></li>
+        </ul>
+    </div>
+</div>
+<div class="fixed-bottom">
+    <a class="btn btn-block btn-primary" ng-click="vm.setNewEvent()">Добавить</a>
+</div>
+
+
+

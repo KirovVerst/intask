@@ -1,6 +1,7 @@
-/venv
+/venv3
 /.idea
 /db
 *.pyc
 /*/migrations/
 *.bash
+/tmp

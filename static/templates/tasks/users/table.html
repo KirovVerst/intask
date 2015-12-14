@@ -1,0 +1,42 @@
+<div class="panel panel-info tasks-users">
+    <div class="panel-heading">Участники
+        <div class="btn-group-sm pull-right" ng-show="CurrTaskCtrl.isTaskHeader || CurrEventCtrl.isEventHeader">
+            <button type="button" class="btn btn-default btn-sm"
+                    ng-hide="CurrTaskCtrl.edit.users.status"
+                    ng-click="CurrTaskCtrl.edit.users.changeStatus()">
+                <span class="glyphicon glyphicon-plus"></span>
+            </button>
+            <button type="button" class="btn btn-default btn-sm"
+                    ng-show="CurrTaskCtrl.edit.users.status"
+                    ng-click="CurrTaskCtrl.edit.users.changeStatus()">
+                <span class="glyphicon glyphicon glyphicon-remove"></span>
+            </button>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+    <ul class="list-group">
+        <li class="list-group-item" ng-repeat="user in CurrTaskCtrl.users track by $index">
+            <span class="glyphicon glyphicon-star"
+                  ng-show="user.id == CurrTaskCtrl.task.task_header.id"></span>
+            <span class="glyphicon glyphicon-user"
+                  ng-show="CurrTaskCtrl.isThisUser(user.id)"></span>
+            {{ user.first_name }} {{ user.last_name }}
+            <span class="glyphicon glyphicon-trash btn btn-sm btn-default pull-right"
+                  ng-hide="user.id == CurrTaskCtrl.task.task_header.id"
+                  ng-click="CurrTaskCtrl.removeUser($index)"></span>
+
+            <div class="clearfix"></div>
+        </li>
+    </ul>
+    <div class="panel-heading" ng-show="CurrTaskCtrl.edit.users.status">Участники события</div>
+    <ul class="list-group" ng-show="CurrTaskCtrl.edit.users.status">
+        <li class="list-group-item" ng-repeat="user in CurrEventCtrl.users track by $index"
+            ng-hide="CurrTaskCtrl.isUserInTask(user.id)">
+            {{ user.first_name }} {{ user.last_name }}
+            <span class="glyphicon glyphicon-ok btn btn-sm btn-default pull-right"
+                  ng-click="CurrTaskCtrl.addUser(user.id)"></span>
+
+            <div class="clearfix"></div>
+        </li>
+    </ul>
+</div>

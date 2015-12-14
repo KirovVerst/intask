@@ -1,0 +1,26 @@
+<div class="panel panel-info">
+    <div class="panel-heading">
+        <h3 ng-hide="CurrTaskCtrl.edit.finish_time.status"
+            class="custom-header">{{ CurrTaskCtrl.task.finish_time | date:"dd-MM-yyyy" }}
+            <span ng-show="CurrEventCtrl.isEventHeader || CurrTaskCtrl.isTaskHeader" ng-click="CurrTaskCtrl.edit.finish_time.changeStatus()" class="btn btn-default
+                        glyphicon glyphicon-cog pull-right"></span>
+        </h3>
+
+        <div class="clearfix"></div>
+
+        <div ng-show="CurrTaskCtrl.edit.finish_time.status" class="input-group">
+            <input type="date" class="form-control"
+                   min="{{ CurrTaskCtrl.today | date:"dd-MM-yyyy" }}"
+                   max="{{ CurrEventCtrl.event.finish_time | date:"dd-MM-yyyy" }}"
+                   ng-model="CurrTaskCtrl.edit.finish_time.value">
+            <span class="input-group-btn">
+                <button ng-click="CurrTaskCtrl.edit.finish_time.update()" class="btn btn-default" type="button">
+                    <span class="glyphicon glyphicon-floppy-disk"></span>
+                </button>
+                <button ng-click="CurrTaskCtrl.edit.finish_time.changeStatus()" class="btn btn-default" type="button">
+                    <span class="glyphicon glyphicon-remove"></span>
+                </button>
+            </span>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,19 @@
+<div class="col-sm-12 height-100">
+    <div class="pull-right btn-group-sm">
+        <span class="glyphicon glyphicon-remove " ng-click="CurrEventCtrl.popTask()"></span>
+    </div>
+
+
+    <h3 class="text-center">{{ CurrTaskCtrl.task.title }}</h3>
+
+    <div class="clearfix"></div>
+
+    <div ng-include="'/static/templates/tasks/desc.html'"></div>
+    <div ng-include="'/static/templates/tasks/time.html'"></div>
+    <div ng-init="SubtasksCtrl.init()" ng-include="'/static/templates/tasks/subtasks/table.html'"></div>
+    <div ng-include="'/static/templates/tasks/users/table.html'"></div>
+</div>
+
+
+
+

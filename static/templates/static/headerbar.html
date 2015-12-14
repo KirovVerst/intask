@@ -1,13 +1,7 @@
-<div class="navbar-header" ng-show="AuthCtrl.isLoggedIn">
-    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-    </button>
-    <a class="navbar-brand" href="/">In the Task</a>
+<div class="navbar-header">
+    <a class="navbar-brand">In the Task</a>
 </div>
-<div class="navbar-collapse collapse" ng-show="AuthCtrl.isLoggedIn">
+<div class="navbar-collapse collapse">
     <ul class="nav navbar-nav navbar-right">
         <li class="dropdown">
             <a class="dropdown-toggle"
@@ -18,8 +12,9 @@
             </a>
             <ul class="dropdown-menu">
                 <li><a href="profile">Профиль</a></li>
+                <li><a href="invitations">Приглашения</a></li>
                 <li class="divider"></li>
-                <li><a href="/" ng-click="AuthCtrl.logout()">Выйтиt</a></li>
+                <li><a href="/" ng-click="AuthCtrl.logout()">Выйти</a></li>
             </ul>
         </li>
     </ul>

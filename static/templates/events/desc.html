@@ -1,0 +1,40 @@
+<h2 class="text-center">{{ CurrEventCtrl.event.title }}</h2>
+<div class="col-sm-12">
+    <div class="panel panel-info event-descripiton">
+        <div class="panel-heading">
+            Описание
+            <div class="btn-group-sm pull-right" ng-show="CurrEventCtrl.isEventHeader">
+                <button type="button" class="btn btn-default btn-sm"
+                        ng-hide="CurrEventCtrl.edit.description.status"
+                        ng-click="CurrEventCtrl.edit.description.changeStatus()">
+                    <span class="glyphicon glyphicon-pencil"></span>
+                </button>
+                <button type="button" class="btn btn-default btn-sm"
+                        ng-show="CurrEventCtrl.edit.description.status"
+                        ng-click="CurrEventCtrl.edit.description.update()">
+                    <span class="glyphicon glyphicon-floppy-disk"></span>
+                </button>
+                <button type="button" class="btn btn-default btn-sm"
+                        ng-show="CurrEventCtrl.edit.description.status"
+                        ng-click="CurrEventCtrl.edit.description.changeStatus()">
+                    <span class="glyphicon glyphicon glyphicon-remove"></span>
+                </button>
+            </div>
+
+            <div class="clearfix"></div>
+        </div>
+        <div ng-hide="CurrEventCtrl.edit.description.status" class="panel-body">
+            {{ CurrEventCtrl.event.description }}
+        </div>
+        <div ng-show="CurrEventCtrl.edit.description.status">
+            <label class="sr-only" for="description">Описание</label>
+            <textarea rows="5" class="form-control" id="description" name="description"
+                      ng-model="CurrEventCtrl.edit.description.value">
+        </div>
+    </div>
+</div>
+
+
+
+
+

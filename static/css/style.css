@@ -1,0 +1,133 @@
+body, html, .content {
+    height: 100%;
+}
+
+body {
+    padding-bottom: 0;
+}
+
+.nav-route .breadcrumb {
+    background: transparent;
+    padding-top: 20px;
+    font-size: large;
+}
+
+.navbar {
+    margin-bottom: 0;
+    border-radius: 0;
+}
+
+.new-element {
+    background-color: lightgray;
+    box-shadow: 5px 5px white;
+    z-index: 1000;
+    position: fixed;
+    top: 25%;
+    left: 0;
+}
+
+.detail-element {
+    background-color: lightgray;
+    box-shadow: 5px 5px white;
+    z-index: 1000;
+    position: fixed;
+    top: 10%;
+    right: 1%;
+}
+
+.scrollable {
+    height: auto;
+    overflow-x: hidden;
+}
+
+.sidebar {
+    position: fixed;
+    overflow-x: hidden;
+    padding: 0;
+    top: 50px;
+    left: 0;
+    bottom: 0;
+    z-index: 1000;
+    display: block;
+    background-color: #CCCCCC;
+}
+
+.fixed-bottom {
+    position: fixed;
+    width: inherit;
+    bottom: 0;
+}
+
+.fixed {
+    position: fixed;
+}
+
+.event-page {
+    position: fixed;
+    padding: 0 0 50px 30px;
+    top: 50px;
+    overflow-x: hidden;
+    height: 100%;
+}
+
+.event-descripiton textarea {
+    resize: vertical;
+    height: auto;
+}
+
+.task-page {
+    background: cornsilk;
+    position: fixed;
+    top: 50px;
+    overflow-x: hidden;
+    height: 100%;
+    padding: 10px 0 70px 0;
+}
+
+.height-100 {
+    height: 100%;
+}
+
+.sidebar .panel,
+.sidebar .panel .list-group {
+    margin: 0;
+    border: 0;
+}
+
+.last-item {
+    margin-bottom: 34px;
+}
+
+.subtasks-list {
+    margin-bottom: 0;
+    border: 0;
+}
+
+.subtasks-list .completed-subtask {
+    text-decoration: line-through;
+}
+
+.tasks-panel {
+    margin-bottom: 0;
+    border: 0;
+}
+
+.event-page .table th,
+.event-page .table td {
+    text-align: center;
+}
+
+.custom-panel-body {
+    padding-bottom: 0;
+    padding-top: 0;
+    padding-right: 0;
+}
+
+.custom-header {
+    margin: 0;
+    padding: 0;
+}
+
+.tasks-users {
+    margin-top: 15px;
+}

@@ -1,19 +1,213 @@
-<div class="panel-heading">
-    <h3 class="panel-title">Задания <span>({{ vm.currentEvent.tasks.length }})</span></h3>
+<div class="col-sm-12 my-tasks">
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <strong>Мои задания</strong>
+                <span ng-show="CurrEventCtrl.isEventHeader && !CurrEventCtrl.newTask"
+                      class="glyphicon glyphicon-plus btn btn-default btn-sm pull-right"
+                      ng-click="CurrEventCtrl.setNewTask()"></span>
+
+            <div class="clearfix"></div>
+        </div>
+        <div class="panel panel-default tasks-panel">
+            <div class="panel-heading">
+                <a ng-click="TasksCtrl.myTasks.active.toggle()">
+                    Активные
+                </a>
+                <span class="badge pull-right">{{ TasksCtrl.myTasks.active.items.length }}</span>
+            </div>
+            <table class="table table-responsive table-hover" ng-show="TasksCtrl.myTasks.active.is_shown">
+                <tr>
+                    <th ng-click="TasksCtrl.myTasks.active.order('title')">Название
+            <span ng-show="TasksCtrl.myTasks.active.predicate === 'title'"
+                  class="{{ TasksCtrl.myTasks.active.class }}"></span>
+                    </th>
+                    <th ng-click="TasksCtrl.myTasks.active.order('finish_time')"
+                        title="Срок завершения">
+                        <span class="text-center glyphicon glyphicon-time"></span>
+                            <span ng-show="TasksCtrl.myTasks.active.predicate === 'finish_time'"
+                                  class="{{ TasksCtrl.myTasks.active.class }}"></span>
+                    </th>
+                    <th ng-click="TasksCtrl.myTasks.active.order('is_public')">Публичность
+            <span ng-show="TasksCtrl.myTasks.active.predicate === 'is_public'"
+                  class="{{ TasksCtrl.myTasks.active.class }}"></span>
+                    </th>
+                    <th></th>
+                </tr>
+                <tr ng-repeat="task in TasksCtrl.myTasks.active.items track by $index">
+                    <td>
+                        <a ng-click="CurrEventCtrl.setTask();TasksCtrl.setTask(task.id);
+                CurrTaskCtrl.init(); SubtasksCtrl.init();">{{ task.title }}</a>
+                    </td>
+                    <td>{{ task.finish_time }}</td>
+                    <td>
+                            <span ng-class="{'glyphicon glyphicon-eye-open': task.is_public,
+                                                'glyphicon glyphicon-eye-close': !task.is_public}"></span>
+                    </td>
+                    <td>
+                        <button ng-show="vm.isEventHeader"
+                                ng-click="TasksCtrl.removeTask($index, TasksCtrl.myTasks.active)"
+                                class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span>
+                        </button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="panel panel-success tasks-panel">
+            <div class="panel-heading">
+                <a ng-click="TasksCtrl.myTasks.completed.toggle()">
+                    Завершенные
+                </a>
+                <span class="badge pull-right">{{ TasksCtrl.myTasks.completed.items.length }}</span>
+            </div>
+            <table class="table table-responsive table-hover" ng-show="TasksCtrl.myTasks.completed.is_shown">
+                <tr>
+                    <th ng-click="TasksCtrl.myTasks.completed.order('title')">Название
+            <span ng-show="TasksCtrl.myTasks.completed.predicate === 'title'"
+                  class="{{ TasksCtrl.myTasks.completed.class }}"></span>
+                    </th>
+                    <th ng-click="TasksCtrl.myTasks.completed.order('finish_time')"
+                        title="Срок завершения">
+                        <span class="text-center glyphicon glyphicon-time"></span>
+                            <span ng-show="TasksCtrl.myTasks.completed.predicate === 'finish_time'"
+                                  class="{{ TasksCtrl.myTasks.completed.class }}"></span>
+                    </th>
+                    <th ng-click="TasksCtrl.myTasks.completed.order('is_public')">Публичность
+            <span ng-show="TasksCtrl.myTasks.completed.predicate === 'is_public'"
+                  class="{{ TasksCtrl.myTasks.completed.class }}"></span>
+                    </th>
+                    <th></th>
+                </tr>
+                <tr ng-repeat="task in TasksCtrl.myTasks.completed.items track by $index">
+                    <td>
+                        <a ng-click="CurrEventCtrl.setTask();TasksCtrl.setTask(task.id);
+                CurrTaskCtrl.init(); SubtasksCtrl.init();">{{ task.title }}</a>
+                    </td>
+                    <td>{{ task.finish_time }}</td>
+                    <td>
+                            <span ng-class="{'glyphicon glyphicon-eye-open': task.is_public,
+                                                'glyphicon glyphicon-eye-close': !task.is_public}"></span>
+                    </td>
+                    <td>
+                        <button ng-show="vm.isEventHeader"
+                                ng-click="TasksCtrl.removeTask($index, TasksCtrl.myTasks.completed)"
+                                class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span>
+                        </button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+    </div>
 </div>
-<table class="table table-hover">
-    <tr>
-        <th>#</th>
-        <th>Название</th>
-        <th>Руководитель</th>
-        <th>Дата выполнения</th>
-        <th>Статус</th>
-    </tr>
-    <tr ng-repeat="task in vm.currentEvent.tasks">
-        <td></td>
-        <td>{{ task.title }}</td>
-        <td>{{ task.task_header }}</td>
-        <td>{{ task.finish_time }}</td>
-        <td>{{ task.is_public }}</td>
-    </tr>
-</table>
+
+<div class="col-sm-12 other-tasks">
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <strong>Другие задания</strong>
+        </div>
+        <div class="panel panel-default tasks-panel">
+            <div class="panel-heading">
+                <a ng-click="TasksCtrl.otherTasks.active.toggle()">
+                    Активные
+                </a>
+                <span class="badge pull-right">{{ TasksCtrl.otherTasks.active.items.length }}</span>
+            </div>
+            <table class="table table-responsive table-hover" ng-show="TasksCtrl.otherTasks.active.is_shown">
+                <tr>
+                    <th ng-click="TasksCtrl.otherTasks.active.order('title')">Название
+            <span ng-show="TasksCtrl.otherTasks.active.predicate === 'title'"
+                  class="{{ TasksCtrl.otherTasks.active.class }}"></span>
+                    </th>
+                    <th ng-click="TasksCtrl.otherTasks.active.order('finish_time')"
+                        title="Срок завершения">
+                        <span class="text-center glyphicon glyphicon-time"></span>
+                            <span ng-show="TasksCtrl.otherTasks.active.predicate === 'finish_time'"
+                                  class="{{ TasksCtrl.otherTasks.active.class }}"></span>
+                    </th>
+                    <th ng-click="TasksCtrl.otherTasks.active.order('task_header')">
+                        <span class="glyphicon glyphicon-user"></span>
+                            <span ng-show="TasksCtrl.otherTasks.active.predicate === 'task_header'"
+                                  class="{{ TasksCtrl.otherTasks.active.class }}"></span>
+                    </th>
+                    <th ng-click="TasksCtrl.otherTasks.active.order('is_public')">Публичность
+            <span ng-show="TasksCtrl.otherTasks.active.predicate === 'is_public'"
+                  class="{{ TasksCtrl.otherTasks.active.class }}"></span>
+                    </th>
+                    <th></th>
+                </tr>
+                <tr ng-repeat="task in TasksCtrl.otherTasks.active.items track by $index">
+                    <td>
+                        <a ng-click="CurrEventCtrl.setTask();TasksCtrl.setTask(task.id);
+                CurrTaskCtrl.init(); SubtasksCtrl.init();">{{ task.title }}</a>
+                    </td>
+                    <td>{{ task.finish_time }}</td>
+                    <td>{{ task.task_header.first_name }} {{ task.task_header.last_name }}</td>
+                    <td>
+                            <span ng-class="{'glyphicon glyphicon-eye-open': task.is_public,
+                                                'glyphicon glyphicon-eye-close': !task.is_public}"></span>
+                    </td>
+                    <td>
+                        <button ng-show="vm.isEventHeader"
+                                ng-click="TasksCtrl.removeTask($index, TasksCtrl.otherTasks.active)"
+                                class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span>
+                        </button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="panel panel-success tasks-panel">
+            <div class="panel-heading">
+                <a ng-click="TasksCtrl.otherTasks.completed.toggle()">
+                    Завершенные
+                </a>
+                <span class="badge pull-right">{{ TasksCtrl.otherTasks.completed.items.length }}</span>
+            </div>
+            <table class="table table-responsive table-hover" ng-show="TasksCtrl.otherTasks.completed.is_shown">
+                <tr>
+                    <th ng-click="TasksCtrl.otherTasks.completed.order('title')">Название
+            <span ng-show="TasksCtrl.otherTasks.completed.predicate === 'title'"
+                  class="{{ TasksCtrl.otherTasks.completed.class }}"></span>
+                    </th>
+                    <th ng-click="TasksCtrl.otherTasks.completed.order('finish_time')"
+                        title="Срок завершения">
+                        <span class="text-center glyphicon glyphicon-time"></span>
+                            <span ng-show="TasksCtrl.otherTasks.completed.predicate === 'finish_time'"
+                                  class="{{ TasksCtrl.otherTasks.completed.class }}"></span>
+                    </th>
+                    <th ng-click="TasksCtrl.otherTasks.completed.order('task_header')">
+                        <span class="glyphicon glyphicon-user"></span>
+                            <span ng-show="TasksCtrl.otherTasks.completed.predicate === 'task_header'"
+                                  class="{{ TasksCtrl.otherTasks.completed.class }}"></span>
+                    </th>
+                    <th ng-click="TasksCtrl.otherTasks.completed.order('is_public')">Публичность
+            <span ng-show="TasksCtrl.otherTasks.completed.predicate === 'is_public'"
+                  class="{{ TasksCtrl.otherTasks.completed.class }}"></span>
+                    </th>
+                    <th></th>
+                </tr>
+                <tr ng-repeat="task in TasksCtrl.otherTasks.completed.items track by $index">
+                    <td>
+                        <a ng-click="CurrEventCtrl.setTask();TasksCtrl.setTask(task.id);
+                CurrTaskCtrl.init(); SubtasksCtrl.init();">{{ task.title }}</a>
+                    </td>
+                    <td>{{ task.finish_time }}</td>
+                    <td>{{ task.task_header.first_name }} {{ task.task_header.last_name }}</td>
+                    <td>
+                            <span ng-class="{'glyphicon glyphicon-eye-open': task.is_public,
+                                                'glyphicon glyphicon-eye-close': !task.is_public}"></span>
+                    </td>
+                    <td>
+                        <button ng-show="vm.isEventHeader"
+                                ng-click="TasksCtrl.removeTask($index, TasksCtrl.otherTasks.completed)"
+                                class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span>
+                        </button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+    </div>
+</div>
+

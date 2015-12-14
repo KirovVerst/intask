@@ -2,28 +2,28 @@
  * Created by Kirov on 19/11/15.
  */
 (function () {
-	'use strict';
+    'use strict';
 
-	angular.module('application.auth.controllers')
-		.controller('AuthController', function (Auth) {
-			var vm = this;
+    angular.module('application.auth.controllers')
+        .controller('AuthController', function (Auth) {
+            var vm = this;
 
-			vm.isLoggedIn = !!Auth.getToken();
+            vm.isLoggedIn = !!Auth.getToken();
 
-			vm.login = function () {
-				Auth.login(vm.email, vm.password);
-			};
+            vm.login = function () {
+                Auth.login(vm.email, vm.password);
+            };
 
-			vm.register = function () {
-				Auth.register(vm.email, vm.password);
-			};
+            vm.register = function () {
+                Auth.register(vm.email, vm.password, vm.first_name, vm.last_name);
+            };
 
-			vm.logout = function () {
-				Auth.logout();
-			};
+            vm.logout = function () {
+                Auth.logout();
+            };
 
-			vm.email = Auth.getEmail();
+            vm.email = Auth.getEmail();
 
 
-		})
+        })
 })();

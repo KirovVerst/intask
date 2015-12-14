@@ -1,11 +1,12 @@
-<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-    <div class="container-fluid" ng-include="'static/templates/static/headerbar.html'" ng-controller="AuthController as AuthCtrl"></div>
-</div>
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-sm-3 col-md-2 sidebar" ng-include="'static/templates/static/sidebar.html'" ng-controller="EventsController as vm"></div>
-        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-            <h1 class="page-header">Dashboard</h1>
-        </div>
+<div ng-controller="CurrentEventController as CurrEventCtrl">
+    <div ng-controller="TasksController as TasksCtrl">
+        <div class="col-sm-3 sidebar" ng-include="'/static/templates/events/table.html'"></div>
+        <div class="col-sm-offset-3 col-sm-9 event-page"
+             ng-show="CurrEventCtrl.event"
+             ng-init="CurrEventCtrl.init(vm.event)"
+             ng-include="'/static/templates/events/event.html'"></div>
+
+        <div class="col-sm-8 col-sm-offset-2 new-element" ng-show="vm.newEvent"
+             ng-include="'/static/templates/events/new.html'"></div>
     </div>
 </div>

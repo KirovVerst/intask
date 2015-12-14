@@ -1,34 +1,22 @@
-<h1 class="page-header text-center">{{ vm.currentEvent.title }}</h1>
-<div class="col-sm-12">
-    <!-- Description block BEGIN-->
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h3 class="panel-title">Описание события</h3>
+<div class="row" ng-controller="CurrentTaskController as CurrTaskCtrl"
+     ng-init="CurrTaskCtrl.init(); TasksCtrl.init()">
+    <div ng-controller="SubtasksController as SubtasksCtrl">
+        <div ng-class="CurrEventCtrl.eventClass">
+            <div class="col-sm-12" ng-include="'/static/templates/events/desc.html'"></div>
+            <div class="col-sm-12" ng-include="'/static/templates/events/tasks/table.html'"></div>
+            <div class="col-sm-12" ng-include="'/static/templates/events/users/table.html'"></div>
         </div>
-        <div class="panel-body">
-            {{ vm.currentEvent.description }}
+
+
+        <div class="col-sm-3 col-sm-offset-6 task-page"
+             ng-show="CurrEventCtrl.newTask">
+            <div ng-include="'/static/templates/tasks/new.html'"></div>
+        </div>
+        <div class="col-sm-3 col-sm-offset-6 task-page"
+             ng-show="CurrEventCtrl.task">
+            <div ng-include="'/static/templates/tasks/task.html'"></div>
         </div>
     </div>
-    <!-- Description block END-->
-
-    <!-- Information block BEGIN-->
-    <!-- Information block END-->
-
-    <!-- Tasks list block -->
-    <div class="panel panel-default" ng-include="'/static/templates/events/tasks/table.html'"></div>
-    <div class="pull-right">
-        <button class="btn btn-primary">Добавить задание</button>
-    </div>
-    <div class="clearfix"></div>
-    <br>
-    <!-- Tasks list block -->
-    <!-- Users list block BEGIN-->
-    <div class="panel panel-default" ng-include="'/static/templates/events/users/table.html'"></div>
-    <div class="pull-right">
-        <button class="btn btn-primary">Добавить участника</button>
-    </div>
-    <div class="clearfix"></div>
-    <br>
-    <!-- Tasks list block END-->
-
 </div>
+
+
