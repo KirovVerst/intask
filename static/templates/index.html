@@ -1,12 +1,15 @@
-<div ng-controller="CurrentEventController as CurrEventCtrl">
+<div ng-controller="CurrentEventController as CurrEventCtrl" ng-init="vm.init()">
     <div ng-controller="TasksController as TasksCtrl">
         <div class="col-sm-3 sidebar" ng-include="'/static/templates/events/table.html'"></div>
         <div class="col-sm-offset-3 col-sm-9 event-page"
-             ng-show="CurrEventCtrl.event"
-             ng-init="CurrEventCtrl.init(vm.event)"
+             ng-show="vm.event"
+             ng-init="CurrEventCtrl.init()"
              ng-include="'/static/templates/events/event.html'"></div>
 
-        <div class="col-sm-8 col-sm-offset-2 new-element" ng-show="vm.newEvent"
+        <div class="col-sm-offset-3 col-sm-9 event-page" ng-show="vm.newEvent"
              ng-include="'/static/templates/events/new.html'"></div>
+
+        <div class="col-sm-6 col-sm-offset-3 new-element scrollable profile-page" ng-show="UsersCtrl.showProfile"
+        ng-include="'/static/templates/users/profile.html'"></div>
     </div>
 </div>

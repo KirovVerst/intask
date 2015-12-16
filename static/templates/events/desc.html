@@ -1,35 +1,168 @@
-<h2 class="text-center">{{ CurrEventCtrl.event.title }}</h2>
 <div class="col-sm-12">
-    <div class="panel panel-info event-descripiton">
-        <div class="panel-heading">
-            Описание
-            <div class="btn-group-sm pull-right" ng-show="CurrEventCtrl.isEventHeader">
-                <button type="button" class="btn btn-default btn-sm"
-                        ng-hide="CurrEventCtrl.edit.description.status"
-                        ng-click="CurrEventCtrl.edit.description.changeStatus()">
-                    <span class="glyphicon glyphicon-pencil"></span>
-                </button>
-                <button type="button" class="btn btn-default btn-sm"
-                        ng-show="CurrEventCtrl.edit.description.status"
-                        ng-click="CurrEventCtrl.edit.description.update()">
+    <div class="col-sm-6 col-sm-offset-3">
+        <div class="panel panel-info event-descripiton">
+            <div class="panel-heading text-center">
+                <div>
+                    <span ng-show="CurrEventCtrl.edit.title.status">Название</span>
+                <span class="text-center event-title"
+                      ng-hide="CurrEventCtrl.edit.title.status">{{ CurrEventCtrl.event.title }}</span>
+                    <div class="btn-group-sm pull-right" ng-show="CurrEventCtrl.isEventHeader">
+                        <button type="button" class="btn btn-default btn-sm"
+                                ng-hide="CurrEventCtrl.edit.title.status"
+                                ng-click="CurrEventCtrl.edit.title.changeStatus()">
+                            <span class="glyphicon glyphicon-pencil"></span>
+                        </button>
+                        <button type="button" class="btn btn-default btn-sm"
+                                ng-show="CurrEventCtrl.edit.title.status"
+                                ng-click="CurrEventCtrl.edit.title.update()">
+                            <span class="glyphicon glyphicon-floppy-disk"></span>
+                        </button>
+                        <button type="button" class="btn btn-default btn-sm"
+                                ng-show="CurrEventCtrl.edit.title.status"
+                                ng-click="CurrEventCtrl.edit.title.changeStatus()">
+                            <span class="glyphicon glyphicon glyphicon-remove"></span>
+                        </button>
+                    </div>
+
+                    <div class="clearfix"></div>
+                </div>
+                <span class="alert-danger" ng-repeat="msg in CurrEventCtrl.edit.title.errors ">
+                    {{ msg }}
+                </span>
+
+            </div>
+            <div ng-show="CurrEventCtrl.edit.title.status">
+                <label class="sr-only" for="title">Название</label>
+            <textarea rows="5" class="form-control" id="title" name="title"
+                      ng-model="CurrEventCtrl.edit.title.value"></textarea>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="col-sm-12">
+        <div class="panel panel-info event-descripiton">
+            <div class="panel-heading">
+                Описание
+                <div class="btn-group-sm pull-right" ng-show="CurrEventCtrl.isEventHeader">
+                    <button type="button" class="btn btn-default btn-sm"
+                            ng-hide="CurrEventCtrl.edit.description.status"
+                            ng-click="CurrEventCtrl.edit.description.changeStatus()">
+                        <span class="glyphicon glyphicon-pencil"></span>
+                    </button>
+                    <button type="button" class="btn btn-default btn-sm"
+                            ng-show="CurrEventCtrl.edit.description.status"
+                            ng-click="CurrEventCtrl.edit.description.update()">
+                        <span class="glyphicon glyphicon-floppy-disk"></span>
+                    </button>
+                    <button type="button" class="btn btn-default btn-sm"
+                            ng-show="CurrEventCtrl.edit.description.status"
+                            ng-click="CurrEventCtrl.edit.description.changeStatus()">
+                        <span class="glyphicon glyphicon glyphicon-remove"></span>
+                    </button>
+                </div>
+
+                <div class="clearfix"></div>
+            </div>
+            <div ng-hide="CurrEventCtrl.edit.description.status" class="panel-body">
+                {{ CurrEventCtrl.event.description }}
+            </div>
+            <div ng-show="CurrEventCtrl.edit.description.status">
+                <label class="sr-only" for="description">Описание</label>
+            <textarea rows="5" class="form-control" id="description" name="description"
+                      ng-model="CurrEventCtrl.edit.description.value"></textarea>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="col-sm-4">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h4 ng-hide="CurrEventCtrl.edit.finish_time.status"
+                    class="custom-header"><span class="glyphicon glyphicon-time"></span>&nbsp;{{ CurrEventCtrl.event.finish_time | date:"dd-MM-yyyy" }}
+            <span ng-show="CurrEventCtrl.isEventHeader || CurrEventCtrl.isTaskHeader"
+                  ng-click="CurrEventCtrl.edit.finish_time.changeStatus()" class="btn btn-default
+                        glyphicon glyphicon-cog pull-right"></span>
+                </h4>
+
+                <div class="clearfix"></div>
+
+                <div ng-show="CurrEventCtrl.edit.finish_time.status" class="input-group">
+                    <input type="date" class="form-control"
+                           min="{{ CurrEventCtrl.today | date:"dd-MM-yyyy" }}"
+                           max="{{ CurrEventCtrl.event.finish_time | date:"dd-MM-yyyy" }}"
+                           ng-model="CurrEventCtrl.edit.finish_time.value">
+            <span class="input-group-btn">
+                <button ng-click="CurrEventCtrl.edit.finish_time.update()" class="btn btn-default" type="button">
                     <span class="glyphicon glyphicon-floppy-disk"></span>
                 </button>
-                <button type="button" class="btn btn-default btn-sm"
-                        ng-show="CurrEventCtrl.edit.description.status"
-                        ng-click="CurrEventCtrl.edit.description.changeStatus()">
-                    <span class="glyphicon glyphicon glyphicon-remove"></span>
+                <button ng-click="CurrEventCtrl.edit.finish_time.changeStatus()" class="btn btn-default" type="button">
+                    <span class="glyphicon glyphicon-remove"></span>
                 </button>
+            </span>
+                </div>
             </div>
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h4 ng-hide="CurrEventCtrl.edit.event_header.status"
+                    class="custom-header"><span class="glyphicon glyphicon-star"></span>&nbsp; {{ CurrEventCtrl.event.event_header.first_name }} {{ CurrEventCtrl.event.event_header.last_name }}
+            <span ng-show="CurrEventCtrl.isEventHeader"
+                  ng-click="CurrEventCtrl.edit.event_header.changeStatus()" class="btn btn-default
+                        glyphicon glyphicon-cog pull-right"></span>
+                </h4>
 
-            <div class="clearfix"></div>
+                <div class="clearfix"></div>
+
+                <div ng-show="CurrEventCtrl.edit.event_header.status" class="input-group">
+                    <select class="form-control" ng-model="CurrEventCtrl.edit.event_header.value"
+                            ng-options="user.id as user.first_name + ' ' + user.last_name for user in CurrEventCtrl.users">
+                    </select>
+                    <span class="input-group-btn">
+                    <button ng-click="CurrEventCtrl.edit.event_header.update()" class="btn btn-default" type="button">
+                        <span class="glyphicon glyphicon-floppy-disk"></span>
+                    </button>
+                    <button ng-click="CurrEventCtrl.edit.event_header.changeStatus()" class="btn btn-default"
+                            type="button">
+                        <span class="glyphicon glyphicon-remove"></span>
+                    </button>
+            </span>
+                </div>
+            </div>
         </div>
-        <div ng-hide="CurrEventCtrl.edit.description.status" class="panel-body">
-            {{ CurrEventCtrl.event.description }}
-        </div>
-        <div ng-show="CurrEventCtrl.edit.description.status">
-            <label class="sr-only" for="description">Описание</label>
-            <textarea rows="5" class="form-control" id="description" name="description"
-                      ng-model="CurrEventCtrl.edit.description.value">
+    </div>
+    <div class="col-sm-4">
+        <div class="panel" ng-class="CurrEventCtrl.event.is_finished ? 'panel-success' : 'panel-default' ">
+            <div class="panel-heading">
+                <h4 ng-hide="CurrEventCtrl.edit.is_finished.status"
+                    class="custom-header">
+                    <span ng-show="CurrEventCtrl.event.is_finished"><span class="glyphicon glyphicon-unchecked"></span>&nbsp; Завершено</span>
+                    <span ng-hide="CurrEventCtrl.event.is_finished"><span class="glyphicon glyphicon-check"></span>&nbsp; Активно</span>
+            <span ng-show="CurrEventCtrl.isEventHeader"
+                  ng-click="CurrEventCtrl.edit.is_finished.changeStatus()" class="btn btn-default
+                        glyphicon glyphicon-cog pull-right"></span>
+                </h4>
+
+                <div class="clearfix"></div>
+
+                <div ng-show="CurrEventCtrl.edit.is_finished.status" class="input-group">
+                    <select class="form-control" ng-model="CurrEventCtrl.edit.is_finished.value"
+                            ng-options="p.item as p.text for p in CurrEventCtrl.edit.is_finished.items">
+                    </select>
+                    <span class="input-group-btn">
+                    <button ng-click="CurrEventCtrl.edit.is_finished.update()" class="btn btn-default" type="button">
+                        <span class="glyphicon glyphicon-floppy-disk"></span>
+                    </button>
+                    <button ng-click="CurrEventCtrl.edit.is_finished.changeStatus()" class="btn btn-default"
+                            type="button">
+                        <span class="glyphicon glyphicon-remove"></span>
+                    </button>
+            </span>
+                </div>
+            </div>
         </div>
     </div>
 </div>

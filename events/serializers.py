@@ -19,8 +19,8 @@ class EventSerializer(serializers.ModelSerializer):
         return event
 
     def to_representation(self, instance):
-        tasks = TaskSerializer(Task.objects.filter(event=instance), many=True).data
-        users = [{'id': user.id, 'email': user.email} for user in instance.users.all()]
+        # tasks = TaskSerializer(Task.objects.filter(event=instance), many=True).data
+        # users = [{'id': user.id, 'email': user.email} for user in instance.users.all()]
         invited_users = instance.invited_users.split(",")
         return {
             'id': instance.id,
@@ -32,8 +32,8 @@ class EventSerializer(serializers.ModelSerializer):
                 'first_name': instance.event_header.first_name,
                 'last_name': instance.event_header.last_name
             },
-            'tasks': tasks,
-            'users': users,
+            # 'tasks': tasks,
+            # 'users': users,
             'status': instance.status,
             'invited_users': invited_users if invited_users[0] != "" else [],
             'finish_time': instance.finish_time
@@ -54,7 +54,7 @@ class TaskSerializer(serializers.ModelSerializer):
         return task
 
     def to_representation(self, instance):
-        users = [{'id': user.id, 'email': user.email} for user in instance.users.all()]
+        # users = [{'id': user.id, 'email': user.email} for user in instance.users.all()]
         return {
             'id': instance.id,
             'title': instance.title,
@@ -67,7 +67,7 @@ class TaskSerializer(serializers.ModelSerializer):
                 'first_name': instance.task_header.first_name,
                 'last_name': instance.task_header.last_name
             },
-            'users': users,
+            # 'users': users,
             'status': instance.status,
             'finish_time': instance.finish_time
         }
@@ -101,11 +101,11 @@ class UserInEventSerializer(serializers.Serializer):
             'last_name': instance.user.last_name,
             'is_event_header': instance.event.event_header == instance.user
         }
-        header_tasks = instance.event.task_set.filter(task_header=instance.user)
-        data['header_tasks'] = [{'id': task.id, 'title': task.title} for task in header_tasks]
+        # header_tasks = instance.event.task_set.filter(task_header=instance.user)
+        # data['header_tasks'] = [{'id': task.id, 'title': task.title} for task in header_tasks]
 
-        user_tasks = instance.event.task_set.filter(users=instance.user)
-        data['user_tasks'] = [{'id': task.id, 'title': task.title} for task in user_tasks]
+        # user_tasks = instance.event.task_set.filter(users=instance.user)
+        # data['user_tasks'] = [{'id': task.id, 'title': task.title} for task in user_tasks]
         return data
 
     def create(self, validated_data):

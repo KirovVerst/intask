@@ -5,7 +5,7 @@
     'use strict';
 
     angular.module('application.tasks.controllers')
-        .controller('TasksController', function (Tasks, Events, $routeParams, $window, Auth, $filter, $location, UsersInTask) {
+        .controller('TasksController', function (Tasks, Events, $routeParams, $route, $window, Auth, $filter, $location, UsersInTask) {
 
             var orderBy = $filter('orderBy');
             var vm = this;
@@ -83,8 +83,9 @@
                         }
                     };
                     Tasks.query({eventId: vm.eventId}, function (response) {
+                        var userId = Auth.getUserId();
                         angular.forEach(response, function (item) {
-                            if (item.task_header.id == Auth.getUserId()) {
+                            if (vm.isTaskParticipant(userId, item)) {
                                 (item.status == "COMPLETED") ? vm.myTasks.completed.items.push(item) : vm.myTasks.active.items.push(item)
                             } else {
                                 (item.status == "COMPLETED") ? vm.otherTasks.completed.items.push(item) : vm.otherTasks.active.items.push(item)
@@ -109,17 +110,25 @@
                     '-' + ('0' + date.getDate()).slice(-2);
             };
 
+            vm.isTaskParticipant = function (userId, task) {
+                for (var i = 0; i < task.users.length; i++) {
+                    if (userId == task.users[i].id) {
+                        return true;
+                    }
+                }
+                return false;
+            };
+
             vm.createTask = function () {
                 var users = vm.newTask.users;
-                console.log(users);
                 delete vm.newTask.users;
                 vm.newTask.finish_time = dateFormat(new Date(vm.newTask.finish_time));
                 Tasks.save({eventId: vm.eventId}, vm.newTask, function (response) {
                     var task = JSON.parse(angular.toJson(response));
                     if (task.task_header.id == Auth.getUserId()) {
-                        vm.myTasks.push(angular.copy(task));
+                        vm.myTasks.active.items.push(angular.copy(task));
                     } else {
-                        vm.otherTasks.push(angular.copy(task));
+                        vm.otherTasks.active.items.push(angular.copy(task));
                     }
                     angular.forEach(users, function (item) {
                         UsersInTask.save({eventId: vm.eventId, taskId: task.id}, {user: parseInt(item)});
@@ -128,9 +137,25 @@
             };
 
             vm.removeTask = function (index, tasks) {
-                Tasks.delete({eventId: vm.eventId, taskId: tasks[index].id});
+                var params = $location.search();
+                var id = tasks[index].id;
+                Tasks.delete({eventId: vm.eventId, taskId: id});
                 tasks.splice(index, 1);
+                if (params.taskId == id) {
+                    delete params.taskId;
+                    $location.search(params);
+                    $route.reload();
+                }
             };
+
+            vm.removeTask = function (task) {
+                Tasks.delete({eventId: vm.eventId, taskId: task.id});
+                var params = $location.search();
+                delete params.taskId;
+                $location.search(params);
+                $route.reload();
+            };
+
 
             vm.reverse = false;
             vm.predicate = 'title';

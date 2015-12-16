@@ -11,16 +11,46 @@
             var vm = this;
             vm.today = new Date();
             vm.isLoggedIn = !!Auth.getToken();
-            vm.newEvent = null;
-            vm.showMyEvents = true;
-            vm.showOtherEvents = true;
+            vm.newEvent = false;
+            vm.showMyEvents = false;
+            vm.showOtherEvents = false;
 
             vm.toggleEvents = function (isMyEvents) {
                 isMyEvents ? vm.showMyEvents = !vm.showMyEvents : vm.showOtherEvents = !vm.showOtherEvents;
             };
 
             vm.init = function () {
-                vm.event = $location.search().eventId;
+                Auth.check();
+                Events.query(function (response) {
+                    var userId = Auth.getUserId();
+                    var data = JSON.parse(angular.toJson(response));
+                    vm.myEvents = [];
+                    vm.otherEvents = [];
+                    for (var i in data) {
+
+                        if (data[i].event_header.id == userId) {
+                            vm.myEvents.push(data[i]);
+                        }
+                        else {
+                            vm.otherEvents.push(data[i]);
+                        }
+                    }
+                });
+                if ($location.search().eventId) {
+                    Events.get({id: $location.search().eventId}, function (response) {
+                        if (response.$status >= 400) {
+                            vm.event = false;
+                            $location.search({});
+                        } else {
+                            vm.event = $location.search().eventId;
+                        }
+                    });
+                }
+                if ($location.search().newEvent) {
+                    vm.newEvent = {
+                        finish_time: new Date()
+                    }
+                }
             };
 
             vm.setEvent = function (eventId) {
@@ -28,25 +58,23 @@
                 $location.search({eventId: eventId});
             };
 
+            vm.popEvent = function () {
+                vm.event = false;
+                $location.search({});
+            };
+
             vm.setNewEvent = function () {
+                $location.search({newEvent: true});
                 vm.newEvent = {
                     finish_time: new Date()
                 }
             };
+            vm.popNewEvent = function () {
+                $location.search({});
+                vm.newEvent = null;
+            };
 
-            Events.query().$promise.then(function (data) {
-                var userId = Auth.getUserId();
-                vm.myEvents = [];
-                vm.otherEvents = [];
-                for (var index = 0; index < data.length; ++index) {
-                    if (data[index].event_header.id == userId) {
-                        vm.myEvents.push(data[index]);
-                    }
-                    else {
-                        vm.otherEvents.push(data[index]);
-                    }
-                }
-            });
+
             var dateFormat = function (date) {
                 return date.getFullYear() + '-' + ('0' + (date.getMonth() + 1)).slice(-2) +
                     '-' + ('0' + date.getDate()).slice(-2);
@@ -54,18 +82,19 @@
             vm.createEvent = function () {
                 vm.newEvent.event_header = Auth.getUserId();
                 vm.newEvent.finish_time = dateFormat(new Date(vm.newEvent.finish_time));
-                Events.save(vm.newEvent);
-                $window.location = "/";
+                Events.save(vm.newEvent, function (response) {
+                    vm.popNewEvent();
+                    vm.setEvent(response.id);
+
+                });
             };
 
 
-            vm.deleteEvent = function (index) {
-                var event = vm.myEvents[index];
-                var f = confirm("Вы действительно хотите удалить событие " + event.title + "?");
+            vm.deleteEvent = function () {
+                var f = confirm("Вы действительно хотите удалить событие ?");
                 if (f) {
-                    var eventId = event.id;
-                    vm.myEvents.splice(index, 1);
-                    Events.delete({id: eventId});
+                    Events.delete({id: vm.event});
+                    $window.location = "/";
                 }
             };
 

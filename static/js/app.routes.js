@@ -17,15 +17,8 @@
             }).when('/register', {
                 controller: 'AuthController',
                 controllerAs: 'vm',
-                templateUrl: '/static/templates/auth/register.html'
-            }).when('/events/:eventId/', {
-                templateUrl: '/static/templates/index.html',
-                controller: 'EventsController',
-                controllerAs: 'vm'
-            }).when('/events/:eventId/tasks/:taskId', {
-                controller: 'CurrentEventController',
-                controllerAs: 'vm',
-                templateUrl: '/static/templates/events/event.html'
+                templateUrl: '/static/templates/auth/register.html',
+                reloadOnSearch: false
             }).when('/profile/', {
                 controller: 'UsersController',
                 controllerAs: 'vm',

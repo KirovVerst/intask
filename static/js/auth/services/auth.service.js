@@ -66,6 +66,20 @@
                 Auth.deleteUserId();
                 $window.location = '/';
             },
+
+            check: function () {
+                var deferred = $q.defer();
+
+                $http.get('/api/auth/login/')
+                    .success(function (response, status, headers, config) {
+                        if (status == 401){
+                            Auth.logout();
+                        }
+                        deferred.resolve(response, status, headers, config);
+                    }).error(function (response, status, headers, config) {
+                    deferred.reject(response, status, headers, config);
+                });
+            },
             register: function (email, password, first_name, last_name) {
                 var deferred = $q.defer();
 

@@ -7,12 +7,12 @@
             <a class="dropdown-toggle"
                data-toggle="dropdown"
                href="#">
+                <span class="badge" ng-show="UsersCtrl.profile.invitations.length">{{ UsersCtrl.profile.invitations.length }}</span>
                 {{ AuthCtrl.email }}
                 <b class="caret"></b>
             </a>
             <ul class="dropdown-menu">
-                <li><a href="profile">Профиль</a></li>
-                <li><a href="invitations">Приглашения</a></li>
+                <li><a ng-click="UsersCtrl.showProfile = true">Профиль</a><span class="badge"{{ UsersCtrl.profile}}></span></li>
                 <li class="divider"></li>
                 <li><a href="/" ng-click="AuthCtrl.logout()">Выйти</a></li>
             </ul>

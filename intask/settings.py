@@ -135,8 +135,8 @@ STATIC_URL = '/static/'
 
 # EMAIL
 
-EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
-EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'tmp/app-messages')  # change this to a proper location
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'tmp/app-messages')  # change this to a proper location
 
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'

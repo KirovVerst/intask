@@ -54,12 +54,12 @@
 <script type="text/javascript" src="/static/js/static/static.module.js"></script>
 <script type="text/javascript" src="/static/js/static/controllers/sidebar.controller.js"></script>
 
-
-<div class="navbar navbar-inverse navbar-fixed-top" role="navigation" ng-controller="AuthController as AuthCtrl"
-     ng-show="AuthCtrl.isLoggedIn" ng-include="'/static/templates/static/headerbar.html'">
+<div ng-controller="UsersController as UsersCtrl">
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation" ng-controller="AuthController as AuthCtrl"
+         ng-show="AuthCtrl.isLoggedIn" ng-include="'/static/templates/static/headerbar.html'">
+    </div>
+    <div class="row ng-view"></div>
 </div>
-<div class="row ng-view"></div>
-
 
 </body>
 </html>

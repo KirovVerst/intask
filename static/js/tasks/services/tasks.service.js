@@ -13,6 +13,17 @@
                             return result;
                         }
                     }
+
+                },
+                'get': {
+                    method: 'GET',
+                    interceptor: {
+                        response: function (response) {
+                            var result = response.resource;
+                            result.$status = response.status;
+                            return result;
+                        }
+                    }
                 }
             }, {
                 stripTrailingSlashes: false

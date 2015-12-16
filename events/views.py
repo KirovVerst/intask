@@ -159,7 +159,7 @@ class UserInEventViewSet(ModelViewSet):
             elif event.add_email_to_list(request.data['email']):
                 pass
             else:
-                return Response(data="Email has already been in list of invited users.", status=status.HTTP_200_OK)
+                return Response(data="Email has already been added in list of invited users.", status=status.HTTP_400_BAD_REQUEST)
 
         except ObjectDoesNotExist:
             """
@@ -273,6 +273,11 @@ class UserInTaskViewSet(ModelViewSet):
     def destroy(self, request, *args, **kwargs):
         task = get_object_or_404(Task, id=kwargs['task_id'])
         user = get_object_or_404(User, id=kwargs['pk'])
+        event = get_object_or_404(Event, id=kwargs['event_id']);
+        if user == task.task_header:
+            task.users.add(event.event_header)
+            task.task_header = event.event_header
+            task.save()
         if user in task.users.all():
             task.users.remove(user)
             return Response(status=status.HTTP_204_NO_CONTENT)
