@@ -54,7 +54,7 @@ class TaskSerializer(serializers.ModelSerializer):
         return task
 
     def to_representation(self, instance):
-        # users = [{'id': user.id, 'email': user.email} for user in instance.users.all()]
+        users = [user.id for user in instance.users.all()]
         return {
             'id': instance.id,
             'title': instance.title,
@@ -67,7 +67,7 @@ class TaskSerializer(serializers.ModelSerializer):
                 'first_name': instance.task_header.first_name,
                 'last_name': instance.task_header.last_name
             },
-            # 'users': users,
+            'users': users,
             'status': instance.status,
             'finish_time': instance.finish_time
         }

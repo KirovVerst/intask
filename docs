@@ -742,6 +742,11 @@ definitions:
         type: boolean
       task_header:
         $ref: '#/definitions/Header'
+      users:
+        type: array
+        items:
+          type: integer
+          description: "User id"
 
   Header:
     type: object
