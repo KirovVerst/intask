@@ -1,5 +1,5 @@
 # coding=utf-8
-from rest_framework import generics, permissions, validators, exceptions
+from rest_framework import generics, permissions, validators, exceptions, status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -25,6 +25,12 @@ class ObtainAuthToken(APIView):
 
     renderer_classes = (JSONRenderer,)
 
+    def get_permissions(self):
+        if self.request.method in "POST":
+            return [permissions.AllowAny(), ]
+        else:
+            return [permissions.IsAuthenticated(), ]
+
     def post(self, request):
         serializer = AuthCustomTokenSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -35,3 +41,6 @@ class ObtainAuthToken(APIView):
         data['token'] = token.key
 
         return Response(data)
+
+    def get(self, request):
+        return Response(status=status.HTTP_200_OK)

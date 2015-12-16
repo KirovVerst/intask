@@ -1,75 +1,98 @@
-<div class="nav-route col-sm-12">
-    <ol class="breadcrumb">
-        <li class="active"><a href="/">События</a></li>
-    </ol>
-</div>
-<div class="col-sm-7">
-    <h1 class="text-center">Приглашения</h1>
-    <table class="table table-hover">
-        <tr>
-            <th>От кого</th>
-            <th>Событие</th>
-            <th>Время</th>
-            <th>Комментарий</th>
-            <th></th>
-        </tr>
-        <tr ng-repeat="invitation in vm.profile.invitations track by $index">
-            <td>{{ invitation.sender.first_name }} {{ invitation.sender.last_name }}<br/>
-                ({{ invitation.sender.email }})</td>
-            <td>{{ invitation.event.title }}</td>
-            <td>{{ invitation.datetime | date:'yyyy-MM-dd HH:mm:ss'}}</td>
-            <td>{{ invitation.text }}</td>
-            <td>
-                <button ng-click="vm.acceptInvitation($index, true)"><span class="glyphicon glyphicon-ok"></span></button>
-                <button ng-click="vm.acceptInvitation($index, false)"><span class="glyphicon glyphicon-remove"></span></button>
-            </td>
-        </tr>
-    </table>
-</div>
-<div class="col-sm-5">
-    <h1 class="text-center">Профиль</h1>
-
-    <form class="form-horizontal" role="form" ng-submit="vm.updateProfile()">
-        <div class="form-group">
-            <label for="email" class="col-sm-4 control-label">Email</label>
-
-            <div class="col-sm-8">
-                <input type="text" class="form-control" id="email"
-                       ng-model="vm.profile.email" required disabled/>
+<div class="panel panel-primary fixed scrollable">
+    <div class="panel-heading fixed">
+        Профиль
+        <button class="btn btn-sm btn-default pull-right" ng-click="UsersCtrl.toggleProfile()">
+            <span class="glyphicon glyphicon-remove"></span>
+        </button>
+        <div class="clearfix"></div>
+    </div>
+    <div class="panel-body profile-panel-body">
+        <div class="panel panel-default" ng-init="UsersCtrl.showInivitations = false">
+            <div class="panel-heading" style="cursor: pointer" ng-click="UsersCtrl.showInivitations = !UsersCtrl.showInivitations">
+                Приглашения
+                <span class="badge pull-right">{{ UsersCtrl.profile.invitations.length }}</span>
             </div>
-        </div>
-        <div class="form-group">
-            <label for="first_name" class="col-sm-4 control-label">Имя</label>
+            <div class="table-responsive" ng-show="UsersCtrl.showInivitations">
+                <table class="table table-hover">
+                    <tr>
+                        <th>От кого</th>
+                        <th>Событие</th>
+                        <th>Время</th>
+                        <th colspan="2"></th>
+                    </tr>
+                    <tr ng-repeat="invitation in UsersCtrl.profile.invitations track by $index">
+                        <td>{{ invitation.sender.first_name }} {{ invitation.sender.last_name }}<br/>
+                            ({{ invitation.sender.email }})
+                        </td>
+                        <td>{{ invitation.event.title }}</td>
+                        <td>{{ invitation.datetime | date:'yyyy-MM-dd HH:mm:ss' }}</td>
+                        <td>
+                            <button type="button" ng-click="UsersCtrl.acceptInvitation($index, true)"
+                                    class="btn btn-sm btn-success">
+                                <span class="glyphicon glyphicon-ok"></span>
+                            </button>
+                        </td>
+                        <td>
+                            <button type="button" ng-click="UsersCtrl.acceptInvitation($index, false)"
+                                    class="btn btn-sm btn-danger">
+                                <span class="glyphicon glyphicon-remove"></span>
+                            </button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
 
-            <div class="col-sm-8">
-                <input type="text" class="form-control" id="first_name"
-                       ng-model="vm.profile.first_name" minlength="1"/>
-                <span class="alert-danger" ng-show="vm.errors.first_name">
-                    {{ vm.errors.first_name }}
+        </div>
+        <div class="panel panel-info">
+            <div class="panel-heading">Профиль</div>
+            <div class="panel-body">
+                <form class="form-horizontal" role="form" ng-submit="UsersCtrl.updateProfile()">
+                    <div class="form-group">
+                        <label for="email" class="col-sm-4 control-label">Email</label>
+
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control" id="email"
+                                   ng-model="UsersCtrl.profile.email" required disabled/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="first_name" class="col-sm-4 control-label">Имя</label>
+
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control" id="first_name"
+                                   ng-model="UsersCtrl.profile.first_name" minlength="1"/>
+                <span class="alert-danger" ng-show="UsersCtrl.errors.first_name"
+                      ng-repeat="msg in UsersCtrl.errors.first_name">
+                    {{ msg }}
                 </span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="last_name" class="col-sm-4 control-label">Фамилия</label>
+
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control" id="last_name"
+                                   ng-model="UsersCtrl.profile.last_name" minlength="1"/>
+
+                            <span class="alert-danger" ng-show="UsersCtrl.errors.last_name"
+                                  ng-repeat="msg in UsersCtrl.errors.last_name">
+                                {{ msg }}
+                            </span>
+                        </div>
+
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-1 col-sm-offset-4">
+                            <button type="submit" class="btn btn-default">Изменить</button>
+                        </div>
+                        <div class="col-sm-5 col-sm-offset-2" ng-show="UsersCtrl.isSent">
+                            <span class="{{ UsersCtrl.class }}">{{ UsersCtrl.message }}</span>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
-        <div class="form-group">
-            <label for="last_name" class="col-sm-4 control-label">Фамилия</label>
-
-            <div class="col-sm-8">
-                <input type="text" class="form-control" id="last_name"
-                       ng-model="vm.profile.last_name" minlength="1"/>
-
-                <span class="alert-danger" ng-show="vm.errors.last_name">
-                    {{ vm.errors.last_name }}
-                </span>
-            </div>
-
-        </div>
-        <div class="form-group">
-            <div class="col-sm-1 col-sm-offset-4">
-                <button type="submit" class="btn btn-default">Изменить</button>
-            </div>
-            <div class="col-sm-5 col-sm-offset-2" ng-show="vm.isSent">
-                <span class="{{ vm.class }}">{{ vm.message }}</span>
-            </div>
-        </div>
-    </form>
+    </div>
 </div>
+
 

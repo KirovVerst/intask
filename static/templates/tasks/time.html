@@ -1,7 +1,7 @@
 <div class="panel panel-info">
     <div class="panel-heading">
         <h3 ng-hide="CurrTaskCtrl.edit.finish_time.status"
-            class="custom-header">{{ CurrTaskCtrl.task.finish_time | date:"dd-MM-yyyy" }}
+            class="custom-header"><span class="glyphicon glyphicon-time"></span>&nbsp; {{ CurrTaskCtrl.task.finish_time | date:"dd-MM-yyyy" }}
             <span ng-show="CurrEventCtrl.isEventHeader || CurrTaskCtrl.isTaskHeader" ng-click="CurrTaskCtrl.edit.finish_time.changeStatus()" class="btn btn-default
                         glyphicon glyphicon-cog pull-right"></span>
         </h3>

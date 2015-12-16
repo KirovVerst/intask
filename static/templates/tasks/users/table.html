@@ -17,12 +17,12 @@
     <ul class="list-group">
         <li class="list-group-item" ng-repeat="user in CurrTaskCtrl.users track by $index">
             <span class="glyphicon glyphicon-star"
-                  ng-show="user.id == CurrTaskCtrl.task.task_header.id"></span>
+                  ng-show="CurrTaskCtrl.isUserTaskHeader(user.id)"></span>
             <span class="glyphicon glyphicon-user"
                   ng-show="CurrTaskCtrl.isThisUser(user.id)"></span>
             {{ user.first_name }} {{ user.last_name }}
-            <span class="glyphicon glyphicon-trash btn btn-sm btn-default pull-right"
-                  ng-hide="user.id == CurrTaskCtrl.task.task_header.id"
+            <span class="glyphicon glyphicon-remove btn btn-sm btn-default pull-right"
+                  ng-show="!CurrTaskCtrl.isUserTaskHeader(user.id) && (CurrTaskCtrl.isTaskHeader || CurrEventCtrl.isEventHeader)"
                   ng-click="CurrTaskCtrl.removeUser($index)"></span>
 
             <div class="clearfix"></div>

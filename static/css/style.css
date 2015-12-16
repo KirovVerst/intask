@@ -18,12 +18,14 @@ body {
 }
 
 .new-element {
-    background-color: lightgray;
-    box-shadow: 5px 5px white;
     z-index: 1000;
     position: fixed;
-    top: 25%;
+    top: 15%;
     left: 0;
+}
+
+.profile-page {
+    height: inherit;
 }
 
 .detail-element {
@@ -36,7 +38,7 @@ body {
 }
 
 .scrollable {
-    height: auto;
+    max-height: 60%;
     overflow-x: hidden;
 }
 
@@ -60,14 +62,30 @@ body {
 
 .fixed {
     position: fixed;
+    width: inherit;
+    z-index: 1000;
+}
+
+.profile-panel-body {
+    padding-top: 70px;
+
 }
 
 .event-page {
     position: fixed;
-    padding: 0 0 50px 30px;
+    padding: 0 0 70px 30px;
     top: 50px;
     overflow-x: hidden;
     height: 100%;
+}
+
+.event-title .panel {
+    border-radius: 4px;
+}
+
+span.event-title {
+    font-size: 2em;
+    font-weight: bold;
 }
 
 .event-descripiton textarea {
@@ -76,7 +94,7 @@ body {
 }
 
 .task-page {
-    background: cornsilk;
+    background: whitesmoke;
     position: fixed;
     top: 50px;
     overflow-x: hidden;

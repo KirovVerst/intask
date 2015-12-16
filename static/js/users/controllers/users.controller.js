@@ -3,7 +3,7 @@
 
     angular
         .module('application.users.controllers')
-        .controller('UsersController', function (Users, $http, $scope, Auth, $window, $routeParams) {
+        .controller('UsersController', function (Users, $http, $route , $scope, Auth, $window, $routeParams, $location) {
 
             var vm = this;
             vm.isLoggedIn = !!Auth.getToken();
@@ -29,14 +29,22 @@
                         vm.class = "alert-danger";
                     }
                 })
-            }
+            };
+
+            vm.showProfile = false;
+            vm.toggleProfile = function () {
+                vm.showProfile = !vm.showProfile;
+            };
 
             vm.acceptInvitation = function (index, accept) {
                 var invitation = vm.profile.invitations[index];
                 $http.post('api/invitations/', {accept: accept, id: invitation.id})
                     .success(function (response, status, headers, config) {
                         if (accept) {
-                            $window.location = "/events/" + invitation.event.id + "/";
+                            $location.search({eventId: invitation.event.id});
+                            vm.toggleProfile();
+                            $route.reload();
+
                         } else {
                             vm.profile.invitations.splice(index, 1);
                         }

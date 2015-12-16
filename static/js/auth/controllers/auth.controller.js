@@ -5,10 +5,15 @@
     'use strict';
 
     angular.module('application.auth.controllers')
-        .controller('AuthController', function (Auth) {
+        .controller('AuthController', function (Auth, $location) {
             var vm = this;
 
             vm.isLoggedIn = !!Auth.getToken();
+
+            vm.init = function () {
+                vm.params = $location.search();
+                vm.email = vm.params.email;
+            };
 
             vm.login = function () {
                 Auth.login(vm.email, vm.password);

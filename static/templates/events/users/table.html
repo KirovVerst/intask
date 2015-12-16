@@ -1,62 +1,69 @@
-<div class="col-sm-6">
-    <div class="panel panel-primary">
-        <div class="panel-heading">
-            <strong>Участники</strong>
-
-            <div class="btn-group-sm pull-right" ng-show="CurrEventCtrl.isEventHeader">
-                <button type="button" class="btn btn-default btn-sm"
-                        ng-hide="CurrEventCtrl.edit.users.status"
-                        ng-click="CurrEventCtrl.edit.users.changeStatus()">
-                    <span class="glyphicon glyphicon-plus"></span>
-                </button>
-                <button type="button" class="btn btn-default btn-sm"
-                        ng-show="CurrEventCtrl.edit.users.status"
-                        ng-click="CurrEventCtrl.edit.users.changeStatus()">
-                    <span class="glyphicon glyphicon glyphicon-remove"></span>
-                </button>
+<div class="col-sm-12">
+    <div class="col-sm-6" ng-init="CurrEventCtrl.showUsers = false">
+        <div class="panel panel-primary">
+            <div class="panel-heading" style="cursor: pointer"
+                 ng-click="CurrEventCtrl.showUsers = !CurrEventCtrl.showUsers">
+                Участники
+                <span class="badge pull-right">{{ CurrEventCtrl.users.length }}</span>
             </div>
-            <div class="clearfix"></div>
+            <div class="table-responsive">
+                <table class="table  table-hover" ng-show="CurrEventCtrl.showUsers">
+                    <tr>
+                        <th colspan="2"><span class="glyphicon glyphicon-user"></span></th>
+                        <th>@email</th>
+                        <th ng-show="CurrEventCtrl.isEventHeader"></th>
+                    </tr>
+                    <tr ng-repeat="user in CurrEventCtrl.users track by $index">
+                        <td>
+                        <span class="glyphicon glyphicon-star"
+                              ng-show="user.id == CurrEventCtrl.event.event_header.id"></span>
+                    <span class="glyphicon glyphicon-user"
+                          ng-show="CurrEventCtrl.isThisUser(user.id)"></span>
+                        </td>
+                        <td>{{ user.last_name }} {{ user.first_name }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>
+                            <button class="btn btn-default btn-xs pull-right"
+                                    ng-show="CurrEventCtrl.isEventHeader && !CurrEventCtrl.isThisUser(user.id)"
+                                    ng-click="CurrEventCtrl.removeUser($index)">
+                                <span class="glyphicon glyphicon-remove"></span>
+                            </button>
+                            <div class="clearfix"></div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
         </div>
-        <table class="table table-responsive table-hover" ng-hide="CurrEventCtrl.edit.users.status">
-            <tr>
-                <th><span class="glyphicon glyphicon-user"></span></th>
-                <th>@email</th>
-                <th ng-show="CurrEventCtrl.isEventHeader"></th>
-            </tr>
-            <tr ng-repeat="user in CurrEventCtrl.users track by $index">
-                <td>{{ user.last_name }} {{ user.first_name }}</td>
-                <td>{{ user.email }}</td>
-                <td ng-show="CurrEventCtrl.isEventHeader">
-                    <button class="btn btn-default btn-xs pull-right">
-                        <span class="glyphicon glyphicon-trash"></span>
+    </div>
+    <div class="col-sm-6" ng-init="CurrEventCtrl.showInvitedUsers = false">
+        <div class="panel panel-primary">
+            <div class="panel-heading" style="cursor: pointer"
+                 ng-click="CurrEventCtrl.showInvitedUsers = !CurrEventCtrl.showInvitedUsers">
+                Приглашенные участники &nbsp;
+                <span class="badge pull-right">{{ CurrEventCtrl.event.invited_users.length }}</span>
+            </div>
+            <ul class="list-group" ng-show="CurrEventCtrl.showInvitedUsers">
+                <li class="list-group-item" ng-repeat="user in CurrEventCtrl.event.invited_users track by $index">
+                    {{ user }}
+                    <button class="btn btn-default btn-xs pull-right" ng-show="CurrEventCtrl.isEventHeader"
+                            ng-click="CurrEventCtrl.removeInvitedUser($index)">
+                        <span class="glyphicon glyphicon-remove"></span>
                     </button>
                     <div class="clearfix"></div>
-                </td>
-            </tr>
-        </table>
-    </div>
-    <div class="input-group" ng-show="CurrEventCtrl.isEventHeader && CurrEventCtrl.edit.users.status">
-        <span class="input-group-addon">@</span>
-        <input type="text" class="form-control" placeholder="email@example.com"
-               ng-model="CurrEventCtrl.newUser.email">
+                </li>
+            </ul>
+            <div class="input-group" ng-show="CurrEventCtrl.isEventHeader">
+                <span class="input-group-addon">@</span>
+                <input type="text" class="form-control" placeholder="email@example.com"
+                       ng-model="CurrEventCtrl.newUser.email" ng-focus="CurrEventCtrl.edit.users.status">
             <span class="input-group-btn">
              <button class="btn btn-default" type="button" ng-click="CurrEventCtrl.inviteUser()"><span
                      class="glyphicon glyphicon-plus"></span></button>
             </span>
-    </div>
-</div>
-<div class="col-sm-6">
-    <div class="panel panel-primary">
-        <div class="panel-heading">Приглашенные участники</div>
-        <ul class="list-group">
-            <li class="list-group-item" ng-repeat="user in CurrEventCtrl.event.invited_users track by $index">
-                {{ user }}
-                <button class="btn btn-default btn-xs pull-right"
-                        ng-click="CurrEventCtrl.removeInvitedUser($index)">
-                    <span class="glyphicon glyphicon-trash"></span>
-                </button>
-                <div class="clearfix"></div>
-            </li>
-        </ul>
+            </div>
+            <div class="alert-danger text-center">
+                    {{ CurrEventCtrl.newUser.error }}
+            </div>
+        </div>
     </div>
 </div>

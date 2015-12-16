@@ -1,11 +1,32 @@
 (function () {
-	'use strict';
-	angular
-		.module('application.events.services', ['ngResource'])
-		.factory('Events', function ($http, $route, $resource) {
+    'use strict';
+    angular
+        .module('application.events.services', ['ngResource'])
+        .factory('Events', function ($http, $route, $resource) {
             return $resource('/api/events/:id', null, {
                 'update': {
                     method: 'PATCH',
+                    interceptor: {
+                        response: function (response) {
+                            var result = response.resource;
+                            result.$status = response.status;
+                            return result;
+                        }
+                    }
+                },
+                'get': {
+                    method: 'GET',
+                    interceptor: {
+                        response: function (response) {
+                            var result = response.resource;
+                            result.$status = response.status;
+                            return result;
+                        }
+                    }
+                },
+                'query': {
+                    method: 'GET',
+                    isArray: true,
                     interceptor: {
                         response: function (response) {
                             var result = response.resource;
