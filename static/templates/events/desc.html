@@ -80,7 +80,7 @@
         <div class="panel panel-info">
             <div class="panel-heading">
                 <h4 ng-hide="CurrEventCtrl.edit.finish_time.status"
-                    class="custom-header">{{ CurrEventCtrl.event.finish_time | date:"dd-MM-yyyy" }}
+                    class="custom-header"><span class="glyphicon glyphicon-time"></span>&nbsp;{{ CurrEventCtrl.event.finish_time | date:"dd-MM-yyyy" }}
             <span ng-show="CurrEventCtrl.isEventHeader || CurrEventCtrl.isTaskHeader"
                   ng-click="CurrEventCtrl.edit.finish_time.changeStatus()" class="btn btn-default
                         glyphicon glyphicon-cog pull-right"></span>
@@ -109,7 +109,7 @@
         <div class="panel panel-info">
             <div class="panel-heading">
                 <h4 ng-hide="CurrEventCtrl.edit.event_header.status"
-                    class="custom-header">{{ CurrEventCtrl.event.event_header.first_name }} {{ CurrEventCtrl.event.event_header.last_name }}
+                    class="custom-header"><span class="glyphicon glyphicon-star"></span>&nbsp; {{ CurrEventCtrl.event.event_header.first_name }} {{ CurrEventCtrl.event.event_header.last_name }}
             <span ng-show="CurrEventCtrl.isEventHeader"
                   ng-click="CurrEventCtrl.edit.event_header.changeStatus()" class="btn btn-default
                         glyphicon glyphicon-cog pull-right"></span>
@@ -139,8 +139,8 @@
             <div class="panel-heading">
                 <h4 ng-hide="CurrEventCtrl.edit.is_finished.status"
                     class="custom-header">
-                    <span ng-show="CurrEventCtrl.event.is_finished">Завершено</span>
-                    <span ng-hide="CurrEventCtrl.event.is_finished">Активно</span>
+                    <span ng-show="CurrEventCtrl.event.is_finished"><span class="glyphicon glyphicon-unchecked"></span>&nbsp; Завершено</span>
+                    <span ng-hide="CurrEventCtrl.event.is_finished"><span class="glyphicon glyphicon-check"></span>&nbsp; Активно</span>
             <span ng-show="CurrEventCtrl.isEventHeader"
                   ng-click="CurrEventCtrl.edit.is_finished.changeStatus()" class="btn btn-default
                         glyphicon glyphicon-cog pull-right"></span>

@@ -11,186 +11,587 @@ produces:
 paths:
   /events:
     get:
-      summary: Product Types
+      summary: List of events
       description: |
-        The Products endpoint returns information about the *Uber* products
-        offered at a given location. The response includes the display name
-        and other details about each product, and lists the products in the
-        proper display order.
-      parameters:
-        - name: latitude
-          in: query
-          description: Latitude component of location.
-          required: true
-          type: number
-          format: double
-        - name: longitude
-          in: query
-          description: Longitude component of location.
-          required: true
-          type: number
-          format: double
+        Список всех событий, в которых принимает участие пользователь
       tags:
-        - Products
+        - Events
       responses:
         '200':
-          description: An array of products
+          description: An array of events
           schema:
             type: array
             items:
-              $ref: '#/definitions/Product'
+              $ref: '#/definitions/Event'
         default:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  /estimates/price:
-    get:
-      summary: Price Estimates
-      description: >
-        The Price Estimates endpoint returns an estimated price range
-
-        for each product offered at a given location. The price estimate is
-
-        provided as a formatted string with the full price range and the
-        localized
-
-        currency symbol.<br><br>The response also includes low and high
-        estimates,
-
-        and the [ISO 4217](http://en.wikipedia.org/wiki/ISO_4217) currency code
-        for
-
-        situations requiring currency conversion. When surge is active for
-        a particular
-
-        product, its surge_multiplier will be greater than 1, but the price
-        estimate
-
-        already factors in this multiplier.
+    post:
+      summary: Create an event
+      description: |
+        Создать событие
       parameters:
-        - name: start_latitude
-          in: query
-          description: Latitude component of start location.
+        - name: title
+          in: formData
           required: true
-          type: number
-          format: double
-        - name: start_longitude
-          in: query
-          description: Longitude component of start location.
-          required: true
-          type: number
-          format: double
-        - name: end_latitude
-          in: query
-          description: Latitude component of end location.
-          required: true
-          type: number
-          format: double
-        - name: end_longitude
-          in: query
-          description: Longitude component of end location.
-          required: true
-          type: number
-          format: double
-      tags:
-        - Estimates
-      responses:
-        '200':
-          description: An array of price estimates by product
-          schema:
-            type: array
-            items:
-              $ref: '#/definitions/PriceEstimate'
-        default:
-          description: Unexpected error
-          schema:
-            $ref: '#/definitions/Error'
-  /estimates/time:
-    get:
-      summary: Time Estimates
-      description: 'The Time Estimates endpoint returns ETAs for all products offered at a given location, with the responses expressed as integers in seconds. We recommend that this endpoint be called every minute to provide the most accurate, up-to-date ETAs.'
-      parameters:
-        - name: start_latitude
-          in: query
-          description: Latitude component of start location.
-          required: true
-          type: number
-          format: double
-        - name: start_longitude
-          in: query
-          description: Longitude component of start location.
-          required: true
-          type: number
-          format: double
-        - name: customer_uuid
-          in: query
           type: string
-          format: uuid
-          description: Unique customer identifier to be used for experience customization.
-        - name: product_id
-          in: query
+          maxLength: 100
+        - name: description
+          in: formData
+          required: false
           type: string
-          description: 'Unique identifier representing a specific product for a given latitude & longitude.'
+        - name: finish_time
+          in: formData
+          required: true
+          type: string
+          description: "yyyy-MM-dd"
       tags:
-        - Estimates
+        - Events
       responses:
-        '200':
-          description: An array of products
+        '201':
+          description: "CREATED"
           schema:
             type: array
             items:
-              $ref: '#/definitions/Product'
+              $ref: '#/definitions/Event'
         default:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  /me:
+  /events/{pk}/:
     get:
-      summary: User Profile
-      description: The User Profile endpoint returns information about the Uber user that has authorized with the application.
+      summary: "Retrieve the event"
       tags:
-        - User
+        - Events
       responses:
         '200':
-          description: Profile information for a user
-          schema:
-            $ref: '#/definitions/Profile'
+          description: OK
+          $ref: '#/definitions/Event'
         default:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  /history:
-    get:
-      summary: User Activity
-      description: "The User Activity endpoint returns data about a user's lifetime activity with Uber. The response will include pickup locations and times, dropoff locations and times, the distance of past requests, and information about which products were requested.<br><br>The history array in the response will have a maximum length based on the limit parameter. The response value count may exceed limit, therefore subsequent API requests may be necessary."
+
+    delete:
+      summary: "Delete the event"
+      tags:
+        - Events
+      responses:
+        '204':
+          description: NO_CONTENT
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+
+    patch:
+      summary: "Partial update the event"
+      tags:
+        - Events
       parameters:
-        - name: offset
-          in: query
+        - name: title
+          in: formData
+          type: string
+          maxLength: 100
+        - name: description
+          in: formData
+          type: string
+        - name: finish_time
+          in: formData
+          type: string
+          description: "format: yyyy-MM-dd"
+        - name: status
+          in: formData
+          type: string
+          description: "IN_PROGRESS, COMPLETED or DELAYED"
+        - name: task_header
+          in: formData
           type: integer
-          format: int32
-          description: Offset the list of returned results by this amount. Default is zero.
-        - name: limit
-          in: query
-          type: integer
-          format: int32
-          description: 'Number of items to retrieve. Default is 5, maximum is 100.'
-      tags:
-        - User
+          description: "User id"
       responses:
         '200':
-          description: History information for the given user
+          description: OK
           schema:
-            $ref: '#/definitions/Activities'
+            $ref: '#/definitions/Event'
         default:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
+
+  /events/{event_id}/tasks/:
+    get:
+      summary: List of tasks
+      description: |
+        Список всех заданий события, в которых принимает участие пользователь и может просматривать
+      tags:
+        - Tasks
+      responses:
+        '200':
+          description: An array of tasks
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Task'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    post:
+      summary: Create an task
+      description: |
+        Создать событие
+      parameters:
+        - name: title
+          in: formData
+          required: true
+          type: string
+          maxLength: 100
+        - name: description
+          in: formData
+          required: false
+          type: string
+        - name: finish_time
+          in: formData
+          required: true
+          type: string
+          description: "yyyy-MM-dd"
+        - name: task_header
+          in: formData
+          required: true
+          type: integer
+          description: "User id"
+        - name: is_public
+          type: boolean
+          in: formData
+          required: false
+      tags:
+        - Tasks
+      responses:
+        '201':
+          description: "CREATED"
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Task'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /events/{event_id}/tasks/{pk}:
+    get:
+      summary: "Retrieve the task"
+      tags:
+        - Tasks
+      responses:
+        '200':
+          description: OK
+          $ref: '#/definitions/Task'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+
+    delete:
+      summary: "Delete the task"
+      tags:
+        - Events
+      responses:
+        '204':
+          description: NO_CONTENT
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+
+    patch:
+      summary: "Partial update the task"
+      tags:
+        - Tasks
+      parameters:
+        - name: title
+          in: formData
+          type: string
+          maxLength: 100
+        - name: description
+          in: formData
+          type: string
+        - name: finish_time
+          in: formData
+          type: string
+          description: "format: yyyy-MM-dd"
+        - name: status
+          in: formData
+          type: string
+          description: "IN_PROGRESS, COMPLETED or DELAYED"
+        - name: task_header
+          in: formData
+          type: integer
+          description: "User id"
+        - name: is_public
+          in: formData
+          type: integer
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Task'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+
+  /events/{event_id}/tasks/{task_id}/subtasks/:
+    get:
+      summary: List of subtasks
+      description: |
+        Список всех задач задания
+      tags:
+        - Subtasks
+      responses:
+        '200':
+          description: An array of subtasks
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Subtask'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    post:
+      summary: Create an subtask
+      parameters:
+        - name: title
+          in: formData
+          required: true
+          type: string
+          maxLength: 100
+        - name: task
+          in: formData
+          required: true
+          type: integer
+      tags:
+        - Subtasks
+      responses:
+        '201':
+          description: "CREATED"
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Subtask'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+
+  /events/{event_id}/tasks/{task_id}/subtasks/{pk}/:
+    get:
+      summary: Retrieve the subtask
+      tags:
+        - Subtasks
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Subtask'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+
+    delete:
+      summary: "Delete the subtask"
+      tags:
+        - Subtasks
+      responses:
+        '204':
+          description: NO_CONTENT
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+
+    patch:
+      summary: "Partial update the subtask"
+      tags:
+        - Subtasks
+      parameters:
+        - name: title
+          in: formData
+          type: string
+          maxLength: 100
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Subtask'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+
+    /events/{event_id}/tasks/{task_id}/subtasks/{pk}/:
+    get:
+      summary: "Retrieve the subtask"
+      tags:
+        - Subtasks
+      responses:
+        '200':
+          description: OK
+          $ref: '#/definitions/Subtask'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+
+    delete:
+      summary: "Delete the subtask"
+      tags:
+        - Events
+      responses:
+        '204':
+          description: NO_CONTENT
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+
+    patch:
+      summary: "Partial update the subtask"
+      tags:
+        - Subtask
+      parameters:
+        - name: title
+          in: formData
+          type: string
+          maxLength: 100
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Subtask'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+
+  /events/{event_id}/users/:
+    get:
+      summary: List of event participants
+      description: |
+        Список всех участников события
+      tags:
+        - Events
+        - Users
+      responses:
+        '200':
+          description: An array of participants
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/UserInEvent'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    post:
+      summary: Invite user in the event
+      tags:
+        - Events
+        - Users
+      description: |
+        Пригласить пользователя в Событие
+      parameters:
+        - name: email
+          in: formData
+          required: true
+          type: string
+          maxLength: 100
+      tags:
+        - Events
+      responses:
+        '201':
+          description: "CREATED"
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /events/{event_id}/users/{pk}:
+    get:
+      summary: "Retrieve the event participant"
+      tags:
+        - Events
+        - Users
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/UserInEvent'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+
+    delete:
+      summary: "Remove the user from the event"
+      tags:
+        - Events
+        - Users
+      responses:
+        '204':
+          description: NO_CONTENT
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+
+  /events/{event_id}/tasks/{task_id}/users/:
+    get:
+      summary: List of task participants
+      description: |
+        Список всех участников задания
+      tags:
+        - Tasks
+        - Users
+      responses:
+        '200':
+          description: An array of participants
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/UserInTask'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    post:
+      summary: Add user in the task
+      tags:
+        - Tasks
+        - Users
+      description: |
+        Добавить пользователя в Задание
+      parameters:
+        - name: user
+          in: formData
+          required: true
+          type: integer
+          description: "User id"
+      responses:
+        '201':
+          description: "CREATED"
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /events/{event_id}/tasks/{task_id}/users/{pk}:
+    get:
+      summary: "Retrieve the task participant"
+      description: ""
+      tags:
+        - Tasks
+        - Users
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/UserInTask'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+
+    delete:
+      summary: "Remove the user from the task"
+      tags:
+        - Tasks
+        - Users
+      responses:
+        '204':
+          description: NO_CONTENT
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /invitations/:
+    post:
+      summary: "Обработка приглашений"
+      tags:
+        - Events
+        - Users
+        - Inivitations
+      parameters:
+        - name: accept
+          type: boolean
+          in: formData
+          required: true
+      responses:
+        '204':
+          description: NO_CONTENT
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /auth/login/:
+    post:
+      summary: Logging in system
+      tags:
+        - Auth
+      parameters:
+        - name: email
+          type: string
+          in: formData
+          required: true
+        - name: password
+          type: string
+          required: true
+          in: formData
+      responses:
+        '200':
+          description: "OK"
+          schema:
+            $ref: '#/definitions/User'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+
+  /auth/register/:
+    post:
+      summary: Register in system
+      tags:
+        - Auth
+      parameters:
+        - name: email
+          type: string
+          in: formData
+          required: true
+        - name: password
+          type: string
+          required: true
+          in: formData
+        - name: first_name
+          type: string
+          maxLength:  50
+          required: true
+          in: formData
+        - name: last_name
+          required: true
+          in: formData
+          type: string
+      responses:
+        '200':
+          description: "OK"
+          schema:
+            $ref: '#/definitions/User'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+
+
 definitions:
-
-
-
-
-
   User:
     type: object
     properties:
@@ -213,7 +614,6 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/Inivitation'
-
   Inivitation:
     type: object
     properties:
@@ -261,6 +661,66 @@ definitions:
         type: integer
         description: "Task's id"
 
+  UserInEvent:
+    type: object
+    properties:
+      last_name:
+        type: string
+        maxLength: 50
+      first_name:
+        type: string
+        maxLength: 50
+      email:
+        type: string
+      phone_number:
+        type: string
+        maxLength: 50
+      is_event_header:
+        type: boolean
+      id:
+        type: integer
+
+  UserInTask:
+    type: object
+    properties:
+      last_name:
+        type: string
+        maxLength: 50
+      first_name:
+        type: string
+        maxLength: 50
+      email:
+        type: string
+      phone_number:
+        type: string
+        maxLength: 50
+      is_task_header:
+        type: boolean
+      id:
+        type: integer
+
+  Event:
+    type: object
+    properties:
+      event_header:
+        $ref: '#/definitions/Header'
+      id:
+        type: integer
+      title:
+        type: string
+      description:
+        type: string
+      finish_time:
+        type: string
+      status:
+        type: string
+        description: "May be \"IN_PROGRESS\", \"COMPLETED\", \"DELAYED\""
+      invited_users:
+        type: array
+        items:
+          type: string
+          description: "User email"
+
   Task:
     type: object
     properties:
@@ -275,10 +735,13 @@ definitions:
         type: integer
       status:
         type: string
+        description: "May be \"IN_PROGRESS\", \"COMPLETED\", \"DELAYED\""
       finish_time:
         type: string
+      is_public:
+        type: boolean
       task_header:
-        type: '#/definitations/Header'
+        $ref: '#/definitions/Header'
 
   Header:
     type: object
@@ -293,8 +756,6 @@ definitions:
         maxLength: 50
       email:
         type: string
-
-
   Error:
     type: object
     properties:
