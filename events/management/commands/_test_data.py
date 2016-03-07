@@ -31,7 +31,7 @@ def load_test_data(output):
     user.save()
     Token.objects.create(user=user)
     CustomUser.objects.create(user=user)
-    users = [user, ]
+    users = []
 
     with open('/Users/Kirov/Projects/intask/events/management/commands/users.json') as data_file:
         json_data = json.load(data_file)

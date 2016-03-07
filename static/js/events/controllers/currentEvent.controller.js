@@ -24,9 +24,9 @@
 
     angular
         .module('application.events.controllers')
-        .controller('CurrentEventController', function (Events, Tasks, $http, $scope, Auth, $route, $window, $routeParams, UsersInEvent, $location) {
+        .controller('CurrentEventController', function (Events, Tasks, $http, $timeout, $scope, Auth, $route, $window, $routeParams, UsersInEvent, $location) {
             var vm = this;
-            vm.today = new Date();
+
             vm.isLoggedIn = !!Auth.getToken();
 
             vm.init = function () {
@@ -178,6 +178,7 @@
                             vm.users.push(item);
                         })
                     });
+                    vm.today = new Date();
                 }
                 vm.newUser = {};
                 var taskId = $location.search().taskId;
@@ -256,7 +257,17 @@
 
             vm.inviteUser = function () {
                 if (vm.event.invited_users.indexOf(vm.newUser.email) != -1) {
-                    vm.newUser.error = "Email has already been added in list of invited users.";
+                    vm.newUser.error = "Email has already been added in list of invited users";
+                    $timeout(function () {
+                        vm.newUser.error = "";
+                    }, 3000);
+                    return;
+                }
+                if (!vm.newUser.email) {
+                    vm.newUser.error = "Поле не должно быть пустым.";
+                    $timeout(function () {
+                        vm.newUser.error = "";
+                    }, 3000);
                     return;
                 }
                 UsersInEvent.save({eventId: $routeParams.eventId}, vm.newUser, function (response) {

@@ -41,8 +41,8 @@
 
 
     <div class="col-sm-12">
-        <div class="panel panel-info event-descripiton">
-            <div class="panel-heading">
+        <div class="panel panel-info event-descripiton" ng-init="CurrEventCtrl.showDesc = false">
+            <div class="panel-heading" ng-click="CurrEventCtrl.showDesc = !CurrEventCtrl.showDesc" style="cursor: pointer">
                 Описание
                 <div class="btn-group-sm pull-right" ng-show="CurrEventCtrl.isEventHeader">
                     <button type="button" class="btn btn-default btn-sm"
@@ -64,10 +64,10 @@
 
                 <div class="clearfix"></div>
             </div>
-            <div ng-hide="CurrEventCtrl.edit.description.status" class="panel-body">
+            <div ng-hide="CurrEventCtrl.edit.description.status" ng-show="CurrEventCtrl.showDesc" class="panel-body">
                 {{ CurrEventCtrl.event.description }}
             </div>
-            <div ng-show="CurrEventCtrl.edit.description.status">
+            <div ng-show="CurrEventCtrl.edit.description.status" ng- CurrEventCtrl.showDesc">
                 <label class="sr-only" for="description">Описание</label>
             <textarea rows="5" class="form-control" id="description" name="description"
                       ng-model="CurrEventCtrl.edit.description.value"></textarea>
@@ -89,10 +89,10 @@
                 <div class="clearfix"></div>
 
                 <div ng-show="CurrEventCtrl.edit.finish_time.status" class="input-group">
+                    <label class="sr-only" for="tasktime">dd</label>
                     <input type="date" class="form-control"
-                           min="{{ CurrEventCtrl.today | date:"dd-MM-yyyy" }}"
-                           max="{{ CurrEventCtrl.event.finish_time | date:"dd-MM-yyyy" }}"
-                           ng-model="CurrEventCtrl.edit.finish_time.value">
+                           min="{{ vm.today | date:'yyyy-MM-dd' }}"
+                           ng-model="CurrEventCtrl.edit.finish_time.value" name="tasktime" id="tasktime">
             <span class="input-group-btn">
                 <button ng-click="CurrEventCtrl.edit.finish_time.update()" class="btn btn-default" type="button">
                     <span class="glyphicon glyphicon-floppy-disk"></span>
@@ -139,8 +139,8 @@
             <div class="panel-heading">
                 <h4 ng-hide="CurrEventCtrl.edit.is_finished.status"
                     class="custom-header">
-                    <span ng-show="CurrEventCtrl.event.is_finished"><span class="glyphicon glyphicon-unchecked"></span>&nbsp; Завершено</span>
-                    <span ng-hide="CurrEventCtrl.event.is_finished"><span class="glyphicon glyphicon-check"></span>&nbsp; Активно</span>
+                    <span ng-show="CurrEventCtrl.event.is_finished"><span class="glyphicon glyphicon-check"></span>&nbsp; Завершено</span>
+                    <span ng-hide="CurrEventCtrl.event.is_finished"><span class="glyphicon glyphicon-unchecked"></span>&nbsp; Активно</span>
             <span ng-show="CurrEventCtrl.isEventHeader"
                   ng-click="CurrEventCtrl.edit.is_finished.changeStatus()" class="btn btn-default
                         glyphicon glyphicon-cog pull-right"></span>

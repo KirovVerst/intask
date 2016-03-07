@@ -84,7 +84,8 @@
                     };
                     Tasks.query({eventId: vm.eventId}, function (response) {
                         var userId = Auth.getUserId();
-                        angular.forEach(response, function (item) {
+                        var arr = JSON.parse(angular.toJson(response));
+                        angular.forEach(arr, function (item) {
                             if (vm.isTaskParticipant(userId, item)) {
                                 (item.status == "COMPLETED") ? vm.myTasks.completed.items.push(item) : vm.myTasks.active.items.push(item)
                             } else {
@@ -112,7 +113,7 @@
 
             vm.isTaskParticipant = function (userId, task) {
                 for (var i = 0; i < task.users.length; i++) {
-                    if (userId == task.users[i].id) {
+                    if (userId == task.users[i]) {
                         return true;
                     }
                 }
