@@ -112,7 +112,12 @@
             };
 
             vm.isTaskParticipant = function (userId, task) {
-                return task.users.indexOf(userId) != -1;
+                for (var i = 0; i < task.users.length; i++) {
+                    if (userId == task.users[i]) {
+                        return true;
+                    }
+                }
+                return false;
             };
 
             vm.createTask = function () {

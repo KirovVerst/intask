@@ -54,15 +54,15 @@
             </ul>
             <div class="input-group" ng-show="CurrEventCtrl.isEventHeader">
                 <span class="input-group-addon">@</span>
-                <input type="text" class="form-control" placeholder="email@example.com"
+                <input type="email" class="form-control" placeholder="email@example.com" required
                        ng-model="CurrEventCtrl.newUser.email" ng-focus="CurrEventCtrl.edit.users.status">
-            <span class="input-group-btn">
-             <button class="btn btn-default" type="button" ng-click="CurrEventCtrl.inviteUser()"><span
-                     class="glyphicon glyphicon-plus"></span></button>
-            </span>
+                    <span class="input-group-btn">
+                     <button class="btn btn-default" type="button" ng-click="CurrEventCtrl.inviteUser()"><span
+                             class="glyphicon glyphicon-plus"></span></button>
+                    </span>
             </div>
             <div class="alert-danger text-center">
-                    {{ CurrEventCtrl.newUser.error }}
+                {{ CurrEventCtrl.newUser.error }}
             </div>
         </div>
     </div>
