@@ -66,6 +66,7 @@ target/
 
 # db config
 db/my.cnf
+db/db.sqlite3
 
 # other dir
 tmp
