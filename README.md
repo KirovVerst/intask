@@ -11,7 +11,7 @@ Python dependencies
 ```bash
 $ pip install -r requirements.txt
 ```
-Database configuration
+Database config
 ```bash
 $ cd db && mv my.example.cnf my.cnf
 ```
