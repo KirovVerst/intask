@@ -15,8 +15,8 @@ def random_date(start, end):
     end_day = int(end[8:10])
     d1 = datetime.date(start_year, start_month, start_day)
     d2 = datetime.date(end_year, end_month, end_day)
-    delta = d2 - d1
-    delta_days = random.randint(0, delta.days - 1)
+    delta = abs(d1 - d2)
+    delta_days = random.randint(0, delta.days)
     result = d1 + datetime.timedelta(days=delta_days)
     return result.__str__()
 
