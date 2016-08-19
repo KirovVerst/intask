@@ -64,31 +64,13 @@ class EventUserViewSerializer(serializers.ModelSerializer):
 
 
 class TaskUserSerializer(serializers.ModelSerializer):
-    pass
-
-
-class UserInTaskSerializer(serializers.Serializer):
-    task = serializers.PrimaryKeyRelatedField(queryset=Task.objects.all())
-    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+    is_task_header = serializers.BooleanField(read_only=True)
 
     class Meta:
-        fields = ('task', 'user',)
+        model = User
+        fields = ('id', 'first_name', 'last_name', 'email', 'is_task_header')
 
     def to_representation(self, instance):
-        data = {
-            'id': instance.user.id,
-            'email': instance.user.email,
-            'first_name': instance.user.first_name,
-            'last_name': instance.user.last_name,
-            'is_task_header': instance.task.task_header == instance.user
-        }
+        data = super(TaskUserSerializer, self).to_representation(instance)
+        data['is_task_header'] = self.context['task_header'] == instance
         return data
-
-    def create(self, validated_data):
-        pass
-
-    def update(self, instance, validated_data):
-        pass
-
-    def to_internal_value(self, data):
-        pass

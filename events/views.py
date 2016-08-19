@@ -3,7 +3,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import generics, exceptions, status, mixins, viewsets
 from rest_framework.parsers import MultiPartParser
 from .serializers import EventSerializer, TaskSerializer, SubtaskSerializer, EventUserViewSerializer, \
-    UserInTaskSerializer
+    TaskUserSerializer
 from rest_framework.viewsets import ViewSet, ModelViewSet
 from rest_framework.response import Response
 from rest_framework.decorators import renderer_classes
@@ -104,28 +104,13 @@ class EventUsersViewSet(viewsets.GenericViewSet, mixins.CreateModelMixin,
             return Response(status=status.HTTP_200_OK)
 
 
-class InvitedUserInTaskViewSet(ModelViewSet):
-    permission_classes = [IsEventHeader, ]
-    serializer_class = UserInTaskSerializer
-
-    def destroy(self, request, *args, **kwargs):
-        email = request.data['email']
-        event = get_object_or_404(Event, id=kwargs['event_id'])
-        invited_users = event.invited_users.split(',')
-        if email in invited_users:
-            event.remove_email_from_list(email)
-            Invitation.objects.get(event=event, recipient=email).delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
-        return Response(status=status.HTTP_200_OK)
-
-
 class TaskUsersViewSet(ModelViewSet):
     class UserInTask(object):
         def __init__(self, user, task):
             self.user = user
             self.task = task
 
-    serializer_class = UserInTaskSerializer
+    serializer_class = TaskUserSerializer
 
     def get_queryset(self):
         event = get_object_or_404(Event, id=self.kwargs['event_id'])
@@ -143,9 +128,9 @@ class TaskUsersViewSet(ModelViewSet):
             raise exceptions.MethodNotAllowed(method=self.request.method)
 
     def list(self, request, *args, **kwargs):
-        task = get_object_or_404(Task, id=kwargs['task_id'])
-        result = [self.UserInTask(user=user, task=task) for user in self.get_queryset()]
-        serializer = self.serializer_class(result, many=True)
+        queryset = self.get_queryset()
+        task = get_object_or_404(Task, id=self.kwargs['task_id'])
+        serializer = self.serializer_class(instance=queryset, many=True, context={'task_header': task.task_header})
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def create(self, request, *args, **kwargs):
