@@ -3,13 +3,13 @@ from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import generics, exceptions, status
 from rest_framework.parsers import MultiPartParser
-from .serializers import EventSerializer, TaskSerializer, SubtaskSerializer, UserInEventSerializer, UserInTaskSerializer
+from .serializers import EventSerializer, TaskSerializer, SubtaskSerializer, EventUserSerializer, UserInTaskSerializer
 from rest_framework.viewsets import ViewSet, ModelViewSet
 from rest_framework.response import Response
 from .permissions import *
 from invitations.models import Invitation
 from datetime import datetime
-from .invitations import invite_user_to_event
+from users.serializers import UserSerializer
 
 
 # Create your views here.
@@ -23,38 +23,32 @@ class EventViewSet(ModelViewSet):
 
     def get_permissions(self):
         if self.request.method in permissions.SAFE_METHODS:
-            return [IsParticipant(), ]
-        return [IsEventHeader(), ]
+            return [permissions.IsAuthenticated(), IsParticipant()]
+        return [permissions.IsAuthenticated(), IsEventHeader()]
 
     def create(self, request, *args, **kwargs):
         request.data['event_header'] = request.user.id
         return super(EventViewSet, self).create(request, *args, **kwargs)
 
 
-class TaskListCreateAPIView(generics.ListCreateAPIView):
+class TaskViewSet(ModelViewSet):
     serializer_class = TaskSerializer
+
+    def get_queryset(self):
+        event = get_object_or_404(Event, id=self.kwargs['event_id'])
+        q = Task.objects.filter(event=event)
+        return q
 
     def get_permissions(self):
         if self.request.method in permissions.SAFE_METHODS:
-            return [IsParticipant()]
-        return [IsEventHeader()]
+            return [IsParticipant(), permissions.IsAuthenticated()]
+        return [IsEventHeader(), permissions.IsAuthenticated()]
 
-    def get_queryset(self):
-        event = self.get_object()
-
-        if self.request.user == event.event_header:
-            return event.task_set.all()
-
-        return event.task_set.filter(Q(users=self.request.user) | Q(is_public=True)).distinct()
-
-    def post(self, request, *args, **kwargs):
-        data = request.data.copy()
-        if 'task_header' not in data:
-            data['task_header'] = request.user.id
-        data['event'] = kwargs['pk']
-        serializer = TaskSerializer(data=data)
+    def create(self, request, *args, **kwargs):
+        request.data['event'] = kwargs['event_id']
+        serializer = TaskSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            task = serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -122,7 +116,7 @@ class EventUsersViewSet(ModelViewSet):
             self.user = user
             self.event = event
 
-    serializer_class = UserInEventSerializer
+    serializer_class = EventUserSerializer
 
     def get_queryset(self):
         event = get_object_or_404(Event, id=self.kwargs['event_id'])
@@ -139,55 +133,15 @@ class EventUsersViewSet(ModelViewSet):
             raise exceptions.MethodNotAllowed(method=self.request.method)
 
     def list(self, request, *args, **kwargs):
-        event = get_object_or_404(Event, id=self.kwargs['event_id'])
-        result = [self.UserInEvent(user=user, event=event) for user in self.get_queryset()]
-        serializer = self.serializer_class(result, many=True)
+        queryset = self.get_queryset()
+        serializer = self.serializer_class(instance=queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
-    def create(self, request, *args, **kwargs):
-        event = get_object_or_404(Event, id=kwargs['event_id'])
-
-        try:
-            user = User.objects.get(email=request.data['email'])
-            """
-            User found in database
-            """
-            if user in event.users.all():
-                return Response(data={'error': "User has already been added in the event."},
-                                status=status.HTTP_400_BAD_REQUEST)
-            elif event.add_email_to_list(request.data['email']):
-                pass
-            else:
-                return Response(data="Email has already been added in list of invited users.",
-                                status=status.HTTP_400_BAD_REQUEST)
-
-        except ObjectDoesNotExist:
-            """
-            User not found in database.
-            """
-            if event.add_email_to_list(request.data['email']):
-                if invite_user_to_event(request.user, request.data['email'], event):
-                    pass
-                else:
-                    return Response(data="Email with the invitation was not sent.", status=status.HTTP_400_BAD_REQUEST)
-            else:
-                return Response(data="Email has already been in list of invited users.", status=status.HTTP_200_OK)
-
-        invitation_data = {
-            'event': event,
-            'sender': request.user,
-            'datetime': datetime.now(),
-            'text': request.data['text'] if 'text' in request.data else "",
-            'recipient': request.data['email']
-        }
-        Invitation.objects.create(**invitation_data)
-        return Response(status=status.HTTP_201_CREATED)
 
     def retrieve(self, request, *args, **kwargs):
         user = get_object_or_404(User, id=kwargs['pk'])
         event = get_object_or_404(Event, id=kwargs['event_id'])
         if user in event.users.all():
-            serializer = self.serializer_class(self.UserInEvent(user, event))
+            serializer = self.serializer_class(user)
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             raise exceptions.NotFound()

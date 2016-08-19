@@ -4,6 +4,8 @@ from events.views import *
 
 router = DefaultRouter()
 router.register(r'events', EventViewSet, base_name='events')
+router.register(r'events/(?P<event_id>[0-9]+)/users', EventUsersViewSet, base_name='event-users')
+router.register(r'events/(?P<event_id>[0-9]+)/tasks', TaskViewSet, base_name='tasks')
 urlpatterns = router.urls
 
 """
