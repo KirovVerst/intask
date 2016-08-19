@@ -1,6 +1,6 @@
 from django.conf.urls import include, url
-from .views import ObtainAuthToken
+from rest_framework_jwt.views import obtain_jwt_token
 
 urlpatterns = [
-    url(r'^/login/?$', ObtainAuthToken.as_view()),
+    url(r'^login/$', obtain_jwt_token),
 ]

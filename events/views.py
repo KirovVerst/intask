@@ -1,7 +1,8 @@
 # coding=utf-8
 from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
-from rest_framework import generics, exceptions, permissions, response, status, serializers, validators
+from rest_framework import generics, exceptions, status
+from rest_framework.parsers import MultiPartParser
 from .serializers import EventSerializer, TaskSerializer, SubtaskSerializer, UserInEventSerializer, UserInTaskSerializer
 from rest_framework.viewsets import ViewSet, ModelViewSet
 from rest_framework.response import Response
@@ -13,15 +14,9 @@ from .invitations import invite_user_to_event
 
 # Create your views here.
 
-class EventListCreateAPIView(generics.ListCreateAPIView):
+class EventViewSet(ModelViewSet):
     serializer_class = EventSerializer
-
-    def get_queryset(self):
-        return Event.objects.filter(users=self.request.user)
-
-
-class EventDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
-    serializer_class = EventSerializer
+    parser_classes = [MultiPartParser, ]
 
     def get_queryset(self):
         return Event.objects.filter(users=self.request.user)
@@ -30,6 +25,10 @@ class EventDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
         if self.request.method in permissions.SAFE_METHODS:
             return [IsParticipant(), ]
         return [IsEventHeader(), ]
+
+    def create(self, request, *args, **kwargs):
+        request.data['event_header'] = request.user.id
+        return super(EventViewSet, self).create(request, *args, **kwargs)
 
 
 class TaskListCreateAPIView(generics.ListCreateAPIView):
@@ -41,7 +40,7 @@ class TaskListCreateAPIView(generics.ListCreateAPIView):
         return [IsEventHeader()]
 
     def get_queryset(self):
-        event = get_object_or_404(Event, id=self.kwargs['pk'])
+        event = self.get_object()
 
         if self.request.user == event.event_header:
             return event.task_set.all()
@@ -117,7 +116,7 @@ class SubtaskDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
         return task.subtask_set.all()
 
 
-class UserInEventViewSet(ModelViewSet):
+class EventUsersViewSet(ModelViewSet):
     class UserInEvent(object):
         def __init__(self, user, event):
             self.user = user
@@ -159,7 +158,8 @@ class UserInEventViewSet(ModelViewSet):
             elif event.add_email_to_list(request.data['email']):
                 pass
             else:
-                return Response(data="Email has already been added in list of invited users.", status=status.HTTP_400_BAD_REQUEST)
+                return Response(data="Email has already been added in list of invited users.",
+                                status=status.HTTP_400_BAD_REQUEST)
 
         except ObjectDoesNotExist:
             """
@@ -221,7 +221,7 @@ class InvitedUserInTaskViewSet(ModelViewSet):
         return Response(status=status.HTTP_200_OK)
 
 
-class UserInTaskViewSet(ModelViewSet):
+class TaskUsersViewSet(ModelViewSet):
     class UserInTask(object):
         def __init__(self, user, task):
             self.user = user
