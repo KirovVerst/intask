@@ -1,14 +1,15 @@
-# coding=utf-8
 from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
-from rest_framework import generics, exceptions, status
+from rest_framework import generics, exceptions, status, mixins, viewsets
 from rest_framework.parsers import MultiPartParser
-from .serializers import EventSerializer, TaskSerializer, SubtaskSerializer, EventUserSerializer, UserInTaskSerializer
+from .serializers import EventSerializer, TaskSerializer, SubtaskSerializer, EventUserViewSerializer, \
+    UserInTaskSerializer
 from rest_framework.viewsets import ViewSet, ModelViewSet
 from rest_framework.response import Response
 from rest_framework.decorators import renderer_classes
 from .permissions import *
 from invitations.models import Invitation
+from events.models import Subtask
 from datetime import datetime
 from users.serializers import UserSerializer
 
@@ -36,8 +37,7 @@ class TaskViewSet(ModelViewSet):
 
     def get_queryset(self):
         event = get_object_or_404(Event, id=self.kwargs['event_id'])
-        q = Task.objects.filter(event=event)
-        return q
+        return Task.objects.filter(event=event)
 
     def get_permissions(self):
         if self.request.method in permissions.SAFE_METHODS:
@@ -46,77 +46,29 @@ class TaskViewSet(ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         request.data['event'] = kwargs['event_id']
-        serializer = TaskSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return super(TaskViewSet, self).create(request, *args, **kwargs)
 
 
-class TaskDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
-    serializer_class = TaskSerializer
-
-    def get_permissions(self):
-        if self.request.method in permissions.SAFE_METHODS:
-            return [CanRetrieveTask()]
-        elif self.request.method == "DELETE":
-            return [IsEventHeader(), ]
-        else:
-            return [CanUpdateTask(), ]
-
-    def get_queryset(self):
-        event = get_object_or_404(Event, id=self.kwargs['event_id'])
-
-        if self.request.user == event.event_header:
-            return event.task_set.all()
-
-        return event.task_set.filter(Q(users=self.request.user) | Q(is_public=True)).distinct()
-
-
-class SubtaskListCreateAPIView(generics.ListCreateAPIView):
+class SubtaskViewSet(ModelViewSet):
     serializer_class = SubtaskSerializer
 
     def get_permissions(self):
         if self.request.method in permissions.SAFE_METHODS:
             return [CanRetrieveSubtask(), ]
-        else:
-            return [CanCreateUpdateDeleteSubtask()]
+        return [CanCreateUpdateDeleteSubtask()]
 
     def get_queryset(self):
         task = get_object_or_404(Task, id=self.kwargs['task_id'])
-        return task.subtask_set.all()
+        return Subtask.objects.filter(task=task)
 
-    def post(self, request, *args, **kwargs):
-        data = request.data.copy()
-        data['task'] = kwargs['task_id']
-        serializer = SubtaskSerializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def create(self, request, *args, **kwargs):
+        request.data['task'] = kwargs['task_id']
+        return super(SubtaskViewSet, self).create(request, *args, **kwargs)
 
 
-class SubtaskDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
-    serializer_class = SubtaskSerializer
-
-    def get_permissions(self):
-        if self.request.method in permissions.SAFE_METHODS:
-            return [CanRetrieveSubtask(), ]
-        else:
-            return [CanCreateUpdateDeleteSubtask()]
-
-    def get_queryset(self):
-        task = get_object_or_404(Task, id=self.kwargs['task_id'])
-        return task.subtask_set.all()
-
-
-class EventUsersViewSet(ModelViewSet):
-    class UserInEvent(object):
-        def __init__(self, user, event):
-            self.user = user
-            self.event = event
-
-    serializer_class = EventUserSerializer
+class EventUsersViewSet(viewsets.GenericViewSet, mixins.CreateModelMixin,
+                        mixins.ListModelMixin, mixins.DestroyModelMixin):
+    serializer_class = EventUserViewSerializer
 
     def get_queryset(self):
         event = get_object_or_404(Event, id=self.kwargs['event_id'])
@@ -124,7 +76,7 @@ class EventUsersViewSet(ModelViewSet):
 
     def get_permissions(self):
         if self.request.method in permissions.SAFE_METHODS:
-            return [CanRetrieveUserInEvent(), ]
+            return [CanRetrieveUserInEvent()]
         elif self.request.method == "DELETE":
             return [CanDeleteUserInEvent(), ]
         elif self.request.method == "POST":
@@ -134,17 +86,9 @@ class EventUsersViewSet(ModelViewSet):
 
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
-        serializer = self.serializer_class(instance=queryset, many=True)
+        event = get_object_or_404(Event, id=self.kwargs['event_id'])
+        serializer = self.serializer_class(instance=queryset, many=True, context={'event_header': event.event_header})
         return Response(serializer.data, status=status.HTTP_200_OK)
-
-    def retrieve(self, request, *args, **kwargs):
-        user = get_object_or_404(User, id=kwargs['pk'])
-        event = get_object_or_404(Event, id=kwargs['event_id'])
-        if user in event.users.all():
-            serializer = self.serializer_class(user)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        else:
-            raise exceptions.NotFound()
 
     def destroy(self, request, *args, **kwargs):
         event = get_object_or_404(Event, id=kwargs['event_id'])

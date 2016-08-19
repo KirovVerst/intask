@@ -15,7 +15,6 @@ class EventSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         event = Event.objects.create(**validated_data)
         event.users.add(event.event_header)
-        event.save()
         return event
 
     def to_representation(self, instance):
@@ -30,12 +29,11 @@ class TaskSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Task
-        fields = ('title', 'description', 'task_header', 'finish_time', 'event', 'status')
+        fields = ('id', 'title', 'description', 'task_header', 'finish_time', 'event', 'status')
 
     def create(self, validated_data):
         task = Task.objects.create(**validated_data)
         task.users.add(task.task_header)
-        task.save()
         return task
 
     def to_representation(self, instance):
@@ -51,14 +49,22 @@ class SubtaskSerializer(serializers.ModelSerializer):
         model = Subtask
         fields = ('id', 'title', 'is_completed', 'task')
 
-    def create(self, validated_data):
-        return Subtask.objects.create(**validated_data)
 
+class EventUserViewSerializer(serializers.ModelSerializer):
+    is_event_header = serializers.BooleanField(read_only=True)
 
-class EventUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'email', 'first_name', 'last_name')
+        fields = ('id', 'email', 'first_name', 'last_name', 'is_event_header')
+
+    def to_representation(self, instance):
+        data = super(EventUserViewSerializer, self).to_representation(instance)
+        data['is_event_header'] = self.context['event_header'] == instance
+        return data
+
+
+class TaskUserSerializer(serializers.ModelSerializer):
+    pass
 
 
 class UserInTaskSerializer(serializers.Serializer):

@@ -35,15 +35,14 @@ class CanUpdateTask(permissions.BasePermission):
 class CanRetrieveTask(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         is_event_header = obj.event.event_header
-        return request.user in obj.users.all() or obj.is_public or is_event_header
+        return request.user in obj.users.all() or is_event_header
 
 
 class CanRetrieveSubtask(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         is_event_header = obj.task.event.event_header
         is_participant = request.user in obj.task.users.all()
-        is_public = obj.task.is_public
-        return is_event_header | is_participant | is_public
+        return is_event_header | is_participant
 
 
 class CanCreateUpdateDeleteSubtask(permissions.BasePermission):
@@ -89,10 +88,9 @@ class CanRetrieveUserInTask(permissions.BasePermission):
         is_event_header = request.user == event.event_header
 
         task = get_object_or_404(Task, id=view.kwargs['task_id'])
-        is_public_task = task.is_public
         is_participant_in_task = request.user in task.users.all()
 
-        return is_participant_in_event and (is_public_task | is_event_header | is_participant_in_task)
+        return is_participant_in_event and (is_event_header | is_participant_in_task)
 
 
 class CanAddUserInTask(permissions.BasePermission):

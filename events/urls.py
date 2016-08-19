@@ -6,6 +6,7 @@ router = DefaultRouter()
 router.register(r'events', EventViewSet, base_name='events')
 router.register(r'events/(?P<event_id>[0-9]+)/users', EventUsersViewSet, base_name='event-users')
 router.register(r'events/(?P<event_id>[0-9]+)/tasks', TaskViewSet, base_name='tasks')
+router.register(r'events/(?P<event_id>[0-9]+)/tasks/(?P<task_id>[0-9]+)/subtasks', SubtaskViewSet, base_name='subtasks')
 urlpatterns = router.urls
 
 """
