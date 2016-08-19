@@ -6,6 +6,7 @@ from rest_framework.parsers import MultiPartParser
 from .serializers import EventSerializer, TaskSerializer, SubtaskSerializer, EventUserSerializer, UserInTaskSerializer
 from rest_framework.viewsets import ViewSet, ModelViewSet
 from rest_framework.response import Response
+from rest_framework.decorators import renderer_classes
 from .permissions import *
 from invitations.models import Invitation
 from datetime import datetime
@@ -13,7 +14,6 @@ from users.serializers import UserSerializer
 
 
 # Create your views here.
-
 class EventViewSet(ModelViewSet):
     serializer_class = EventSerializer
     parser_classes = [MultiPartParser, ]
@@ -48,7 +48,7 @@ class TaskViewSet(ModelViewSet):
         request.data['event'] = kwargs['event_id']
         serializer = TaskSerializer(data=request.data)
         if serializer.is_valid():
-            task = serializer.save()
+            serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

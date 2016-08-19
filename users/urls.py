@@ -1,5 +1,4 @@
-from django.conf.urls import url
-from .views import UserListAPIView, UserDetailAPIView, UserViewSet
+from users.views import UserViewSet
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()

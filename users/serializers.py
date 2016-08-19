@@ -1,8 +1,6 @@
-from rest_framework import serializers, validators, exceptions
+from rest_framework import serializers, validators
 from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
-from invitations.models import Invitation
-from invitations.serializers import InvitationSerializer
 
 
 class UserSerializer(serializers.ModelSerializer):
