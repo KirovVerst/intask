@@ -59,13 +59,13 @@ class CanCompleteSubtask(permissions.BasePermission):
         return is_event_header | is_participant
 
 
-class CanRetrieveUserInEvent(permissions.BasePermission):
+class CanRetrieveEventUser(permissions.BasePermission):
     def has_permission(self, request, view):
         event = get_object_or_404(Event, id=view.kwargs['event_id'])
         return request.user in event.users.all()
 
 
-class CanDeleteUserInEvent(permissions.BasePermission):
+class CanDeleteEventUser(permissions.BasePermission):
     def has_permission(self, request, view):
         event = get_object_or_404(Event, id=view.kwargs['event_id'])
         user = get_object_or_404(User, id=view.kwargs['pk'])
@@ -75,13 +75,13 @@ class CanDeleteUserInEvent(permissions.BasePermission):
         return is_event_header | is_current_user
 
 
-class CanAddUserInEvent(permissions.BasePermission):
+class CanAddEventUser(permissions.BasePermission):
     def has_permission(self, request, view):
         event = get_object_or_404(Event, id=view.kwargs['event_id'])
         return request.user == event.event_header
 
 
-class CanRetrieveUserInTask(permissions.BasePermission):
+class CanRetrieveTaskUser(permissions.BasePermission):
     def has_permission(self, request, view):
         event = get_object_or_404(Event, id=view.kwargs['event_id'])
         is_participant_in_event = request.user in event.users.all()
@@ -93,7 +93,7 @@ class CanRetrieveUserInTask(permissions.BasePermission):
         return is_participant_in_event and (is_event_header | is_participant_in_task)
 
 
-class CanAddUserInTask(permissions.BasePermission):
+class CanAddTaskUser(permissions.BasePermission):
     def has_permission(self, request, view):
         event = get_object_or_404(Event, id=view.kwargs['event_id'])
         is_event_header = request.user == event.event_header
@@ -104,7 +104,7 @@ class CanAddUserInTask(permissions.BasePermission):
         return is_event_header | is_task_header
 
 
-class CanDeleteUserInTask(permissions.BasePermission):
+class CanDeleteTaskUser(permissions.BasePermission):
     def has_permission(self, request, view):
         event = get_object_or_404(Event, id=view.kwargs['event_id'])
         is_event_header = request.user == event.event_header

@@ -63,7 +63,24 @@ class EventUserViewSerializer(serializers.ModelSerializer):
         return data
 
 
-class TaskUserSerializer(serializers.ModelSerializer):
+class EventUserCreateSerializer(serializers.Serializer):
+    email = serializers.EmailField(required=True, write_only=True)
+    user = serializers.PrimaryKeyRelatedField(read_only=True)
+
+    def validate(self, attrs):
+        attrs['user'] = get_object_or_404(User, email=attrs['email'])
+        return attrs
+
+
+class TaskUserCreateSerializer(serializers.Serializer):
+    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+
+    def validate(self, attrs):
+        attrs['user'] = get_object_or_404(User, email=attrs['user'])
+        return attrs
+
+
+class TaskUserViewSerializer(serializers.ModelSerializer):
     is_task_header = serializers.BooleanField(read_only=True)
 
     class Meta:
@@ -71,6 +88,6 @@ class TaskUserSerializer(serializers.ModelSerializer):
         fields = ('id', 'first_name', 'last_name', 'email', 'is_task_header')
 
     def to_representation(self, instance):
-        data = super(TaskUserSerializer, self).to_representation(instance)
+        data = super(TaskUserViewSerializer, self).to_representation(instance)
         data['is_task_header'] = self.context['task_header'] == instance
         return data
