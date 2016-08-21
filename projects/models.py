@@ -1,22 +1,20 @@
-# coding=utf-8
 from django.db import models
 from django.contrib.auth.models import User
-from django.contrib.contenttypes.fields import GenericRelation
 
 
 # Create your models here.
 
-class Event(models.Model):
+class Project(models.Model):
     title = models.CharField(max_length=100, null=False)
     description = models.TextField(null=True, blank=True)
     finish_time = models.DateField(null=True, blank=True)
-    event_header = models.ForeignKey(User, related_name='event_header', default=None)
+    header = models.ForeignKey(User, related_name='project_header', default=None)
     users = models.ManyToManyField(User)
 
     def delete_user(self, user):
         if user in self.users.all():
-            if self.event_header == user:
-                raise ValueError("You can't delete the event header before setting the other.")
+            if self.header == user:
+                raise ValueError("You can't delete the header before setting the other.")
             self.users.remove(user)
             for task in self.task_set.filter(users=user):
                 task.delete_user(user=user)
@@ -34,13 +32,13 @@ class Task(models.Model):
     title = models.CharField(max_length=100, null=False)
     description = models.TextField(null=True, blank=True)
     finish_time = models.DateField(null=True)
-    task_header = models.ForeignKey(User, related_name='task_header')
+    header = models.ForeignKey(User, related_name='task_header')
     users = models.ManyToManyField(User)
-    event = models.ForeignKey(Event)
+    project = models.ForeignKey(Project)
 
-    COMPLETED = "COMPLETED"
-    DELAYED = "DELAYED"
-    IN_PROGESS = "IN_PROGRESS"
+    COMPLETED = 1
+    DELAYED = -1
+    IN_PROGESS = 0
     STATUS_CHOICES = (
         (COMPLETED, "Completed"),
         (DELAYED, "Delayed"),
@@ -50,8 +48,8 @@ class Task(models.Model):
 
     def delete_user(self, user):
         if user in self.users.all():
-            if self.task_header == user:
-                self.task_header = self.event.event_header
+            if self.header == user:
+                self.header = self.project.header
                 self.save()
             self.users.remove(user)
         else:
@@ -59,10 +57,10 @@ class Task(models.Model):
 
     def add_user(self, user):
         if self.users.filter(id=user).count() == 0:
-            if user in self.event.users.all():
+            if user in self.project.users.all():
                 self.users.add(user)
             else:
-                raise ValueError("The user must be in the event.")
+                raise ValueError("The user must be in the project.")
         else:
             raise ValueError("This user had already been added.")
 

@@ -1,6 +1,6 @@
 from django.core.management import call_command
 from django.core.management.base import BaseCommand, CommandError
-from events.management.commands._test_data import load_test_data
+from projects.management.commands._test_data import load_test_data
 
 
 class Command(BaseCommand):

@@ -1,44 +1,44 @@
 from rest_framework import serializers
-from events.models import Event, Subtask, Task
+from projects.models import Project, Subtask, Task
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from users.serializers import UserSerializer
 
 
-class EventSerializer(serializers.ModelSerializer):
-    event_header = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+class ProjectSerializer(serializers.ModelSerializer):
+    header = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
 
     class Meta:
-        model = Event
-        fields = ('title', 'description', 'event_header', 'finish_time')
+        model = Project
+        fields = ('title', 'description', 'header', 'finish_time')
 
     def create(self, validated_data):
-        event = Event.objects.create(**validated_data)
-        event.users.add(event.event_header)
-        return event
+        project = Project.objects.create(**validated_data)
+        project.users.add(project.header)
+        return project
 
     def to_representation(self, instance):
-        data = super(EventSerializer, self).to_representation(instance)
-        data['event_header'] = UserSerializer(instance.event_header).data
+        data = super(ProjectSerializer, self).to_representation(instance)
+        data['header'] = UserSerializer(instance.header).data
         return data
 
 
 class TaskSerializer(serializers.ModelSerializer):
-    event = serializers.PrimaryKeyRelatedField(queryset=Event.objects.all())
-    task_header = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+    project = serializers.PrimaryKeyRelatedField(queryset=Project.objects.all())
+    header = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
 
     class Meta:
         model = Task
-        fields = ('id', 'title', 'description', 'task_header', 'finish_time', 'event', 'status')
+        fields = ('id', 'title', 'description', 'header', 'finish_time', 'project', 'status')
 
     def create(self, validated_data):
         task = Task.objects.create(**validated_data)
-        task.users.add(task.task_header)
+        task.users.add(task.header)
         return task
 
     def to_representation(self, instance):
         data = super(TaskSerializer, self).to_representation(instance)
-        data['task_header'] = UserSerializer(instance.task_header).data
+        data['header'] = UserSerializer(instance.header).data
         return data
 
 
@@ -50,20 +50,20 @@ class SubtaskSerializer(serializers.ModelSerializer):
         fields = ('id', 'title', 'is_completed', 'task')
 
 
-class EventUserViewSerializer(serializers.ModelSerializer):
-    is_event_header = serializers.BooleanField(read_only=True)
+class ProjectUserViewSerializer(serializers.ModelSerializer):
+    is_header = serializers.BooleanField(read_only=True)
 
     class Meta:
         model = User
-        fields = ('id', 'email', 'first_name', 'last_name', 'is_event_header')
+        fields = ('id', 'email', 'first_name', 'last_name', 'is_header')
 
     def to_representation(self, instance):
-        data = super(EventUserViewSerializer, self).to_representation(instance)
-        data['is_event_header'] = self.context['event_header'] == instance
+        data = super(ProjectUserViewSerializer, self).to_representation(instance)
+        data['is_header'] = self.context['header'] == instance
         return data
 
 
-class EventUserCreateSerializer(serializers.Serializer):
+class ProjectUserCreateSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True, write_only=True)
     user = serializers.PrimaryKeyRelatedField(read_only=True)
 
@@ -81,13 +81,13 @@ class TaskUserCreateSerializer(serializers.Serializer):
 
 
 class TaskUserViewSerializer(serializers.ModelSerializer):
-    is_task_header = serializers.BooleanField(read_only=True)
+    is_header = serializers.BooleanField(read_only=True)
 
     class Meta:
         model = User
-        fields = ('id', 'first_name', 'last_name', 'email', 'is_task_header')
+        fields = ('id', 'first_name', 'last_name', 'email', 'is_header')
 
     def to_representation(self, instance):
         data = super(TaskUserViewSerializer, self).to_representation(instance)
-        data['is_task_header'] = self.context['task_header'] == instance
+        data['is_header'] = self.context['header'] == instance
         return data

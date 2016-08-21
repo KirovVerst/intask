@@ -39,8 +39,7 @@ INSTALLED_APPS = (
     'rest_framework_swagger',
     'authentication',
     'users',
-    'invitations',
-    'events'
+    'projects'
 )
 
 MIDDLEWARE_CLASSES = (
