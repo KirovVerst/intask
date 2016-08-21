@@ -24,4 +24,4 @@ $ python manage.py migrate
 $ python manage.py runserver
 ```
 ###API documentation
-Open `docs.yaml`
+Link: `/api/v1/docs/`
