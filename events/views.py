@@ -1,23 +1,16 @@
-from django.db.models import Q
-from django.core.exceptions import ObjectDoesNotExist
-from rest_framework import generics, exceptions, status, mixins, viewsets
+from rest_framework import exceptions, status, mixins, viewsets
 from rest_framework.parsers import MultiPartParser
-from .serializers import EventSerializer, TaskSerializer, SubtaskSerializer, EventUserViewSerializer, \
-    TaskUserViewSerializer, EventUserCreateSerializer, TaskUserCreateSerializer
-from rest_framework.viewsets import ViewSet, ModelViewSet
+from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
-from rest_framework.decorators import renderer_classes
-from .permissions import *
-from invitations.models import Invitation
+
+from events import serializers
+from events.permissions import *
 from events.models import Subtask
-from datetime import datetime
-from users.serializers import UserSerializer
-from rest_framework.views import APIView
 
 
 # Create your views here.
 class EventViewSet(ModelViewSet):
-    serializer_class = EventSerializer
+    serializer_class = serializers.EventSerializer
     parser_classes = [MultiPartParser, ]
 
     def get_queryset(self):
@@ -39,7 +32,7 @@ class EventViewSet(ModelViewSet):
 
 
 class TaskViewSet(ModelViewSet):
-    serializer_class = TaskSerializer
+    serializer_class = serializers.TaskSerializer
 
     def get_queryset(self):
         event = get_object_or_404(Event, id=self.kwargs['event_id'])
@@ -56,13 +49,14 @@ class TaskViewSet(ModelViewSet):
 
 
 class SubtaskViewSet(ModelViewSet):
-    serializer_class = SubtaskSerializer
+    serializer_class = serializers.SubtaskSerializer
 
     def get_permissions(self):
         if self.request.method in permissions.SAFE_METHODS:
             return [CanRetrieveSubtask(), ]
         return [CanCreateUpdateDeleteSubtask()]
 
+    @property
     def get_queryset(self):
         task = get_object_or_404(Task, id=self.kwargs['task_id'])
         return Subtask.objects.filter(task=task)
@@ -74,38 +68,61 @@ class SubtaskViewSet(ModelViewSet):
 
 def get_event(pk):
     try:
-        return get_object_or_404(Event, id=pk)
-    except ObjectDoesNotExist:
+        return Event.objects.get(id=pk)
+    except Exception:
         raise exceptions.NotFound("Event %s not found." % pk)
 
 
-def get_task(event_id, pk):
+def get_task(event_id, task_id):
     e = get_event(event_id)
     try:
-        return get_object_or_404(e.task_set.all(), id=pk)
-    except ObjectDoesNotExist:
-        raise exceptions.NotFound("Event %s not found." % pk)
+        return get_object_or_404(e.task_set.all(), id=task_id)
+    except Exception:
+        raise exceptions.NotFound("Event %s not found." % task_id)
 
 
-class EventUserListCreateAPIView(generics.ListCreateAPIView):
-    def get_permissions(self):
+class EventUserViewSet(viewsets.GenericViewSet, mixins.CreateModelMixin, mixins.ListModelMixin,
+                       mixins.DestroyModelMixin, mixins.RetrieveModelMixin):
+    def get_serializer_class(self):
         if self.request.method == "GET":
+            return serializers.EventUserViewSerializer
+        else:
+            return serializers.EventUserCreateSerializer
+
+    def get_permissions(self):
+        if self.action == "create":
+            return [CanAddEventUser()]
+        elif self.action == "destroy":
+            return [CanDeleteEventUser()]
+        else:
             return [CanRetrieveEventUser()]
-        return [CanAddEventUser()]
+
+    def get_event(self):
+        return get_event(self.kwargs['event_id'])
+
+    def get_queryset(self):
+        event = self.get_event()
+        return event.users.all()
 
     def list(self, request, *args, **kwargs):
         """
-        List of users from the event
+        Get a list of event users.
         ---
+        response_serializer: serializers.EventUserViewSerializer
         """
-        e = get_event(kwargs['event_id'])
-        serializer = EventUserViewSerializer(instance=e.users.all(), many=True,
-                                             context={'event_header': e.event_header})
+        e = self.get_event()
+        serializer = serializers.EventUserViewSerializer(instance=e.users.all(), many=True,
+                                                         context={'event_header': e.event_header})
         return Response(serializer.data)
 
     def create(self, request, *args, **kwargs):
-        e = get_event(kwargs['event_id'])
-        serializer = EventUserCreateSerializer(data=request.data)
+        """
+        Add an user in an event.
+        ---
+        request_serializer: serializers.EventUserCreateSerializer
+        """
+        e = self.get_event()
+        serializer = serializers.EventUserCreateSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.data['user']
         try:
@@ -114,30 +131,21 @@ class EventUserListCreateAPIView(generics.ListCreateAPIView):
         except Exception as ex:
             return Response(data=dict(msg=ex.args[0]), status=status.HTTP_400_BAD_REQUEST)
 
-
-class EventUserRetrieveDestroyAPIView(generics.RetrieveDestroyAPIView):
-    def get_permissions(self):
-        if self.request.method == 'GET':
-            return [CanRetrieveEventUser()]
-        return [CanDeleteEventUser()]
-
-    def get_event(self):
-        return get_object_or_404(Event, id=self.kwargs['event_id'])
-
-    def get_serializer_class(self):
-        return UserSerializer
-
-    def get_queryset(self):
-        e = get_object_or_404(Event, id=self.kwargs['event_id'])
-        return e.users.all()
-
     def retrieve(self, request, *args, **kwargs):
+        """
+        Get an event user.
+        ---
+        response_serializer: serializers.EventUserViewSerializer
+        """
         user = self.get_object()
         e = self.get_event()
-        serializer = EventUserViewSerializer(instance=user, context={'event_header': e.event_header})
+        serializer = serializers.EventUserViewSerializer(instance=user, context={'event_header': e.event_header})
         return Response(serializer.data)
 
     def destroy(self, request, *args, **kwargs):
+        """
+        Delete an user from an event.
+        """
         e = self.get_event()
         user = self.get_object()
         try:
@@ -147,21 +155,37 @@ class EventUserRetrieveDestroyAPIView(generics.RetrieveDestroyAPIView):
             return Response(status=status.HTTP_400_BAD_REQUEST, data=dict(msg=ex.args[0]))
 
 
-class TaskUserListCreateAPIView(generics.ListCreateAPIView):
+class TaskUserViewSet(viewsets.GenericViewSet, mixins.ListModelMixin, mixins.CreateModelMixin,
+                      mixins.DestroyModelMixin, mixins.RetrieveModelMixin):
     def get_permissions(self):
         if self.request.method == "GET":
-            return [CanRetrieveTask()]
-        return [CanAddTaskUser()]
+            return [CanRetrieveTaskUser()]
+        elif self.request.method == "POST":
+            return [CanAddTaskUser()]
+        else:
+            return [CanDeleteTaskUser()]
+
+    def get_queryset(self):
+        task = get_task(event_id=self.kwargs['event_id'], task_id=self.kwargs['task_id'])
+        return task.users.all()
 
     def list(self, request, *args, **kwargs):
-        t = get_task(event_id=kwargs['event_id'], pk=kwargs['task_id'])
-        serializer = TaskUserViewSerializer(instance=t.users.all(), many=True,
-                                            context={'task_header': t.task_header})
+        """
+        Get a list of task users.
+        ---
+        response_serializer: serializers.TaskUserViewSerializer
+        """
+        t = get_task(event_id=kwargs['event_id'], task_id=kwargs['task_id'])
+        serializer = serializers.TaskUserViewSerializer(instance=t.users.all(), many=True,
+                                                        context={'task_header': t.task_header})
         return Response(serializer.data)
 
     def create(self, request, *args, **kwargs):
-        task = get_task(kwargs['event_id'], pk=kwargs['task_id'])
-        serializer = TaskUserCreateSerializer(data=request.data)
+        """
+        Add an user in an event.
+        """
+        task = get_task(kwargs['event_id'], task_id=kwargs['task_id'])
+        serializer = serializers.TaskUserCreateSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.data['user']
         try:
@@ -170,28 +194,22 @@ class TaskUserListCreateAPIView(generics.ListCreateAPIView):
         except Exception as ex:
             return Response(data=dict(msg=ex.args[0]), status=status.HTTP_400_BAD_REQUEST)
 
-
-class TaskUserRetrieveDestroyAPIView(generics.RetrieveDestroyAPIView):
-    def get_permissions(self):
-        if self.request.method == 'GET':
-            return [CanRetrieveTaskUser()]
-        return [CanDeleteTaskUser()]
-
-    def get_queryset(self):
-        task = get_task(event_id=self.kwargs['event_id'], pk=self.kwargs['task_id'])
-        return task.users.all()
-
     def retrieve(self, request, *args, **kwargs):
         """
-        Get the user from the task
+        Get a task user.
+        ---
+        response_serializer: serializers.TaskUserViewSerializer
         """
         user = self.get_object()
-        task = get_task(event_id=kwargs['event_id'], pk=kwargs['task_id'])
-        serializer = TaskUserViewSerializer(instance=user, context={'task_header': task.task_header})
+        task = get_task(event_id=kwargs['event_id'], task_id=kwargs['task_id'])
+        serializer = serializers.TaskUserViewSerializer(instance=user, context={'task_header': task.task_header})
         return Response(serializer.data)
 
     def destroy(self, request, *args, **kwargs):
-        task = get_task(event_id=kwargs['event_id'], pk=kwargs['task_id'])
+        """
+        Delete an user from an task.
+        """
+        task = get_task(event_id=kwargs['event_id'], task_id=kwargs['task_id'])
         try:
             user = self.get_object()
             task.delete_user(user=user)

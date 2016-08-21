@@ -59,7 +59,10 @@ class Task(models.Model):
 
     def add_user(self, user):
         if self.users.filter(id=user).count() == 0:
-            self.users.add(user)
+            if user in self.event.users.all():
+                self.users.add(user)
+            else:
+                raise ValueError("The user must be in the event.")
         else:
             raise ValueError("This user had already been added.")
 
