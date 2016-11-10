@@ -19,6 +19,7 @@ class UserSerializer(serializers.ModelSerializer):
         user = User.objects.create(**validated_data)
         user.set_password(validated_data.pop('password'))
         user.save()
+        # send email for confirmation
         return user
 
     def update(self, instance, validated_data):
