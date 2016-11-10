@@ -3,7 +3,7 @@ My TaskManager
 
 ##Backend
 ### Requirements
-1. Python 3.*
+1. Python 3
 2. MySQL
 
 ###Installation
@@ -11,9 +11,13 @@ Python dependencies
 ```bash
 $ pip install -r requirements.txt
 ```
-Database config
+Application configuration
 ```bash
-$ cd db && mv my.example.cnf my.cnf
+$ cp intask/conf_demo.py intask/conf.py
+```
+Database configuration
+```bash
+$ cp db/my.example.cnf db/my.cnf
 ```
 Migrations
 ```bash
