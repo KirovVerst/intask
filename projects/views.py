@@ -24,8 +24,6 @@ class ProjectViewSet(ModelViewSet):
     def create(self, request, *args, **kwargs):
         """
         Create a new project.
-        ---
-
         """
         request.data['header'] = request.user.id
         return super(ProjectViewSet, self).create(request, *args, **kwargs)
@@ -44,6 +42,9 @@ class TaskViewSet(ModelViewSet):
         return [IsProjectHeader(), permissions.IsAuthenticated()]
 
     def create(self, request, *args, **kwargs):
+        """
+        Create a new task.
+        """
         request.data['project'] = kwargs['project_id']
         return super(TaskViewSet, self).create(request, *args, **kwargs)
 
@@ -62,8 +63,23 @@ class SubtaskViewSet(ModelViewSet):
         return Subtask.objects.filter(task=task)
 
     def create(self, request, *args, **kwargs):
+        """
+        Create a new subtask.
+        """
         request.data['task'] = kwargs['task_id']
         return super(SubtaskViewSet, self).create(request, *args, **kwargs)
+
+    def list(self, request, *args, **kwargs):
+        """
+        Get a list of subtasks.
+        """
+        return super(SubtaskViewSet, self).list(request, *args, **kwargs)
+
+    def retrieve(self, request, *args, **kwargs):
+        """
+        Get a subtask.
+        """
+        return super(SubtaskViewSet, self).retrieve(request, *args, **kwargs)
 
 
 def get_project(pk):
@@ -82,7 +98,7 @@ def get_task(project_id, task_id):
 
 
 class ProjectUserViewSet(viewsets.GenericViewSet, mixins.CreateModelMixin, mixins.ListModelMixin,
-                       mixins.DestroyModelMixin, mixins.RetrieveModelMixin):
+                         mixins.DestroyModelMixin, mixins.RetrieveModelMixin):
     def get_serializer_class(self):
         if self.request.method == "GET":
             return serializers.ProjectUserViewSerializer
@@ -112,7 +128,7 @@ class ProjectUserViewSet(viewsets.GenericViewSet, mixins.CreateModelMixin, mixin
         """
         e = self.get_project()
         serializer = serializers.ProjectUserViewSerializer(instance=e.users.all(), many=True,
-                                                         context={'header': e.header})
+                                                           context={'header': e.header})
         return Response(serializer.data)
 
     def create(self, request, *args, **kwargs):
@@ -183,6 +199,8 @@ class TaskUserViewSet(viewsets.GenericViewSet, mixins.ListModelMixin, mixins.Cre
     def create(self, request, *args, **kwargs):
         """
         Add an user in an project.
+        ---
+        request_serializer: serializers.TaskUserCreateSerializer
         """
         task = get_task(kwargs['project_id'], task_id=kwargs['task_id'])
         serializer = serializers.TaskUserCreateSerializer(data=request.data)

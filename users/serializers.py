@@ -3,8 +3,7 @@ from django.contrib.auth.models import User
 
 
 class UserSerializer(serializers.ModelSerializer):
-    email = serializers.EmailField(validators=[validators.UniqueValidator(queryset=User.objects.all()),
-                                               serializers.EmailValidator],
+    email = serializers.EmailField(validators=[validators.UniqueValidator(queryset=User.objects.all())],
                                    required=True)
 
     password = serializers.CharField(min_length=8, required=True, write_only=True)
