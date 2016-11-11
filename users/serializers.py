@@ -1,5 +1,6 @@
 from rest_framework import serializers, validators
 from django.contrib.auth.models import User
+from users.tasks import send_simple_message
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -20,6 +21,7 @@ class UserSerializer(serializers.ModelSerializer):
         user.set_password(validated_data.pop('password'))
         user.save()
         # send email for confirmation
+        send_simple_message.delay(user.email)
         return user
 
     def update(self, instance, validated_data):
