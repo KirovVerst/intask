@@ -23,9 +23,14 @@ Migrations
 ```bash
 $ python manage.py migrate
 ```
-###Development server
+###Development 
+#### Server
 ```bash
 $ python manage.py runserver
+```
+#### Celery
+```
+$ celery -A intask worker -l info
 ```
 ###API documentation
 Link: `/api/v1/docs/`
