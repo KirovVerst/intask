@@ -73,3 +73,6 @@ tmp
 temp/
 static/
 intask/conf.py
+
+# redis
+dump.rdb
