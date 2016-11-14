@@ -1,0 +1,16 @@
+{
+  "name": "intask",
+  "version": "1.0.0",
+  "description": "My TaskManager",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KirovVerst/intask.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/KirovVerst/intask/issues"
+  },
+  "homepage": "https://github.com/KirovVerst/intask#readme"
+}
