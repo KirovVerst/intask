@@ -1,12 +1,12 @@
 # intask
 My TaskManager
 
-##Backend
+## Backend
 ### Requirements
 1. Python 3
 2. MySQL
 
-###Installation
+### Installation
 Python dependencies
 ```bash
 $ pip install -r requirements.txt
@@ -23,7 +23,7 @@ Migrations
 ```bash
 $ python manage.py migrate
 ```
-###Development 
+### Development 
 #### Server
 ```bash
 $ python manage.py runserver
@@ -32,5 +32,5 @@ $ python manage.py runserver
 ```
 $ celery -A intask worker -l info
 ```
-###API documentation
+### API documentation
 Link: `/api/v1/docs/`
