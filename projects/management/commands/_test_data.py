@@ -24,8 +24,8 @@ def random_date(start, end):
 def load_test_data(output):
     # Users creation
 
-    iam = {'email': "kirov.verst@gmail.com", 'username': "kirov.verst@gmail.com", 'first_name': "Азат",
-           'last_name': "Абубакиров"}
+    iam = {'email': "kirov.verst@gmail.com", 'username': "kirov@gmail.com", 'first_name': "Kirov",
+           'last_name': "Verst"}
     user = User.objects.create(**iam)
     user.set_password("password")
     user.save()
