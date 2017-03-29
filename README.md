@@ -4,7 +4,6 @@ My TaskManager
 ## Backend
 ### Requirements
 1. Python 3
-2. MySQL
 
 ### Installation
 Python dependencies
