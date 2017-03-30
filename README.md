@@ -1,4 +1,6 @@
 # intask
+[![Build Status](https://travis-ci.org/KirovVerst/intask.svg?branch=master)](https://travis-ci.org/KirovVerst/intask)
+
 My TaskManager
 
 ## Backend
