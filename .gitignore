@@ -77,3 +77,5 @@ intask/conf.py
 # redis
 dump.rdb
 node_modules/
+
+*.sqlite3
