@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from tasks import serializers
 from tasks.models import Subtask
+from rest_framework.exceptions import PermissionDenied
 from projects.permissions import IsProjectHeader
 from tasks.permissions import *
 
@@ -15,7 +16,10 @@ class TaskViewSet(ModelViewSet):
 
     def get_queryset(self):
         project = get_object_or_404(Project, id=self.request.GET.get('project_id', -1))
-        return Task.objects.filter(project=project)
+        if self.request.user in project.users.all():
+            return Task.objects.filter(project=project)
+        else:
+            raise PermissionDenied(detail="You aren't a project member.")
 
     def get_permissions(self):
         if self.request.method in permissions.SAFE_METHODS:
