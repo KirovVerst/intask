@@ -1,4 +1,5 @@
-from projects.models import *
+from projects.models import Project
+from tasks.models import Task, Subtask
 import random, json, datetime
 from django.contrib.auth.models import User
 import os

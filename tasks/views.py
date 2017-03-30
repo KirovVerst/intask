@@ -14,7 +14,7 @@ class TaskViewSet(ModelViewSet):
     serializer_class = serializers.TaskSerializer
 
     def get_queryset(self):
-        project = get_object_or_404(Project, id=self.kwargs['project_id'])
+        project = get_object_or_404(Project, id=self.request.GET.get('project_id', -1))
         return Task.objects.filter(project=project)
 
     def get_permissions(self):
