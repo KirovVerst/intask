@@ -14,18 +14,10 @@ class Project(models.Model):
     def delete_user(self, user):
         if user in self.users.all():
             if self.header == user:
-                raise ValueError("You can't delete the header before setting the other.")
+                raise ValueError("You can not delete the header before setting the other.")
             self.users.remove(user)
             for task in self.task_set.filter(users=user):
                 task.delete_user(user=user)
-        else:
-            raise ValueError("User {0} not found.".format(user.id))
 
     def add_user(self, user):
-        if self.users.filter(id=user).count() == 0:
-            self.users.add(user)
-        else:
-            raise ValueError("This user had already been added.")
-
-
-
+        self.users.add(user)
