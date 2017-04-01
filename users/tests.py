@@ -1,4 +1,3 @@
-from django.test import TestCase
 # Create your tests here.
 
 from rest_framework import status
@@ -6,8 +5,9 @@ from rest_framework.test import APITestCase, APIClient
 from django.contrib.auth.models import User
 
 
+# TODO: need more tests
 class UserTests(APITestCase):
-    fixtures = ['auth.json']
+    fixtures = ['users.json']
     base_url = "/api/v1/"
 
     def setUp(self):

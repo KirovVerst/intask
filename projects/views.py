@@ -18,6 +18,8 @@ class ProjectViewSet(ModelViewSet):
     def get_permissions(self):
         if self.request.method in permissions.SAFE_METHODS:
             return [permissions.IsAuthenticated(), IsParticipant()]
+        elif self.request.method == "PATCH":
+            return [permissions.IsAuthenticated(), IsProjectHeader(), CanChangeProjectHeader()]
         return [permissions.IsAuthenticated(), IsProjectHeader()]
 
     def create(self, request, *args, **kwargs):
@@ -26,6 +28,12 @@ class ProjectViewSet(ModelViewSet):
         """
         request.data['header'] = request.user.id
         return super(ProjectViewSet, self).create(request, *args, **kwargs)
+
+    def destroy(self, request, *args, **kwargs):
+        """
+        Delete the project by id
+        """
+        return super(ProjectViewSet, self).destroy(self, request, args, kwargs)
 
 
 def get_project(pk):

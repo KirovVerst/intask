@@ -6,15 +6,17 @@ from projects.models import Project
 
 class IsProjectHeader(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
-        # subtask
-        if hasattr(obj, 'task'):
-            return obj.task.project.header == request.user
-        # task
-        if hasattr(obj, 'project'):
-            return obj.project.header == request.user
         # project
         if hasattr(obj, 'header'):
             return obj.header == request.user
+
+
+class CanChangeProjectHeader(permissions.BasePermission):
+    def has_object_permission(self, request, view, obj):
+        # candidate must be a member of project
+        if 'header' in request.data:
+            return obj.users.filter(id=request.data['header']).count() > 0
+        return True
 
 
 class IsParticipant(permissions.BasePermission):
@@ -42,5 +44,3 @@ class CanAddProjectUser(permissions.BasePermission):
     def has_permission(self, request, view):
         project = get_object_or_404(Project, id=view.kwargs['project_id'])
         return request.user == project.header
-
-
