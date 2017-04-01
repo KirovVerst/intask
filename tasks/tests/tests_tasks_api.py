@@ -4,18 +4,15 @@ from tasks.models import Task
 from projects.models import Project
 
 
-class BaseTasksTest(APITestCase):
+class AnonymousTasksTest(APITestCase):
     fixtures = ['users.json', 'projects.json', 'tasks.json']
     base_url = "/api/v1/tasks/"
-    project = Project.objects.first()
-    task = project.task_set.first()
-    task_url = base_url + '{0}/'.format(task.id)
-    tasks = project.task_set.all()
 
-
-class AnonymousTasksTest(BaseTasksTest):
     def setUp(self):
-        super(AnonymousTasksTest, self).setUp()
+        self.project = Project.objects.first()
+        self.task = self.project.task_set.first()
+        self.task_url = self.base_url + '{0}/'.format(self.task.id)
+        self.tasks = self.project.task_set.all()
 
     def test_tasks_list(self):
         url_params = dict(project_id=self.project.id)
@@ -41,9 +38,15 @@ class AnonymousTasksTest(BaseTasksTest):
         self.assertEqual(r.status_code, status.HTTP_403_FORBIDDEN)
 
 
-class ProjectHeaderTasksTest(BaseTasksTest):
+class ProjectHeaderTasksTest(APITestCase):
+    fixtures = ['users.json', 'projects.json', 'tasks.json']
+    base_url = "/api/v1/tasks/"
+
     def setUp(self):
-        super(ProjectHeaderTasksTest, self).setUp()
+        self.project = Project.objects.first()
+        self.task = self.project.task_set.first()
+        self.task_url = self.base_url + '{0}/'.format(self.task.id)
+        self.tasks = self.project.task_set.all()
         self.client.login(username=self.project.header.username, password="password")
 
     def test_get_list_tasks(self):
@@ -59,9 +62,15 @@ class ProjectHeaderTasksTest(BaseTasksTest):
         self.assertEqual(Task.objects.filter(id=r.json()['id']).count(), 1)
 
 
-class ProjectMemberTasksTest(BaseTasksTest):
+class ProjectMemberTasksTest(APITestCase):
+    fixtures = ['users.json', 'projects.json', 'tasks.json']
+    base_url = "/api/v1/tasks/"
+
     def setUp(self):
-        super(ProjectMemberTasksTest, self).setUp()
+        self.project = Project.objects.first()
+        self.task = self.project.task_set.first()
+        self.task_url = self.base_url + '{0}/'.format(self.task.id)
+        self.tasks = self.project.task_set.all()
         self.member = self.project.users.all().exclude(id=self.project.header.id).exclude(id=self.task.id).first()
         self.client.login(username=self.member.username, password="password")
 
@@ -78,9 +87,23 @@ class ProjectMemberTasksTest(BaseTasksTest):
         self.assertEqual(Task.objects.filter(id=r.json()['id']).count(), 1)
 
 
-class MemberTasksTest(BaseTasksTest):
-    pass
+class MemberTasksTest(APITestCase):
+    fixtures = ['users.json', 'projects.json', 'tasks.json']
+    base_url = "/api/v1/tasks/"
+
+    def setUp(self):
+        self.project = Project.objects.first()
+        self.task = self.project.task_set.first()
+        self.task_url = self.base_url + '{0}/'.format(self.task.id)
+        self.tasks = self.project.task_set.all()
 
 
-class HeaderTasksTest(BaseTasksTest):
-    pass
+class HeaderTasksTest(APITestCase):
+    fixtures = ['users.json', 'projects.json', 'tasks.json']
+    base_url = "/api/v1/tasks/"
+
+    def setUp(self):
+        self.project = Project.objects.first()
+        self.task = self.project.task_set.first()
+        self.task_url = self.base_url + '{0}/'.format(self.task.id)
+        self.tasks = self.project.task_set.all()
