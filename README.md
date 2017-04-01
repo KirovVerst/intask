@@ -6,6 +6,8 @@ My TaskManager
 ## Backend
 ### Requirements
 1. Python 3
+2. Celery
+3. Redis
 
 ### Installation
 Python dependencies
@@ -15,10 +17,6 @@ $ pip install -r requirements.txt
 Application configuration
 ```bash
 $ cp intask/conf_demo.py intask/conf.py
-```
-Database configuration
-```bash
-$ cp db/my.example.cnf db/my.cnf
 ```
 Migrations
 ```bash
