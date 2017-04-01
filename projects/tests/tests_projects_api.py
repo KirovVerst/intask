@@ -92,3 +92,13 @@ class ProjectsTest(APITestCase):
         r = self.header_client.delete(self.project_url)
         self.assertEqual(r.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(Project.objects.filter(id=self.project.id).count(), 0)
+
+    def test_add_new_project(self):
+        # anonymous
+        data = dict(title="My new project")
+        r = self.client.post(self.base_url, data)
+        self.assertEqual(r.status_code, status.HTTP_403_FORBIDDEN)
+        # not anonymous
+        r = self.member_client.post(self.base_url, data)
+        print(r.json())
+        self.assertEqual(r.status_code, status.HTTP_201_CREATED)
