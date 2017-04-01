@@ -100,5 +100,4 @@ class ProjectsTest(APITestCase):
         self.assertEqual(r.status_code, status.HTTP_403_FORBIDDEN)
         # not anonymous
         r = self.member_client.post(self.base_url, data)
-        print(r.json())
         self.assertEqual(r.status_code, status.HTTP_201_CREATED)

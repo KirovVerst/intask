@@ -108,11 +108,9 @@ class ProjectsTest(APITestCase):
         # header is deleting himself from project
         header_url = self.base_url + '{0}/'.format(self.header.id)
         r = self.header_client.delete(header_url)
-        print(r.json())
         self.assertEqual(r.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_delete_no_member(self):
         no_member_url = self.base_url + '{0}/'.format(self.no_member.id)
         r = self.header_client.delete(no_member_url)
-        print(r.json())
         self.assertEqual(r.status_code, status.HTTP_404_NOT_FOUND)

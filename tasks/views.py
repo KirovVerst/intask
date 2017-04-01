@@ -30,7 +30,7 @@ class TaskViewSet(ModelViewSet):
         """
         Create a new task.
         """
-        request.data['project'] = kwargs['project_id']
+        # request.data['project'] = kwargs['project_id']
         return super(TaskViewSet, self).create(request, *args, **kwargs)
 
 
