@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 
 
 # TODO: test changing datetimes
-class ProjectsTest(APITestCase):
+class ProjectUsersTest(APITestCase):
     fixtures = ['users.json', 'projects.json']
 
     def setUp(self):

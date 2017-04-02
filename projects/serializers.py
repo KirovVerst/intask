@@ -1,7 +1,9 @@
-from rest_framework import serializers
-from projects.models import Project
-from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
+from django.contrib.auth.models import User
+
+from rest_framework import serializers, exceptions
+
+from projects.models import Project
 from users.serializers import UserSerializer
 
 
@@ -11,6 +13,13 @@ class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
         fields = ('title', 'description', 'header', 'finish_time', 'id')
+
+    def validate(self, attrs):
+        if 'header' in attrs and self.instance is not None:
+            if attrs['header'] not in self.instance.users.all():
+                raise exceptions.ValidationError(detail="Project header must be a project member.")
+
+        return attrs
 
     def create(self, validated_data):
         project = Project.objects.create(**validated_data)
@@ -32,7 +41,8 @@ class ProjectUserViewSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         data = super(ProjectUserViewSerializer, self).to_representation(instance)
-        data['is_header'] = self.context['header'] == instance
+        project = Project.objects.get(id=self.context['project_id'])
+        data['is_header'] = project.header == instance
         return data
 
 
@@ -43,3 +53,8 @@ class ProjectUserCreateSerializer(serializers.Serializer):
     def validate(self, attrs):
         attrs['user'] = get_object_or_404(User, email=attrs['email'])
         return attrs
+
+    def create(self, validated_data):
+        project = Project.objects.get(id=self.context['project_id'])
+        project.users.add(validated_data['user'])
+        return validated_data

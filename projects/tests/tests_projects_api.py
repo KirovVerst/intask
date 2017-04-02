@@ -74,9 +74,9 @@ class ProjectsTest(APITestCase):
         # header is trying to set no-member on header position
         data = dict(header=self.no_member.id)
         r = self.header_client.patch(self.project_url, data)
-        self.assertEqual(r.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(r.status_code, status.HTTP_400_BAD_REQUEST)
 
-    def test_delete(self):
+    def test_delete_project(self):
         # anonymous
         r = self.client.delete(self.project_url)
         self.assertEqual(r.status_code, status.HTTP_403_FORBIDDEN)
