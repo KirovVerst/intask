@@ -37,7 +37,6 @@ class TaskViewSet(ModelViewSet):
         """
         Create a new task.
         """
-        # request.data['project'] = kwargs['project_id']
         return super(TaskViewSet, self).create(request, *args, **kwargs)
 
 
@@ -61,9 +60,7 @@ class TaskUserViewSet(GenericViewSet, mixins.ListModelMixin, mixins.CreateModelM
         ---
         response_serializer: serializers.TaskUserViewSerializer
         """
-        task = get_object_or_404(Task, id=self.kwargs['task_id'])
-        serializer = serializers.TaskUserViewSerializer(instance=task.users.all(), many=True,
-                                                        context={'task_header': task.task_header})
+        serializer = serializers.TaskUserViewSerializer(instance=self.get_queryset(), many=True, context=self.kwargs)
         return Response(serializer.data)
 
     def create(self, request, *args, **kwargs):
@@ -72,15 +69,9 @@ class TaskUserViewSet(GenericViewSet, mixins.ListModelMixin, mixins.CreateModelM
         ---
         request_serializer: serializers.TaskUserCreateSerializer
         """
-        task = get_object_or_404(Task, id=self.kwargs['task_id'])
-        serializer = serializers.TaskUserCreateSerializer(data=request.data)
+        serializer = serializers.TaskUserCreateSerializer(data=request.data, context=self.kwargs)
         serializer.is_valid(raise_exception=True)
-        user = serializer.data['user']
-        try:
-            task.add_user(user)
-            return Response(data=dict(msg="User has been added."))
-        except Exception as ex:
-            return Response(data=dict(msg=ex.args[0]), status=status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_201_CREATED)
 
     def retrieve(self, request, *args, **kwargs):
         """
@@ -89,8 +80,7 @@ class TaskUserViewSet(GenericViewSet, mixins.ListModelMixin, mixins.CreateModelM
         response_serializer: serializers.TaskUserViewSerializer
         """
         user = self.get_object()
-        task = get_object_or_404(Task, id=self.kwargs['task_id'])
-        serializer = serializers.TaskUserViewSerializer(instance=user, context={'task_header': task.task_header})
+        serializer = serializers.TaskUserViewSerializer(instance=user, context=self.kwargs)
         return Response(serializer.data)
 
     def destroy(self, request, *args, **kwargs):
@@ -98,9 +88,6 @@ class TaskUserViewSet(GenericViewSet, mixins.ListModelMixin, mixins.CreateModelM
         Delete an user from an task.
         """
         task = get_object_or_404(Task, id=self.kwargs['task_id'])
-        try:
-            user = self.get_object()
-            task.delete_user(user=user)
-            return Response(status=status.HTTP_204_NO_CONTENT)
-        except Exception as ex:
-            return Response(status=status.HTTP_400_BAD_REQUEST, data=dict(msg=ex.args[0]))
+        user = self.get_object()
+        task.delete_user(user=user)
+        return Response(status=status.HTTP_204_NO_CONTENT)

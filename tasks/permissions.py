@@ -23,36 +23,32 @@ class CanRetrieveTask(permissions.BasePermission):
 
 class CanRetrieveTaskUser(permissions.BasePermission):
     def has_permission(self, request, view):
-        project = get_object_or_404(Project, id=view.kwargs['project_id'])
-        is_participant_in_project = request.user in project.users.all()
-        is_project_header = request.user == project.header
+        task = get_object_or_404(Task, id=view.kwargs['task_id'])
+        member_of_project = request.user in task.project.users.all()
+        project_header = request.user == task.project.header
 
         task = get_object_or_404(Task, id=view.kwargs['task_id'])
-        is_participant_in_task = request.user in task.users.all()
+        member_of_task = request.user in task.users.all()
 
-        return is_participant_in_project and (is_project_header | is_participant_in_task)
+        return member_of_project and (project_header | member_of_task)
 
 
 class CanAddTaskUser(permissions.BasePermission):
     def has_permission(self, request, view):
-        project = get_object_or_404(Project, id=view.kwargs['project_id'])
-        is_project_header = request.user == project.header
-
         task = get_object_or_404(Task, id=view.kwargs['task_id'])
-        is_task_header = request.user == task.header
-
-        return is_project_header | is_task_header
+        task_header = request.user == task.header
+        project_header = request.user == task.project.header
+        return project_header | task_header
 
 
 class CanDeleteTaskUser(permissions.BasePermission):
     def has_permission(self, request, view):
-        project = get_object_or_404(Project, id=view.kwargs['project_id'])
-        is_project_header = request.user == project.header
-
         task = get_object_or_404(Task, id=view.kwargs['task_id'])
-        is_task_header = request.user == task.header
+        project_header = request.user == task.project.header
+
+        task_header = request.user == task.header
 
         user = get_object_or_404(User, id=view.kwargs['pk'])
-        is_this_user = request.user == user
+        profile_owner = request.user == user
 
-        return is_project_header | is_task_header | is_this_user
+        return project_header | task_header | profile_owner

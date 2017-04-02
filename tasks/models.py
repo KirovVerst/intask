@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from rest_framework.exceptions import ValidationError
+
 from projects.models import Project
 
 
@@ -29,14 +31,9 @@ class Task(models.Model):
                 self.header = self.project.header
                 self.save()
             self.users.remove(user)
-        else:
-            raise ValueError("User {0} not found.".format(user.id))
 
     def add_user(self, user):
-        if self.users.filter(id=user).count() == 0:
-            if user in self.project.users.all():
-                self.users.add(user)
-            else:
-                raise ValueError("The user must be in the project.")
+        if user in self.project.users.all():
+            self.users.add(user)
         else:
-            raise ValueError("This user had already been added.")
+            raise ValidationError("The user must be in the project.")

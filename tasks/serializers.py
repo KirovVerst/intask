@@ -32,11 +32,19 @@ class TaskSerializer(serializers.ModelSerializer):
 
 
 class TaskUserCreateSerializer(serializers.Serializer):
-    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), write_only=True)
 
     def validate(self, attrs):
-        attrs['user'] = get_object_or_404(User, email=attrs['user'])
+        task = Task.objects.get(id=self.context['task_id'])
+        if attrs['user'] not in task.project.users.all():
+            raise exceptions.ValidationError(detail="Only project member can be added in a task.")
+        attrs['task'] = task
         return attrs
+
+    def create(self, validated_data):
+        task = validated_data['task']
+        task.users.add(validated_data['user'])
+        return validated_data
 
 
 class TaskUserViewSerializer(serializers.ModelSerializer):
@@ -48,5 +56,6 @@ class TaskUserViewSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         data = super(TaskUserViewSerializer, self).to_representation(instance)
-        data['is_header'] = self.context['header'] == instance
+        task = Task.objects.get(id=self.context['task_id'])
+        data['is_header'] = task.header == instance
         return data
