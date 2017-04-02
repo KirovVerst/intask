@@ -15,7 +15,7 @@ class TaskSerializer(serializers.ModelSerializer):
         fields = ('id', 'title', 'description', 'header', 'finish_time', 'project', 'status')
 
     def validate(self, attrs):
-        if 'header' in attrs:
+        if 'header' in attrs and 'project' in attrs:
             if attrs['header'] not in attrs['project'].users.all():
                 raise exceptions.ValidationError(detail="Only project member can be a task header.")
         return attrs
