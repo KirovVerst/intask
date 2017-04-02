@@ -5,14 +5,9 @@ from tasks.models import Task
 from projects.models import Project
 
 
-class IsTaskHeader(permissions.BasePermission):
+class CanDeleteTask(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
-        return obj.header == request.user
-
-
-class IsParticipant(permissions.BasePermission):
-    def has_object_permission(self, request, view, obj):
-        return request.user in obj.users.all()
+        return request.user == obj.project.header or request.user == obj.header
 
 
 class CanUpdateTask(permissions.BasePermission):
@@ -24,9 +19,6 @@ class CanRetrieveTask(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         is_project_header = obj.project.header == request.user
         return request.user in obj.users.all() or is_project_header
-
-
-
 
 
 class CanRetrieveTaskUser(permissions.BasePermission):

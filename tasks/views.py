@@ -4,7 +4,6 @@ from rest_framework.response import Response
 from rest_framework import status
 from tasks import serializers
 from rest_framework.exceptions import PermissionDenied
-from projects.permissions import IsProjectHeader
 from tasks.permissions import *
 
 
@@ -26,10 +25,13 @@ class TaskViewSet(ModelViewSet):
 
     def get_permissions(self):
         if self.request.method in permissions.SAFE_METHODS:
-            return [permissions.IsAuthenticated(), IsParticipant()]
+            return [permissions.IsAuthenticated(), CanRetrieveTask()]
         elif self.request.method == "POST":
             return [permissions.IsAuthenticated(), ]
-        return [permissions.IsAuthenticated(), IsProjectHeader()]
+        elif self.request.method == "DELETE":
+            return [permissions.IsAuthenticated(), CanDeleteTask()]
+        else:
+            return [permissions.IsAuthenticated(), CanUpdateTask()]
 
     def create(self, request, *args, **kwargs):
         """

@@ -5,7 +5,7 @@ My TaskManager
 
 ## Backend
 ### Requirements
-1. Python 3.6
+1. Python 3.5
 
 ### Installation
 Python dependencies
@@ -19,6 +19,10 @@ $ cp intask/conf_demo.py intask/conf.py
 Migrations
 ```bash
 $ python manage.py migrate
+```
+Loading test data
+```bash
+$ python manage.py loaddata fixtures/*
 ```
 ### Development 
 #### Server
