@@ -15,7 +15,11 @@ class TaskViewSet(ModelViewSet):
     serializer_class = serializers.TaskSerializer
 
     def get_queryset(self):
-        project = get_object_or_404(Project, id=self.request.GET.get('project_id', -1))
+        if self.action == "list":
+            project = get_object_or_404(Project, id=self.request.GET.get('project_id', -1))
+        else:
+            project = get_object_or_404(Task, id=self.kwargs['pk']).project
+
         if self.request.user in project.users.all():
             return Task.objects.filter(project=project)
         else:
@@ -23,8 +27,10 @@ class TaskViewSet(ModelViewSet):
 
     def get_permissions(self):
         if self.request.method in permissions.SAFE_METHODS:
-            return [IsParticipant(), permissions.IsAuthenticated()]
-        return [IsProjectHeader(), permissions.IsAuthenticated()]
+            return [permissions.IsAuthenticated(), IsParticipant()]
+        elif self.request.method == "POST":
+            return [permissions.IsAuthenticated(), ]
+        return [permissions.IsAuthenticated(), IsProjectHeader()]
 
     def create(self, request, *args, **kwargs):
         """
