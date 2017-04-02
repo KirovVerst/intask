@@ -37,7 +37,8 @@ INSTALLED_APPS = (
     'authentication',
     'users',
     'projects',
-    'tasks'
+    'tasks',
+    'subtasks'
 )
 
 MIDDLEWARE_CLASSES = (

@@ -2,7 +2,7 @@ from rest_framework import serializers, exceptions
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from projects.models import Project
-from tasks.models import Task, Subtask
+from tasks.models import Task
 from users.serializers import UserSerializer
 
 
@@ -29,14 +29,6 @@ class TaskSerializer(serializers.ModelSerializer):
         data = super(TaskSerializer, self).to_representation(instance)
         data['header'] = UserSerializer(instance.header).data
         return data
-
-
-class SubtaskSerializer(serializers.ModelSerializer):
-    task = serializers.PrimaryKeyRelatedField(queryset=Task.objects.all())
-
-    class Meta:
-        model = Subtask
-        fields = ('id', 'title', 'is_completed', 'task')
 
 
 class TaskUserCreateSerializer(serializers.Serializer):

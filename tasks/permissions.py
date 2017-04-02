@@ -26,25 +26,7 @@ class CanRetrieveTask(permissions.BasePermission):
         return request.user in obj.users.all() or is_project_header
 
 
-class CanRetrieveSubtask(permissions.BasePermission):
-    def has_object_permission(self, request, view, obj):
-        is_project_header = obj.task.project.header
-        is_participant = request.user in obj.task.users.all()
-        return is_project_header | is_participant
 
-
-class CanCreateUpdateDeleteSubtask(permissions.BasePermission):
-    def has_object_permission(self, request, view, obj):
-        is_project_header = obj.task.project.header == request.user
-        is_task_header = obj.task.task_header == request.user
-        return is_project_header | is_task_header
-
-
-class CanCompleteSubtask(permissions.BasePermission):
-    def has_object_permission(self, request, view, obj):
-        is_project_header = obj.task.project.header == request.user
-        is_participant = request.user in obj.task.users.all()
-        return is_project_header | is_participant
 
 
 class CanRetrieveTaskUser(permissions.BasePermission):

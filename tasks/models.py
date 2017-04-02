@@ -40,9 +40,3 @@ class Task(models.Model):
                 raise ValueError("The user must be in the project.")
         else:
             raise ValueError("This user had already been added.")
-
-
-class Subtask(models.Model):
-    title = models.CharField(max_length=100, null=False)
-    is_completed = models.BooleanField(default=False)
-    task = models.ForeignKey(Task)

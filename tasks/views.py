@@ -3,7 +3,6 @@ from rest_framework import mixins
 from rest_framework.response import Response
 from rest_framework import status
 from tasks import serializers
-from tasks.models import Subtask
 from rest_framework.exceptions import PermissionDenied
 from projects.permissions import IsProjectHeader
 from tasks.permissions import *
@@ -38,39 +37,6 @@ class TaskViewSet(ModelViewSet):
         """
         # request.data['project'] = kwargs['project_id']
         return super(TaskViewSet, self).create(request, *args, **kwargs)
-
-
-class SubtaskViewSet(ModelViewSet):
-    serializer_class = serializers.SubtaskSerializer
-
-    def get_permissions(self):
-        if self.request.method in permissions.SAFE_METHODS:
-            return [CanRetrieveSubtask(), ]
-        return [CanCreateUpdateDeleteSubtask()]
-
-    @property
-    def get_queryset(self):
-        task = get_object_or_404(Task, id=self.kwargs['task_id'])
-        return Subtask.objects.filter(task=task)
-
-    def create(self, request, *args, **kwargs):
-        """
-        Create a new subtask.
-        """
-        request.data['task'] = kwargs['task_id']
-        return super(SubtaskViewSet, self).create(request, *args, **kwargs)
-
-    def list(self, request, *args, **kwargs):
-        """
-        Get a list of subtasks.
-        """
-        return super(SubtaskViewSet, self).list(request, *args, **kwargs)
-
-    def retrieve(self, request, *args, **kwargs):
-        """
-        Get a subtask.
-        """
-        return super(SubtaskViewSet, self).retrieve(request, *args, **kwargs)
 
 
 class TaskUserViewSet(GenericViewSet, mixins.ListModelMixin, mixins.CreateModelMixin,
