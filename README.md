@@ -5,9 +5,7 @@ My TaskManager
 
 ## Backend
 ### Requirements
-1. Python 3
-2. Celery
-3. Redis
+1. Python 3.5
 
 ### Installation
 Python dependencies
@@ -22,14 +20,14 @@ Migrations
 ```bash
 $ python manage.py migrate
 ```
+Loading test data
+```bash
+$ python manage.py loaddata fixtures/*
+```
 ### Development 
 #### Server
 ```bash
 $ python manage.py runserver
-```
-#### Celery
-```
-$ celery -A intask worker -l info
 ```
 ### API documentation
 Link: `/api/v1/docs/`

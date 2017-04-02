@@ -36,7 +36,9 @@ INSTALLED_APPS = (
     'rest_framework_swagger',
     'authentication',
     'users',
-    'projects'
+    'projects',
+    'tasks',
+    'subtasks'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -122,12 +124,11 @@ SWAGGER_SETTINGS = {
     'exclude_url_names': [],
     'exclude_namespaces': [],
     'api_version': '0.1',
-    'api_path': '/api/v1',
+    'api_path': '/',
     'relative_paths': False,
     'enabled_methods': [
         'get',
         'post',
-        'put',
         'patch',
         'delete'
     ],
@@ -156,9 +157,4 @@ STATICFILES_DIRS = (
 
 STATIC_URL = '/static/'
 
-# CELERY STUFF
-BROKER_URL = 'redis://localhost:6379'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379'
-CELERY_ACCEPT_CONTENT = ['application/json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
+FIXTURE_DIRS = [os.path.join(BASE_DIR, 'fixtures')]
