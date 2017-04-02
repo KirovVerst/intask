@@ -28,7 +28,15 @@ class ProjectMemberTasksTest(APITestCase):
         self.assertEqual(r.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Task.objects.filter(id=r.json()['id']).count(), 1)
 
+    def test_delete_task(self):
+        r = self.client.delete(self.task_url)
+        self.assertEqual(r.status_code, status.HTTP_403_FORBIDDEN)
 
+    def test_get_task(self):
+        r = self.client.get(self.task_url)
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        self.assertEqual(r.json()['id'], self.task.id)
 
-
-
+    def test_patch_task(self):
+        r = self.client.patch(self.task_url, data=dict(title="title"))
+        self.assertEqual(r.status_code, status.HTTP_403_FORBIDDEN)
