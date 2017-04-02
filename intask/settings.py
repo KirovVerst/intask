@@ -124,12 +124,11 @@ SWAGGER_SETTINGS = {
     'exclude_url_names': [],
     'exclude_namespaces': [],
     'api_version': '0.1',
-    'api_path': '/api/v1',
+    'api_path': '/',
     'relative_paths': False,
     'enabled_methods': [
         'get',
         'post',
-        'put',
         'patch',
         'delete'
     ],
