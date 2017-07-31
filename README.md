@@ -1,5 +1,6 @@
 # intask
 [![Build Status](https://travis-ci.org/KirovVerst/intask.svg?branch=master)](https://travis-ci.org/KirovVerst/intask)
+[![Coverage Status](https://coveralls.io/repos/github/KirovVerst/intask/badge.svg?branch=master)](https://coveralls.io/github/KirovVerst/intask?branch=master)
 
 My TaskManager
 
