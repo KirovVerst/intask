@@ -19,12 +19,12 @@ class UserTests(APITestCase):
 
     def test_sign_up(self):
         user_data = dict(email="email@email.com", password="password")
-        curr_number = len(User.objects.all())
+        curr_number = User.objects.count()
         url = self.base_url + "users/"
         response = self.client.post(url, user_data)
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(curr_number + 1, len(User.objects.all()))
+        self.assertEqual(User.objects.count(), curr_number + 1)
 
     def test_login(self):
         user_data = dict(username="kirov@gmail.com", password="password")
@@ -46,4 +46,4 @@ class UserTests(APITestCase):
     def test_delete(self):
         r = self.auth_client.delete(self.auth_user_url)
         self.assertEqual(r.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertEqual(len(User.objects.filter(id=self.auth_user_id)), 0)
+        self.assertEqual(User.objects.filter(id=self.auth_user_id).count(), 0)
