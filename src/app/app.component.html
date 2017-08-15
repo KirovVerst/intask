@@ -1,3 +1,6 @@
 <div>
-    <app-header *ngIf="authorized"></app-header>
+    <app-header *ngIf="authorized" (setAuthorized)="setAuthorized($event)"></app-header>
+</div>
+<div class="container">
+    <app-auth *ngIf="!authorized" (setAuthorized)="setAuthorized($event)"></app-auth>
 </div>

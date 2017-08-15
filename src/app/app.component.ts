@@ -1,4 +1,5 @@
 import {Component, OnInit} from '@angular/core';
+import {AuthService} from './auth/auth.service';
 
 @Component({
     selector: 'app-root',
@@ -9,7 +10,14 @@ export class AppComponent implements OnInit {
     title = 'app';
     authorized: boolean;
 
+    constructor(private authService: AuthService) {
+    }
+
     ngOnInit(): void {
-        this.authorized = true;
+        this.authorized = this.authService.authorized;
+    }
+
+    setAuthorized(authorized: boolean): void {
+        this.authorized = authorized;
     }
 }
