@@ -3,18 +3,13 @@ python:
   - "3.6"
   - "3.5"
   - "3.4"
-before_install:
-  - curl -L https://npmjs.org/install.sh | sh
 install:
   - pip install -r requirements.txt
   - cp intask/conf_demo.py intask/conf.py
 before_script:
   - python manage.py migrate
 script:
-  - python manage.py test
   - coverage run --source=. manage.py test
-  - npm test
-  - npm build
 after_success:
   coveralls
 
