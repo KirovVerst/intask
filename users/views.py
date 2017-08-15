@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth.models import User
-from rest_framework import generics, permissions, viewsets, mixins
+from rest_framework import parsers, permissions, viewsets, mixins
 from users.serializers import UserSerializer
 from users.permissions import CanRetrieveUpdateDestroyUser
 
@@ -13,6 +13,7 @@ class UserViewSet(viewsets.GenericViewSet,
                   mixins.UpdateModelMixin, mixins.DestroyModelMixin):
     serializer_class = UserSerializer
     queryset = User.objects.all()
+    parser_classes = [parsers.JSONParser]
 
     def get_permissions(self):
         if self.request.method == "POST":

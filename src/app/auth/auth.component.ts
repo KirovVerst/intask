@@ -6,7 +6,7 @@ import {AuthService} from './auth.service';
     templateUrl: './auth.component.html'
 })
 export class AuthComponent implements OnInit {
-    @Output() setAuthorized = new EventEmitter<boolean>();
+    @Output() setStatus = new EventEmitter<boolean>();
 
 
     isRegistering: boolean;
@@ -24,6 +24,6 @@ export class AuthComponent implements OnInit {
 
     login(): void {
         this.authService.login();
-        this.setAuthorized.emit(this.authService.authorized);
+        this.setStatus.emit(this.authService.authorized);
     }
 }
