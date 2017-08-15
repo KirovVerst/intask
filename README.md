@@ -40,7 +40,7 @@ $ npm install
 ```
 ### Build
 ```
-$ ng build --prod --output-hashing none
+$ npm run build-prod
 ```
 ### Tests
 ```
