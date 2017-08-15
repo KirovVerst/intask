@@ -32,3 +32,19 @@ $ python manage.py runserver
 ```
 ### API documentation
 Link: `/api/v1/docs/`
+
+## Frontend
+### Installation
+```
+$ npm install
+```
+### Build
+```
+$ ng build --prod --output-hashing none
+```
+### Tests
+```
+$ ng test
+```
+## Licensing
+The code in this project is licensed under MIT license.
