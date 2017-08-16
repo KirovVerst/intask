@@ -1,13 +1,20 @@
+sudo: required
 language: python
 python:
   - "3.6"
   - "3.5"
   - "3.4"
+services:
+  - redis-server
+  - rabbitmq
+before_install:
+  - redis-server --daemonize yes
 install:
   - pip install -r requirements.txt
   - cp intask/conf_demo.py intask/conf.py
 before_script:
   - python manage.py migrate
+  - celery multi start w1 -A intask
 script:
   - coverage run --source=. manage.py test
 after_success:
