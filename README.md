@@ -7,6 +7,8 @@ My TaskManager
 ## Backend
 ### Requirements
 1. Python 3.5
+2. Redis
+3. RabbitMQ
 
 ### Installation
 Python dependencies
@@ -28,6 +30,7 @@ $ python manage.py loaddata fixtures/*
 ### Development 
 #### Server
 ```bash
+$ celery multi start w1 -A intask 
 $ python manage.py runserver
 ```
 ### API documentation
