@@ -11,6 +11,7 @@ before_install:
   - redis-server --daemonize yes
 install:
   - pip install -r requirements.txt
+  - cd intask_api
   - cp intask/conf_demo.py intask/conf.py
 before_script:
   - python manage.py migrate

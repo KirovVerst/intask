@@ -66,17 +66,17 @@ target/
 .idea
 
 # db config
-db/my.cnf
-db/db.sqlite3
+intask_api/db/my.cnf
+intask_api/db/db.sqlite3
 
 # other dir
 tmp
 temp/
 static/
-intask/conf.py
+intask_api/intask/conf.py
 
 # redis
 dump.rdb
-node_modules/
+node_modules
 
 *.sqlite3
