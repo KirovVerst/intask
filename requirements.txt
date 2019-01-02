@@ -2,7 +2,7 @@ amqp==2.2.1
 appdirs==1.4.3
 billiard==3.5.0.3
 celery==4.1.0
-certifi==2017.7.27.1
+certifi==2018.11.29
 chardet==3.0.4
 coreapi==2.3.1
 coreschema==0.0.4
@@ -25,9 +25,9 @@ pyparsing==2.2.0
 pytz==2017.2
 PyYAML==3.12
 redis==2.10.5
-requests==2.18.3
+requests==2.21.0
 simplejson==3.11.1
 six==1.10.0
 uritemplate==3.0.0
-urllib3==1.22
+urllib3==1.24.1
 vine==1.1.4
