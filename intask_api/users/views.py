@@ -1,8 +1,8 @@
 from django.contrib.auth.models import User
 from rest_framework import parsers, permissions, viewsets, mixins
-from users.serializers import UserSerializer
-from users.permissions import CanRetrieveUpdateDestroyUser
-from users.tasks import send_message
+from intask_api.users.serializers import UserSerializer
+from intask_api.users.permissions import CanRetrieveUpdateDestroyUser
+from intask_api.users.tasks import send_message
 
 
 # Create your views here.

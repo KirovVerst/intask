@@ -73,7 +73,6 @@ intask_api/db/db.sqlite3
 tmp
 temp/
 static/
-intask_api/intask/conf.py
 
 # redis
 dump.rdb

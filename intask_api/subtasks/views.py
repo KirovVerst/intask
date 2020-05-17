@@ -1,12 +1,12 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import get_object_or_404
 from rest_framework.permissions import SAFE_METHODS
 from rest_framework.viewsets import ModelViewSet
 
-from tasks.models import Task
+from intask_api.tasks.models import Task
 
-from subtasks.serializers import SubtaskSerializer
-from subtasks.models import Subtask
-from subtasks import permissions
+from intask_api.subtasks.serializers import SubtaskSerializer
+from intask_api.subtasks.models import Subtask
+from intask_api.subtasks import permissions
 
 
 # Create your views here.

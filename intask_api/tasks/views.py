@@ -2,9 +2,9 @@ from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from rest_framework import mixins
 from rest_framework.response import Response
 from rest_framework import status
-from tasks import serializers
+from intask_api.tasks import serializers
 from rest_framework.exceptions import PermissionDenied
-from tasks.permissions import *
+from intask_api.tasks.permissions import *
 
 
 # Create your views here.

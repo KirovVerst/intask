@@ -3,8 +3,8 @@ from rest_framework.parsers import MultiPartParser
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 
-from projects.serializers import ProjectSerializer, ProjectUserCreateSerializer, ProjectUserViewSerializer
-from projects.permissions import *
+from intask_api.projects.serializers import ProjectSerializer, ProjectUserCreateSerializer, ProjectUserViewSerializer
+from intask_api.projects.permissions import *
 
 
 # Create your views here.

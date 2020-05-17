@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from rest_framework.exceptions import ValidationError
 
-from projects.models import Project
+from intask_api.projects.models import Project
 
 
 # Create your models here.
@@ -11,9 +11,9 @@ class Task(models.Model):
     title = models.CharField(max_length=100, null=False)
     description = models.TextField(null=True, blank=True)
     finish_time = models.DateField(null=True)
-    header = models.ForeignKey(User, related_name='task_header')
+    header = models.ForeignKey(User, related_name='task_header', on_delete=models.CASCADE)
     users = models.ManyToManyField(User)
-    project = models.ForeignKey(Project)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
 
     COMPLETED = 1
     DELAYED = -1

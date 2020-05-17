@@ -9,7 +9,7 @@ class Project(models.Model):
     title = models.CharField(max_length=100, null=False)
     description = models.TextField(null=True, blank=True)
     finish_time = models.DateField(null=True, blank=True)
-    header = models.ForeignKey(User, related_name='project_header', default=None)
+    header = models.ForeignKey(User, related_name='project_header', default=None, on_delete=models.CASCADE)
     users = models.ManyToManyField(User)
 
     def delete_user(self, user):
