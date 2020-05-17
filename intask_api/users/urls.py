@@ -1,4 +1,4 @@
-from users.views import UserViewSet
+from intask_api.users.views import UserViewSet
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()

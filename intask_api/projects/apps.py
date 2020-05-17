@@ -1,5 +1,5 @@
 from django.apps import AppConfig
 
 
-class BackConfig(AppConfig):
-    name = 'projects'
+class ProjectsConfig(AppConfig):
+    name = 'intask_api.projects'

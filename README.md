@@ -15,10 +15,6 @@ Python dependencies
 ```bash
 $ pip install -r requirements.txt
 ```
-Application configuration
-```bash
-$ cp intask/conf_demo.py intask/conf.py
-```
 Migrations
 ```bash
 $ python manage.py migrate

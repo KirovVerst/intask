@@ -3,8 +3,8 @@ from django.contrib.auth.models import User
 
 from rest_framework import serializers, exceptions
 
-from projects.models import Project
-from users.serializers import UserSerializer
+from intask_api.projects.models import Project
+from intask_api.users.serializers import UserSerializer
 
 
 class ProjectSerializer(serializers.ModelSerializer):

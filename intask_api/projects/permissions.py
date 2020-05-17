@@ -1,7 +1,7 @@
 from rest_framework import permissions
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
-from projects.models import Project
+from intask_api.projects.models import Project
 
 
 class IsProjectHeader(permissions.BasePermission):

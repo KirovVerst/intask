@@ -2,8 +2,8 @@ from django.db.models import Count
 
 from rest_framework.test import APITestCase
 from rest_framework import status
-from projects.models import Project
-from subtasks.models import Subtask
+from intask_api.projects.models import Project
+from intask_api.subtasks.models import Subtask
 
 
 # Create your tests here.

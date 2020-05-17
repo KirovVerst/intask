@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from rest_framework.test import APITestCase
 from rest_framework import status
 
-from projects.models import Project
+from intask_api.projects.models import Project
 
 
 class AnonymousTasksTest(APITestCase):

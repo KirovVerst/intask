@@ -1,9 +1,9 @@
 from rest_framework import serializers, exceptions
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
-from projects.models import Project
+from intask_api.projects.models import Project
 from tasks.models import Task
-from users.serializers import UserSerializer
+from intask_api.users.serializers import UserSerializer
 
 
 class TaskSerializer(serializers.ModelSerializer):
