@@ -1,4 +1,4 @@
-Django==3.0.7
+Django==3.1.13
 celery==4.4.2
 djangorestframework==3.11.0
 django-rest-swagger==2.2.0
